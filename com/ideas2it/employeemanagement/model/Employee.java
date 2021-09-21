@@ -29,7 +29,7 @@ public class Employee {
     }
     
     /**
-     * Intilalizes fields with specified values.
+     * Initializes fields with specified values.
      *
      * @param id a integer value which represents employee id
      * @param name the name of the employee

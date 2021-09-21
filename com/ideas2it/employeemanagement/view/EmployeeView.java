@@ -118,7 +118,7 @@ public class EmployeeView {
             System.out.println("\n\t\t\t<<<<<< Employee Created Successfully! "
                                + ">>>>>>\n");
         } else {
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occured! >>>>>>");
+            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
         }
     }
 
@@ -296,7 +296,7 @@ public class EmployeeView {
         Float salary = null;
         String userInput;
         String message = "\n\t\t\t<<<<<< Salary Must Be Atleast 8,000 ! Comma " 
-                         + "Seperators Are Not Allowed, 1 Or 2 Decimal Points "
+                         + "Separators Are Not Allowed, 1 Or 2 Decimal Points "
                          + "Are Allowed! >>>>>>\n";
         
         while (null == salary) {
@@ -457,7 +457,7 @@ public class EmployeeView {
     
     /**
      * Prints choices available for update a single employee detail and gets 
-     * the choice from the user. Executes the selectes choice.  
+     * the choice from the user. Executes the selected choice.  
      */
     private void updateSingleField(int id) {
         StringBuilder options = new StringBuilder(80);
@@ -517,7 +517,7 @@ public class EmployeeView {
             System.out.println("\n\t\t\t<<<<<< Name updated successfully! "
                                + ">>>>>>\n");
         } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occured! >>>>>>\n");
+            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
         }
     }
     
@@ -532,7 +532,7 @@ public class EmployeeView {
             System.out.println("\n\t\t\t<<<<<< Date Of Birth Updated "
                                + "Successfully! >>>>>>\n");
         } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occured! >>>>>>\n");
+            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
         }
     }
     
@@ -547,7 +547,7 @@ public class EmployeeView {
             System.out.println("\n\t\t\t<<<<<< Gender Updated Successfully!"
                                + " >>>>>>\n");
         } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occured! >>>>>>\n");    
+            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");    
         }
     }
     
@@ -562,7 +562,7 @@ public class EmployeeView {
             System.out.println("\n\t\t\t<<<<<< Mobile Number Updated "
                                    + "Successfully! >>>>>>\n");
         } else { 
-            System.out.println("\n\t\t\t<<<<<< An Error Occured! >>>>>>\n");
+            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
         }
     }
     
@@ -577,7 +577,7 @@ public class EmployeeView {
             System.out.println("\n\t\t\t<<<<<< Email Updated Successfully! "
                                + ">>>>>>\n");
         } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occured! >>>>>>\n");         
+            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");         
         }
     }
     
@@ -592,7 +592,7 @@ public class EmployeeView {
             System.out.println("\n\t\t\t<<<<< Salary Updated Successfully! "
                                + ">>>>>>\n");    
         } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occured! >>>>>>\n");
+            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
         }
     }
     
@@ -607,7 +607,7 @@ public class EmployeeView {
             System.out.println("\n\t\t\t<<<<<< Date Of Joining Updated " 
                                + "Successfully! >>>>>>\n");    
         } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occured! >>>>>>\n");        
+            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");        
         }
     }
     
@@ -631,7 +631,7 @@ public class EmployeeView {
             System.out.println("\n\t\t\t<<<<<< Employee Details Updated "
                                + "Successfully! >>>>>>\n");
         } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occured! >>>>>>\n");
+            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
         }
     }
     

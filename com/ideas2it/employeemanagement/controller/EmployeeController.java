@@ -217,7 +217,7 @@ public class EmployeeController {
      * Updates specified employee's mobile number and stores in the database.
      *
      * @param id employee id.
-     * @param mobileNumber the employee's new moible number to update.
+     * @param mobileNumber the employee's new mobile number to update.
      * @return true if employee mobile number updated successfully else false.
      */
     public boolean updateMobileNumber(int id, long mobileNumber) {
