@@ -1,7 +1,7 @@
 # Employee-Management
 
 
-### This appication contains CRUD implementations and validations for employee management system.
+### This application contains CRUD implementations and validations for employee management system.
 
 ### An employee can have following details. 
     
@@ -18,3 +18,4 @@
     * Employee ID cannot be changed after creation.
     * Employee's age must be between 18 to 60.
     * Duplications are not allowed in email, mobile number and employee id.
+    * The minimun amount of salary allowed is 8,000.
