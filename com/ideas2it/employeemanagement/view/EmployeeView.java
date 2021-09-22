@@ -1,11 +1,9 @@
 /*
  * Copyright (c) 2021 Ideas2IT Technologies. All rights reserved.
  */
-
 package com.ideas2it.employeemanagement.view;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 

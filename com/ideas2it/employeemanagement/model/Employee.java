@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2021 Ideas2IT Technologies. All rights reserved.
  */
- 
 package  com.ideas2it.employeemanagement.model;
 
 import java.time.LocalDate;
