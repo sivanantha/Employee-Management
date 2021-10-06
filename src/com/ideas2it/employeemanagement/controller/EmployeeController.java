@@ -6,7 +6,7 @@ package com.ideas2it.employeemanagement.controller;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.ideas2it.employeemanagement.service.EmployeeService;
+import com.ideas2it.employeemanagement.service.impl.EmployeeService;
 
 /**
  * The EmployeeController class contains CRUD implementations for employee 

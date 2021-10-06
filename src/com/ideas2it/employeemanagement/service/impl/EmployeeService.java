@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 Ideas2IT Technologies. All rights reserved.
  */
-package com.ideas2it.employeemanagement.service;
+package com.ideas2it.employeemanagement.service.impl;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.ideas2it.employeemanagement.model.Employee;
+import com.ideas2it.employeemanagement.service.EmployeeServiceInterface;
 
 /**
  * The EmployeeService class contains validations and implementations for 
@@ -22,7 +23,7 @@ import com.ideas2it.employeemanagement.model.Employee;
  * @author  Sivanantham
  * @version 1.4
  */
-public class EmployeeService {
+public class EmployeeService implements EmployeeServiceInterface {
     private static Map<Integer, Employee> employeesDatabase = new HashMap<>(); 
     
     /**
@@ -45,7 +46,7 @@ public class EmployeeService {
      * @param the employee id to be validated as a string.
      * @return true if specified employee id is valid, otherwise false. 
      */
-    private boolean isValidId(String id) { 
+    public boolean isValidId(String id) { 
         return Pattern.matches("(^\\s*[1-9][0-9]*\\s*)$", id);
     }
     
@@ -76,7 +77,7 @@ public class EmployeeService {
      * @param name name of the employee to be validated as a string.
      * @return true if specified name is valid, otherwise false.
      */
-    private boolean isValidName(String name) {
+    public boolean isValidName(String name) {
         return Pattern.matches("^(\\s*[a-zA-Z]{3,20}\\s*)$|^((\\s*[a-zA-Z]"
                 + "{3,20}) ([a-zA-Z]{2,20})\\s*)$|^((\\s*[a-zA-Z]{3,20}) "
                 + "([a-zA-Z]{2,20}) ([a-zA-Z]){2,20}\\s*)$", name);
@@ -99,7 +100,7 @@ public class EmployeeService {
      * @param dateOfBirth the employee's date of birth as a LocalDate.
      * @return true if specified date of birth is valid otherwise false.
      */
-    private boolean isValidDateOfBirth(LocalDate dateOfBirth) {
+    public boolean isValidDateOfBirth(LocalDate dateOfBirth) {
         int age = dateOfBirth.until(LocalDate.now()).getYears();
         
         return ((18 <= age) && (60 >= age));
@@ -125,7 +126,7 @@ public class EmployeeService {
      * @param gender employee's gender as string value.
      * @return true if specified gender is valid, otherwise false.
      */ 
-    private boolean isValidGender(String gender) {
+    public boolean isValidGender(String gender) {
         return ("male".equals(gender) || "female".equals(gender) 
                 || "others".equals(gender));
     }
@@ -149,7 +150,7 @@ public class EmployeeService {
      * @return true if specified mobile number is valid otherwise false.
      * 
      */
-    private boolean isValidMobileNumber(String mobileNumber) {
+    public boolean isValidMobileNumber(String mobileNumber) {
         return Pattern.matches("^(\\s*[6-9][0-9]{9}\\s*)$", mobileNumber);
     }
     
@@ -200,7 +201,7 @@ public class EmployeeService {
      * @param email employee's email to be validated as string value.
      * @return true if specified email is valid, otherwise false.
      */
-    private boolean isValidEmail(String email) {
+    public boolean isValidEmail(String email) {
         return Pattern.matches(new StringBuilder().append("^\\s*(([a-z0-9]")
                 .append("[\\.]?[\\-]?[_]?([a-z0-9][\\.]?[\\-]?[_]?){0,50}")
                 .append("[a-z0-9]@[a-z0-9][a-z0-9_\\-]{0,30}[a-z0-9]([\\.]")
@@ -241,7 +242,7 @@ public class EmployeeService {
      * @param salary employee's salary to be validated, as string.
      * @return true if specified salary is valid, otherwise false.
      */
-    private boolean isValidSalary(String salary) {
+    public boolean isValidSalary(String salary) {
         return Pattern.matches("^\\s*(([8-9][0-9]{3}|[1-9][0-9]{4,})(\\.[0-9]"
                                + "{1,2})?)\\s*$", salary);
     }
@@ -292,7 +293,7 @@ public class EmployeeService {
      *        LocalDate.
      * @return true if spcified date is valid else false.
      */
-    private boolean isValidDateOfJoining(LocalDate dateOfJoining) {
+    public boolean isValidDateOfJoining(LocalDate dateOfJoining) {
         Period experience = calculateExperience(dateOfJoining);
         
         return ((43 > experience.getYears()) 
@@ -480,7 +481,6 @@ public class EmployeeService {
      * @param dateOfJoining the employee's date of joining to update.
      * @return true if employee updated successfully otherwise false.
      */
- 
      public boolean updateAllDetails(int id, String name,LocalDate dateOfBirth,
              String gender, long mobileNumber, String email, float salary, 
              LocalDate dateOfJoining) {
