@@ -10,15 +10,15 @@ import java.sql.Connection;
  * This class contains utility method for establish connection to database.
  */
 public class DatabaseConnection {
-    private Connection databaseConnection = null;
+    private static Connection databaseConnection = null;
     
     /** 
      * Establishes connection to the database and returns the 
-     * connection object. It establish only single connection per instance.
+     * connection object. It establishes only single connection per thread.
      *
      * @return a database connection.
      */
-    public Connection getConnection() {
+    public static Connection getConnection() {
          if (databaseConnection == null) {
              try {
                  Class.forName("com.mysql.cj.jdbc.Driver");
