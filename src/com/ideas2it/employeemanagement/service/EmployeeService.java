@@ -1,30 +1,21 @@
 /*
  * Copyright (c) 2021 Ideas2IT Technologies. All rights reserved.
  */
-package com.ideas2it.employeemanagement.service.impl;
+package com.ideas2it.employeemanagement.service;
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
-import java.time.Period;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 import com.ideas2it.employeemanagement.model.Employee;
-import com.ideas2it.employeemanagement.service.EmployeeServiceInterface;
 
 /**
- * The EmployeeService class contains validations and implementations for 
+ * The EmployeeServiceInterface interface provides methods for validations and
  * create, update, retrieve, delete operations for employee management system.
  *
  * @author  Sivanantham
- * @version 1.4
+ * @version 1.1
  */
-public class EmployeeServiceImpl implements EmployeeService {
-    private static Map<Integer, Employee> employeesDatabase = new HashMap<>(); 
+public interface EmployeeService {
     
     /**
      * Searches for the specified employee id.
@@ -33,9 +24,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param id  the id of the employee to be searched as a integer.
      * @return true if employee found, otherwise false.
      */
-    public boolean isEmployeeExist(int id) {
-        return employeesDatabase.containsKey(id);
-    }
+    boolean isEmployeeExist(int id);
     
     /**
      * Checks if the specified employee id is a non negative integer
@@ -46,9 +35,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param the employee id to be validated as a string.
      * @return true if specified employee id is valid, otherwise false. 
      */
-    public boolean isValidId(String id) { 
-        return Pattern.matches("(^\\s*[1-9][0-9]*\\s*)$", id);
-    }
+    boolean isValidId(String id);
     
     /**
      * Validates and parses given employee id.
@@ -56,18 +43,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param id the employee id to be validated.
      * @return employee id as a Integer if it is valid else null.
      */
-    public Integer validateId(String id) {
-        Integer parsedId = null; 
-        
-        if (isValidId(id)) {  
-            try {
-                parsedId = Integer.parseInt(id.strip());            
-            } catch (NumberFormatException exception) {
-                parsedId = null;     
-            }
-        }
-        return parsedId;
-    }
+    Integer validateId(String id);
     
     /**
      * Checks if the specified name is valid. Middle name and last name are 
@@ -77,11 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param name name of the employee to be validated as a string.
      * @return true if specified name is valid, otherwise false.
      */
-    public boolean isValidName(String name) {
-        return Pattern.matches("^(\\s*[a-zA-Z]{3,20}\\s*)$|^((\\s*[a-zA-Z]"
-                + "{3,20}) ([a-zA-Z]{2,20})\\s*)$|^((\\s*[a-zA-Z]{3,20}) "
-                + "([a-zA-Z]{2,20}) ([a-zA-Z]){2,20}\\s*)$", name);
-    }
+    boolean isValidName(String name);
     
     /**
      * Validates the specified employee name and converts it to lowercase.
@@ -89,9 +61,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param name the employee name to be validated.
      * @return employee name as a string if it is valid else null.
      */
-    public String validateName(String name) {
-        return isValidName(name) ? name.strip().toLowerCase() : null;
-    }
+    String validateName(String name);
     
     /**
      * Checks if the employee's age is above 18 (inclusive) and below 
@@ -100,11 +70,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param dateOfBirth the employee's date of birth as a LocalDate.
      * @return true if specified date of birth is valid otherwise false.
      */
-    public boolean isValidDateOfBirth(LocalDate dateOfBirth) {
-        int age = dateOfBirth.until(LocalDate.now()).getYears();
-        
-        return ((18 <= age) && (60 >= age));
-    }
+    boolean isValidDateOfBirth(LocalDate dateOfBirth);
     
     /**
      * Validates and parses given employee date of birth.
@@ -112,13 +78,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param dateOfBirth the employee date of birth to be validated.
      * @return employee date of birth as a LocalDate if it is valid else null.
      */
-    public LocalDate validateDateOfBirth(String dateOfBirth) {
-         LocalDate parsedDateOfBirth = parseDate(dateOfBirth.strip());
-
-         return ((null != parsedDateOfBirth) 
-                 && (isValidDateOfBirth(parsedDateOfBirth))) ? parsedDateOfBirth 
-                                                             : null;
-    }
+    LocalDate validateDateOfBirth(String dateOfBirth);
     
     /**
      * Checks if the specified gender is valid(male/female/others).
@@ -126,10 +86,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param gender employee's gender as string value.
      * @return true if specified gender is valid, otherwise false.
      */ 
-    public boolean isValidGender(String gender) {
-        return ("male".equals(gender) || "female".equals(gender) 
-                || "others".equals(gender));
-    }
+    boolean isValidGender(String gender);
     
     /**
      * Validates the specified employee gender and converts it to lowercase.
@@ -137,10 +94,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param gender the employee gender to be validated.
      * @return employee gender as a string if it is valid else null.
      */
-    public String validateGender(String gender) {
-        gender = gender.strip().toLowerCase();
-        return isValidGender(gender) ? gender : null;
-    }
+    String validateGender(String gender);
     
     /**
      * Checks if the given mobile number is a 10 digit non negative integer
@@ -150,9 +104,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if specified mobile number is valid otherwise false.
      * 
      */
-    public boolean isValidMobileNumber(String mobileNumber) {
-        return Pattern.matches("^(\\s*[6-9][0-9]{9}\\s*)$", mobileNumber);
-    }
+    boolean isValidMobileNumber(String mobileNumber);
     
     /**
      * Validates and parses given employee mobile number.
@@ -160,18 +112,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param mobileNumber the employee mobile number to be validated.
      * @return employee mobile number as a Long if it is valid else null.
      */
-    public Long validateMobileNumber(String mobileNumber) {
-         Long parsedMobileNumber = null;
-         
-         if (isValidMobileNumber(mobileNumber)) {
-             try {
-                 parsedMobileNumber = Long.parseLong(mobileNumber.strip());
-             } catch (NumberFormatException exception) {
-                 parsedMobileNumber = null;
-             }
-         }
-         return parsedMobileNumber;
-    }
+    Long validateMobileNumber(String mobileNumber);
     
     /** 
      * Checks if the specified mobile number already exist in the database.
@@ -179,15 +120,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param the mobile number to be searched as a long.
      * @return true if mobile number already exist, otherwise false.
      */
-    public boolean isMobileNumberExist(long mobileNumber) {
-        for (Employee employee : employeesDatabase.values()) {
-            if (mobileNumber == employee.getMobileNumber()) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
+    boolean isMobileNumberExist(long mobileNumber);
     
     /**
      * Checks if the given email is valid. Capital letters are not allowed.
@@ -201,13 +134,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param email employee's email to be validated as string value.
      * @return true if specified email is valid, otherwise false.
      */
-    public boolean isValidEmail(String email) {
-        return Pattern.matches(new StringBuilder().append("^\\s*(([a-z0-9]")
-                .append("[\\.]?[\\-]?[_]?([a-z0-9][\\.]?[\\-]?[_]?){0,50}")
-                .append("[a-z0-9]@[a-z0-9][a-z0-9_\\-]{0,30}[a-z0-9]([\\.]")
-                .append("[a-z]{2,30}){1,3})\\s*$)") 
-                .toString(), email);
-    }
+    boolean isValidEmail(String email);
     
     /**
      * Validates the given employee email.
@@ -215,24 +142,15 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param email the employee email to be validated.
      * @return employee email as a string if it is valid else null.
      */
-    public String validateEmail(String email) {
-         return isValidEmail(email) ? email.strip() : null;
-    }
-    
+    String validateEmail(String email);
+ 
     /**
      * Checks if the specified email is already exist in the database.
      *
      * @param email employee's email to be searched as string value.
      * @return true if specified email is found, otherwise false.
      */ 
-    public boolean isEmailExist(String email) {
-        for (Employee employee : employeesDatabase.values()) {
-            if (email.equals(employee.getEmail())) {
-                return true;
-            }
-        }
-        return false;
-    }
+    boolean isEmailExist(String email);
     
     /**
      * Checks if the specified salary is non negative and atleast 8,000.
@@ -242,10 +160,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param salary employee's salary to be validated, as string.
      * @return true if specified salary is valid, otherwise false.
      */
-    public boolean isValidSalary(String salary) {
-        return Pattern.matches("^\\s*(([8-9][0-9]{3}|[1-9][0-9]{4,})(\\.[0-9]"
-                               + "{1,2})?)\\s*$", salary);
-    }
+    boolean isValidSalary(String salary);
     
     /**
      * Validates and parses given employee salary.
@@ -253,36 +168,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param salary the employee salary to be validated.
      * @return employee salary as a Float if it is valid else null.
      */
-    public Float validateSalary(String salary) {
-         Float parsedSalary = null;
-         
-         if (isValidSalary(salary)) {
-             try {
-                 parsedSalary = Float.parseFloat(salary.strip());
-             } catch (NumberFormatException exception) {
-                 parsedSalary = null;
-             }
-         }
-         return parsedSalary;
-    }
-    
-    /**
-     * Checks if the specified date is in dd-mm-yyyy format and parses the date.
-     *
-     * @param date the date as a string to be parsed .
-     * @return the specified date as LocalDate if it is valid otherwise null.
-     */
-    private LocalDate parseDate(String date) {
-        LocalDate parsedDate;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        
-        try {
-            parsedDate = LocalDate.parse(date, formatter);
-        } catch (DateTimeParseException exception) {
-            parsedDate = null;        
-        }
-        return parsedDate;
-    }
+    Float validateSalary(String salary);
     
     /**
      * Checks if the specified date of joining is valid. Future dates are
@@ -293,12 +179,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      *        LocalDate.
      * @return true if spcified date is valid else false.
      */
-    public boolean isValidDateOfJoining(LocalDate dateOfJoining) {
-        Period experience = calculateExperience(dateOfJoining);
-        
-        return ((43 > experience.getYears()) 
-                && (!dateOfJoining.isAfter(LocalDate.now())));
-    }
+    boolean isValidDateOfJoining(LocalDate dateOfJoining);
     
     /**
      * Validates and parses given employee date of joining.
@@ -306,23 +187,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param dateOfJoining the employee date of joining to be validated.
      * @return employee date of joining as a LocalDate if it is valid else null.
      */
-    public LocalDate validateDateOfJoining(String dateOfJoining) {
-        LocalDate parsedDateOfJoining = parseDate(dateOfJoining.strip());
-        
-        return ((null != parsedDateOfJoining) 
-                && (isValidDateOfJoining(parsedDateOfJoining))) 
-               ? parsedDateOfJoining : null;
-    }
-    
-    /**
-     * Calculates experience of the employee from date of joining.
-     *
-     * @param dateOfJoining employee's date of joining as LocalDate.
-     * @return employee's experience as Period.
-     */
-    private Period calculateExperience(LocalDate dateOfJoining) {
-        return dateOfJoining.until(LocalDate.now());
-    }
+    LocalDate validateDateOfJoining(String dateOfJoining);
     
     /**
      * Checks if the employee database is empty.
@@ -330,9 +195,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      *
      * @return true if employee database is empty else false.
      */
-    public boolean isEmployeesDatabaseEmpty() {
-        return employeesDatabase.isEmpty();
-    }
+    boolean isEmployeesDatabaseEmpty();
     
     /**
      * Retrieves the specified employee from the database.
@@ -340,35 +203,23 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param id the employee id to be retrieved as a int.
      * @return a List containing the specified employee.
      */
-    public List<Employee> getEmployee(int id) {
-        List<Employee> employees = new ArrayList<Employee>();
-        
-        employees.add(employeesDatabase.get(id));
-        return employees;
-    }
+    List<Employee> getEmployee(int id);
     
     /** 
      * Retrieves all employees from the database.
      *
      * @return a List containing all employees.
      */
-    public List<Employee> getAllEmployees() {
-        return new ArrayList<Employee>(employeesDatabase.values());
-    }
+    List<Employee> getAllEmployees();
    
     /**
      * Creates a new employee with specified details and stores in the database.
      * 
      * @return true if employee created successfully else false.
      */
-    public boolean createEmployee (int id, String name, LocalDate dateOfBirth,
+    boolean createEmployee (int id,String name,LocalDate dateOfBirth,
             String gender, long mobileNumber, String email, float salary, 
-            LocalDate dateOfJoining) {
-            
-        return (null == employeesDatabase.put(id, new Employee(id, name, 
-                dateOfBirth, gender, mobileNumber, email, salary, 
-                dateOfJoining)));
-    }
+            LocalDate dateOfJoining);
    
     /**
      * Updates specified employee's name and stores in the database.
@@ -377,12 +228,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param name the employee's new name to update.
      * @return true if employee name updated successfully else false.
      */
-    public boolean updateName(int id, String name) {
-         Employee employee = employeesDatabase.get(id);
-        
-         employee.setName(name);
-         return (null != employeesDatabase.replace(id, employee));
-    } 
+    boolean updateName(int id, String name);
    
     /**
      * Updates specified employee's date of birth and stores in the database.
@@ -391,12 +237,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param dateOfBirth the employee's new date of birth to update.
      * @return true if employee date of birth updated successfully else false.
      */
-    public boolean updateDateOfBirth(int id, LocalDate dateOfBirth) {
-         Employee employee = employeesDatabase.get(id);
-        
-         employee.setDateOfBirth(dateOfBirth);
-         return (null != employeesDatabase.replace(id, employee));
-    }
+    boolean updateDateOfBirth(int id, LocalDate dateOfBirth);
    
     /**
      * Updates specified employee's gender and stores in the database.
@@ -405,12 +246,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param gender the employee's gender to update.
      * @return true if employee gender updated successfully else false.
      */
-    public boolean updateGender(int id, String gender) {
-         Employee employee = employeesDatabase.get(id);
-        
-         employee.setGender(gender);
-         return (null != employeesDatabase.replace(id, employee));
-    } 
+    boolean updateGender(int id, String gender);
    
     /**
      * Updates specified employee's mobile number and stores in the database.
@@ -419,12 +255,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param mobileNumber the employee's new moible number to update.
      * @return true if employee mobile number updated successfully else false.
      */
-    public boolean updateMobileNumber(int id, long mobileNumber) {
-         Employee employee = employeesDatabase.get(id);
-         
-         employee.setMobileNumber(mobileNumber);
-         return (null != employeesDatabase.replace(id, employee));
-    }
+    boolean updateMobileNumber(int id, long mobileNumber);
    
     /**
      * Updates specified employee's email and stores in the database.
@@ -433,12 +264,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param email the employee's new email to update.
      * @return true if employee email updated successfully else false.
      */
-    public boolean updateEmail(int id, String email) {
-         Employee employee = employeesDatabase.get(id);
-        
-         employee.setEmail(email);
-         return (null != employeesDatabase.replace(id, employee));
-    }
+    boolean updateEmail(int id, String email);
    
     /**
      * Updates specified employee's salary and stores in the database.
@@ -447,12 +273,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param salary the employee's new salary to update.
      * @return true if employee salary updated successfully else false.
      */
-    public boolean updateSalary(int id, float salary) {
-         Employee employee = employeesDatabase.get(id);
-        
-         employee.setSalary(salary);
-         return (null != employeesDatabase.replace(id, employee));
-    }
+    boolean updateSalary(int id, float salary);
    
     /**
      * Updates specified employee's date of joining and stores in the database.
@@ -461,12 +282,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param dateOfJoining the employee's new date of joining to update.
      * @return true if employee date of joining updated successfully else false.
      */
-   public boolean updateDateOfJoining(int id, LocalDate dateOfJoining) {
-         Employee employee = employeesDatabase.get(id);
-         
-         employee.setDateOfJoining(dateOfJoining);
-         return (null != employeesDatabase.replace(id, employee));
-    }
+   boolean updateDateOfJoining(int id, LocalDate dateOfJoining);
    
     /** 
      * Updates all details of the specified employee and stores in the database.
@@ -481,21 +297,9 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param dateOfJoining the employee's date of joining to update.
      * @return true if employee updated successfully otherwise false.
      */
-     public boolean updateAllDetails(int id, String name,LocalDate dateOfBirth,
+     boolean updateAllDetails(int id, String name,LocalDate dateOfBirth,
              String gender, long mobileNumber, String email, float salary, 
-             LocalDate dateOfJoining) {
-         Employee employee = employeesDatabase.get(id);
-        
-         employee.setName(name);
-         employee.setGender(gender);
-         employee.setDateOfBirth(dateOfBirth);
-         employee.setMobileNumber(mobileNumber);
-         employee.setEmail(email);
-         employee.setSalary(salary);
-         employee.setDateOfJoining(dateOfJoining);
-        
-         return (null != employeesDatabase.replace(id, employee));
-    }
+             LocalDate dateOfJoining);
             
     /**
      * Deletes the specified employee.
@@ -503,12 +307,8 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param id employee id to be deleted.
      * @return true if employee deleted successfully else false.
      */
-    public boolean deleteEmployee(int id) {
-         return (null != employeesDatabase.remove(id));
-    }
+    boolean deleteEmployee(int id);
    
     /** Deletes all employees from the database. */
-    public void deleteAllEmployee() {
-         employeesDatabase.clear();  
-    }
+    void deleteAllEmployee();
 }

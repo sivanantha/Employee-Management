@@ -1,21 +1,30 @@
 /*
  * Copyright (c) 2021 Ideas2IT Technologies. All rights reserved.
  */
-package com.ideas2it.employeemanagement.service;
+package com.ideas2it.employeemanagement.service.impl;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 import com.ideas2it.employeemanagement.model.Employee;
+import com.ideas2it.employeemanagement.service.EmployeeServiceInterface;
 
 /**
- * The EmployeeServiceInterface interface provides methods for validations and
+ * The EmployeeService class contains validations and implementations for 
  * create, update, retrieve, delete operations for employee management system.
  *
  * @author  Sivanantham
- * @version 1.1
+ * @version 1.4
  */
-public interface EmployeeServiceInterface {
+public class EmployeeServiceImpl implements EmployeeService {
+    private static Map<Integer, Employee> employeesDatabase = new HashMap<>(); 
     
     /**
      * Searches for the specified employee id.
@@ -24,7 +33,9 @@ public interface EmployeeServiceInterface {
      * @param id  the id of the employee to be searched as a integer.
      * @return true if employee found, otherwise false.
      */
-    boolean isEmployeeExist(int id);
+    public boolean isEmployeeExist(int id) {
+        return employeesDatabase.containsKey(id);
+    }
     
     /**
      * Checks if the specified employee id is a non negative integer
@@ -35,7 +46,9 @@ public interface EmployeeServiceInterface {
      * @param the employee id to be validated as a string.
      * @return true if specified employee id is valid, otherwise false. 
      */
-    boolean isValidId(String id);
+    public boolean isValidId(String id) { 
+        return Pattern.matches("(^\\s*[1-9][0-9]*\\s*)$", id);
+    }
     
     /**
      * Validates and parses given employee id.
@@ -43,7 +56,18 @@ public interface EmployeeServiceInterface {
      * @param id the employee id to be validated.
      * @return employee id as a Integer if it is valid else null.
      */
-    Integer validateId(String id);
+    public Integer validateId(String id) {
+        Integer parsedId = null; 
+        
+        if (isValidId(id)) {  
+            try {
+                parsedId = Integer.parseInt(id.strip());            
+            } catch (NumberFormatException exception) {
+                parsedId = null;     
+            }
+        }
+        return parsedId;
+    }
     
     /**
      * Checks if the specified name is valid. Middle name and last name are 
@@ -53,7 +77,11 @@ public interface EmployeeServiceInterface {
      * @param name name of the employee to be validated as a string.
      * @return true if specified name is valid, otherwise false.
      */
-    boolean isValidName(String name);
+    public boolean isValidName(String name) {
+        return Pattern.matches("^(\\s*[a-zA-Z]{3,20}\\s*)$|^((\\s*[a-zA-Z]"
+                + "{3,20}) ([a-zA-Z]{2,20})\\s*)$|^((\\s*[a-zA-Z]{3,20}) "
+                + "([a-zA-Z]{2,20}) ([a-zA-Z]){2,20}\\s*)$", name);
+    }
     
     /**
      * Validates the specified employee name and converts it to lowercase.
@@ -61,7 +89,9 @@ public interface EmployeeServiceInterface {
      * @param name the employee name to be validated.
      * @return employee name as a string if it is valid else null.
      */
-    String validateName(String name);
+    public String validateName(String name) {
+        return isValidName(name) ? name.strip().toLowerCase() : null;
+    }
     
     /**
      * Checks if the employee's age is above 18 (inclusive) and below 
@@ -70,7 +100,11 @@ public interface EmployeeServiceInterface {
      * @param dateOfBirth the employee's date of birth as a LocalDate.
      * @return true if specified date of birth is valid otherwise false.
      */
-    boolean isValidDateOfBirth(LocalDate dateOfBirth);
+    public boolean isValidDateOfBirth(LocalDate dateOfBirth) {
+        int age = dateOfBirth.until(LocalDate.now()).getYears();
+        
+        return ((18 <= age) && (60 >= age));
+    }
     
     /**
      * Validates and parses given employee date of birth.
@@ -78,7 +112,13 @@ public interface EmployeeServiceInterface {
      * @param dateOfBirth the employee date of birth to be validated.
      * @return employee date of birth as a LocalDate if it is valid else null.
      */
-    LocalDate validateDateOfBirth(String dateOfBirth);
+    public LocalDate validateDateOfBirth(String dateOfBirth) {
+         LocalDate parsedDateOfBirth = parseDate(dateOfBirth.strip());
+
+         return ((null != parsedDateOfBirth) 
+                 && (isValidDateOfBirth(parsedDateOfBirth))) ? parsedDateOfBirth 
+                                                             : null;
+    }
     
     /**
      * Checks if the specified gender is valid(male/female/others).
@@ -86,7 +126,10 @@ public interface EmployeeServiceInterface {
      * @param gender employee's gender as string value.
      * @return true if specified gender is valid, otherwise false.
      */ 
-    boolean isValidGender(String gender);
+    public boolean isValidGender(String gender) {
+        return ("male".equals(gender) || "female".equals(gender) 
+                || "others".equals(gender));
+    }
     
     /**
      * Validates the specified employee gender and converts it to lowercase.
@@ -94,7 +137,10 @@ public interface EmployeeServiceInterface {
      * @param gender the employee gender to be validated.
      * @return employee gender as a string if it is valid else null.
      */
-    String validateGender(String gender);
+    public String validateGender(String gender) {
+        gender = gender.strip().toLowerCase();
+        return isValidGender(gender) ? gender : null;
+    }
     
     /**
      * Checks if the given mobile number is a 10 digit non negative integer
@@ -104,7 +150,9 @@ public interface EmployeeServiceInterface {
      * @return true if specified mobile number is valid otherwise false.
      * 
      */
-    boolean isValidMobileNumber(String mobileNumber);
+    public boolean isValidMobileNumber(String mobileNumber) {
+        return Pattern.matches("^(\\s*[6-9][0-9]{9}\\s*)$", mobileNumber);
+    }
     
     /**
      * Validates and parses given employee mobile number.
@@ -112,7 +160,18 @@ public interface EmployeeServiceInterface {
      * @param mobileNumber the employee mobile number to be validated.
      * @return employee mobile number as a Long if it is valid else null.
      */
-    Long validateMobileNumber(String mobileNumber);
+    public Long validateMobileNumber(String mobileNumber) {
+         Long parsedMobileNumber = null;
+         
+         if (isValidMobileNumber(mobileNumber)) {
+             try {
+                 parsedMobileNumber = Long.parseLong(mobileNumber.strip());
+             } catch (NumberFormatException exception) {
+                 parsedMobileNumber = null;
+             }
+         }
+         return parsedMobileNumber;
+    }
     
     /** 
      * Checks if the specified mobile number already exist in the database.
@@ -120,7 +179,15 @@ public interface EmployeeServiceInterface {
      * @param the mobile number to be searched as a long.
      * @return true if mobile number already exist, otherwise false.
      */
-    boolean isMobileNumberExist(long mobileNumber);
+    public boolean isMobileNumberExist(long mobileNumber) {
+        for (Employee employee : employeesDatabase.values()) {
+            if (mobileNumber == employee.getMobileNumber()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     
     /**
      * Checks if the given email is valid. Capital letters are not allowed.
@@ -134,7 +201,13 @@ public interface EmployeeServiceInterface {
      * @param email employee's email to be validated as string value.
      * @return true if specified email is valid, otherwise false.
      */
-    boolean isValidEmail(String email);
+    public boolean isValidEmail(String email) {
+        return Pattern.matches(new StringBuilder().append("^\\s*(([a-z0-9]")
+                .append("[\\.]?[\\-]?[_]?([a-z0-9][\\.]?[\\-]?[_]?){0,50}")
+                .append("[a-z0-9]@[a-z0-9][a-z0-9_\\-]{0,30}[a-z0-9]([\\.]")
+                .append("[a-z]{2,30}){1,3})\\s*$)") 
+                .toString(), email);
+    }
     
     /**
      * Validates the given employee email.
@@ -142,15 +215,24 @@ public interface EmployeeServiceInterface {
      * @param email the employee email to be validated.
      * @return employee email as a string if it is valid else null.
      */
-    String validateEmail(String email);
- 
+    public String validateEmail(String email) {
+         return isValidEmail(email) ? email.strip() : null;
+    }
+    
     /**
      * Checks if the specified email is already exist in the database.
      *
      * @param email employee's email to be searched as string value.
      * @return true if specified email is found, otherwise false.
      */ 
-    boolean isEmailExist(String email);
+    public boolean isEmailExist(String email) {
+        for (Employee employee : employeesDatabase.values()) {
+            if (email.equals(employee.getEmail())) {
+                return true;
+            }
+        }
+        return false;
+    }
     
     /**
      * Checks if the specified salary is non negative and atleast 8,000.
@@ -160,7 +242,10 @@ public interface EmployeeServiceInterface {
      * @param salary employee's salary to be validated, as string.
      * @return true if specified salary is valid, otherwise false.
      */
-    boolean isValidSalary(String salary);
+    public boolean isValidSalary(String salary) {
+        return Pattern.matches("^\\s*(([8-9][0-9]{3}|[1-9][0-9]{4,})(\\.[0-9]"
+                               + "{1,2})?)\\s*$", salary);
+    }
     
     /**
      * Validates and parses given employee salary.
@@ -168,7 +253,36 @@ public interface EmployeeServiceInterface {
      * @param salary the employee salary to be validated.
      * @return employee salary as a Float if it is valid else null.
      */
-    Float validateSalary(String salary);
+    public Float validateSalary(String salary) {
+         Float parsedSalary = null;
+         
+         if (isValidSalary(salary)) {
+             try {
+                 parsedSalary = Float.parseFloat(salary.strip());
+             } catch (NumberFormatException exception) {
+                 parsedSalary = null;
+             }
+         }
+         return parsedSalary;
+    }
+    
+    /**
+     * Checks if the specified date is in dd-mm-yyyy format and parses the date.
+     *
+     * @param date the date as a string to be parsed .
+     * @return the specified date as LocalDate if it is valid otherwise null.
+     */
+    private LocalDate parseDate(String date) {
+        LocalDate parsedDate;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        
+        try {
+            parsedDate = LocalDate.parse(date, formatter);
+        } catch (DateTimeParseException exception) {
+            parsedDate = null;        
+        }
+        return parsedDate;
+    }
     
     /**
      * Checks if the specified date of joining is valid. Future dates are
@@ -179,7 +293,12 @@ public interface EmployeeServiceInterface {
      *        LocalDate.
      * @return true if spcified date is valid else false.
      */
-    boolean isValidDateOfJoining(LocalDate dateOfJoining);
+    public boolean isValidDateOfJoining(LocalDate dateOfJoining) {
+        Period experience = calculateExperience(dateOfJoining);
+        
+        return ((43 > experience.getYears()) 
+                && (!dateOfJoining.isAfter(LocalDate.now())));
+    }
     
     /**
      * Validates and parses given employee date of joining.
@@ -187,7 +306,23 @@ public interface EmployeeServiceInterface {
      * @param dateOfJoining the employee date of joining to be validated.
      * @return employee date of joining as a LocalDate if it is valid else null.
      */
-    LocalDate validateDateOfJoining(String dateOfJoining);
+    public LocalDate validateDateOfJoining(String dateOfJoining) {
+        LocalDate parsedDateOfJoining = parseDate(dateOfJoining.strip());
+        
+        return ((null != parsedDateOfJoining) 
+                && (isValidDateOfJoining(parsedDateOfJoining))) 
+               ? parsedDateOfJoining : null;
+    }
+    
+    /**
+     * Calculates experience of the employee from date of joining.
+     *
+     * @param dateOfJoining employee's date of joining as LocalDate.
+     * @return employee's experience as Period.
+     */
+    private Period calculateExperience(LocalDate dateOfJoining) {
+        return dateOfJoining.until(LocalDate.now());
+    }
     
     /**
      * Checks if the employee database is empty.
@@ -195,7 +330,9 @@ public interface EmployeeServiceInterface {
      *
      * @return true if employee database is empty else false.
      */
-    boolean isEmployeesDatabaseEmpty();
+    public boolean isEmployeesDatabaseEmpty() {
+        return employeesDatabase.isEmpty();
+    }
     
     /**
      * Retrieves the specified employee from the database.
@@ -203,23 +340,35 @@ public interface EmployeeServiceInterface {
      * @param id the employee id to be retrieved as a int.
      * @return a List containing the specified employee.
      */
-    List<Employee> getEmployee(int id);
+    public List<Employee> getEmployee(int id) {
+        List<Employee> employees = new ArrayList<Employee>();
+        
+        employees.add(employeesDatabase.get(id));
+        return employees;
+    }
     
     /** 
      * Retrieves all employees from the database.
      *
      * @return a List containing all employees.
      */
-    List<Employee> getAllEmployees();
+    public List<Employee> getAllEmployees() {
+        return new ArrayList<Employee>(employeesDatabase.values());
+    }
    
     /**
      * Creates a new employee with specified details and stores in the database.
      * 
      * @return true if employee created successfully else false.
      */
-    boolean createEmployee (int id,String name,LocalDate dateOfBirth,
+    public boolean createEmployee (int id, String name, LocalDate dateOfBirth,
             String gender, long mobileNumber, String email, float salary, 
-            LocalDate dateOfJoining);
+            LocalDate dateOfJoining) {
+            
+        return (null == employeesDatabase.put(id, new Employee(id, name, 
+                dateOfBirth, gender, mobileNumber, email, salary, 
+                dateOfJoining)));
+    }
    
     /**
      * Updates specified employee's name and stores in the database.
@@ -228,7 +377,12 @@ public interface EmployeeServiceInterface {
      * @param name the employee's new name to update.
      * @return true if employee name updated successfully else false.
      */
-    boolean updateName(int id, String name);
+    public boolean updateName(int id, String name) {
+         Employee employee = employeesDatabase.get(id);
+        
+         employee.setName(name);
+         return (null != employeesDatabase.replace(id, employee));
+    } 
    
     /**
      * Updates specified employee's date of birth and stores in the database.
@@ -237,7 +391,12 @@ public interface EmployeeServiceInterface {
      * @param dateOfBirth the employee's new date of birth to update.
      * @return true if employee date of birth updated successfully else false.
      */
-    boolean updateDateOfBirth(int id, LocalDate dateOfBirth);
+    public boolean updateDateOfBirth(int id, LocalDate dateOfBirth) {
+         Employee employee = employeesDatabase.get(id);
+        
+         employee.setDateOfBirth(dateOfBirth);
+         return (null != employeesDatabase.replace(id, employee));
+    }
    
     /**
      * Updates specified employee's gender and stores in the database.
@@ -246,7 +405,12 @@ public interface EmployeeServiceInterface {
      * @param gender the employee's gender to update.
      * @return true if employee gender updated successfully else false.
      */
-    boolean updateGender(int id, String gender);
+    public boolean updateGender(int id, String gender) {
+         Employee employee = employeesDatabase.get(id);
+        
+         employee.setGender(gender);
+         return (null != employeesDatabase.replace(id, employee));
+    } 
    
     /**
      * Updates specified employee's mobile number and stores in the database.
@@ -255,7 +419,12 @@ public interface EmployeeServiceInterface {
      * @param mobileNumber the employee's new moible number to update.
      * @return true if employee mobile number updated successfully else false.
      */
-    boolean updateMobileNumber(int id, long mobileNumber);
+    public boolean updateMobileNumber(int id, long mobileNumber) {
+         Employee employee = employeesDatabase.get(id);
+         
+         employee.setMobileNumber(mobileNumber);
+         return (null != employeesDatabase.replace(id, employee));
+    }
    
     /**
      * Updates specified employee's email and stores in the database.
@@ -264,7 +433,12 @@ public interface EmployeeServiceInterface {
      * @param email the employee's new email to update.
      * @return true if employee email updated successfully else false.
      */
-    boolean updateEmail(int id, String email);
+    public boolean updateEmail(int id, String email) {
+         Employee employee = employeesDatabase.get(id);
+        
+         employee.setEmail(email);
+         return (null != employeesDatabase.replace(id, employee));
+    }
    
     /**
      * Updates specified employee's salary and stores in the database.
@@ -273,7 +447,12 @@ public interface EmployeeServiceInterface {
      * @param salary the employee's new salary to update.
      * @return true if employee salary updated successfully else false.
      */
-    boolean updateSalary(int id, float salary);
+    public boolean updateSalary(int id, float salary) {
+         Employee employee = employeesDatabase.get(id);
+        
+         employee.setSalary(salary);
+         return (null != employeesDatabase.replace(id, employee));
+    }
    
     /**
      * Updates specified employee's date of joining and stores in the database.
@@ -282,7 +461,12 @@ public interface EmployeeServiceInterface {
      * @param dateOfJoining the employee's new date of joining to update.
      * @return true if employee date of joining updated successfully else false.
      */
-   boolean updateDateOfJoining(int id, LocalDate dateOfJoining);
+   public boolean updateDateOfJoining(int id, LocalDate dateOfJoining) {
+         Employee employee = employeesDatabase.get(id);
+         
+         employee.setDateOfJoining(dateOfJoining);
+         return (null != employeesDatabase.replace(id, employee));
+    }
    
     /** 
      * Updates all details of the specified employee and stores in the database.
@@ -297,9 +481,21 @@ public interface EmployeeServiceInterface {
      * @param dateOfJoining the employee's date of joining to update.
      * @return true if employee updated successfully otherwise false.
      */
-     boolean updateAllDetails(int id, String name,LocalDate dateOfBirth,
+     public boolean updateAllDetails(int id, String name,LocalDate dateOfBirth,
              String gender, long mobileNumber, String email, float salary, 
-             LocalDate dateOfJoining);
+             LocalDate dateOfJoining) {
+         Employee employee = employeesDatabase.get(id);
+        
+         employee.setName(name);
+         employee.setGender(gender);
+         employee.setDateOfBirth(dateOfBirth);
+         employee.setMobileNumber(mobileNumber);
+         employee.setEmail(email);
+         employee.setSalary(salary);
+         employee.setDateOfJoining(dateOfJoining);
+        
+         return (null != employeesDatabase.replace(id, employee));
+    }
             
     /**
      * Deletes the specified employee.
@@ -307,8 +503,12 @@ public interface EmployeeServiceInterface {
      * @param id employee id to be deleted.
      * @return true if employee deleted successfully else false.
      */
-    boolean deleteEmployee(int id);
+    public boolean deleteEmployee(int id) {
+         return (null != employeesDatabase.remove(id));
+    }
    
     /** Deletes all employees from the database. */
-    void deleteAllEmployee();
+    public void deleteAllEmployee() {
+         employeesDatabase.clear();  
+    }
 }
