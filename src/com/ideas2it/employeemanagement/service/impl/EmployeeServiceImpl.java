@@ -3,28 +3,30 @@
  */
 package com.ideas2it.employeemanagement.service.impl;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
+import com.ideas2it.employeemanagement.dao.DataAccess;
+import com.ideas2it.employeemanagement.dao.impl.DataAccessImpl;
 import com.ideas2it.employeemanagement.model.Employee;
-import com.ideas2it.employeemanagement.service.EmployeeServiceInterface;
+import com.ideas2it.employeemanagement.service.EmployeeService;
 
 /**
- * The EmployeeService class contains validations and implementations for 
+ * The EmployeeServiceImpl class contains validations and implementations for 
  * create, update, retrieve, delete operations for employee management system.
  *
  * @author  Sivanantham
- * @version 1.4
+ * @version 1.5
  */
 public class EmployeeServiceImpl implements EmployeeService {
-    private static Map<Integer, Employee> employeesDatabase = new HashMap<>(); 
+    private DataAccess dataAccess = new DataAccessImpl();
     
     /**
      * Searches for the specified employee id.
@@ -32,9 +34,10 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      * @param id  the id of the employee to be searched as a integer.
      * @return true if employee found, otherwise false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean isEmployeeExist(int id) {
-        return employeesDatabase.containsKey(id);
+    public boolean isEmployeeExist(int id) throws SQLException {
+        return dataAccess.isEmployeeIdExist(id);
     }
     
     /**
@@ -57,7 +60,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return employee id as a Integer if it is valid else null.
      */
     public Integer validateId(String id) {
-        Integer parsedId = null; 
+        Integer parsedId = null;
         
         if (isValidId(id)) {  
             try {
@@ -178,14 +181,10 @@ public class EmployeeServiceImpl implements EmployeeService {
      *
      * @param the mobile number to be searched as a long.
      * @return true if mobile number already exist, otherwise false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean isMobileNumberExist(long mobileNumber) {
-        for (Employee employee : employeesDatabase.values()) {
-            if (mobileNumber == employee.getMobileNumber()) {
-                return true;
-            }
-        }
-        return false;
+    public boolean isMobileNumberExist(long mobileNumber) throws SQLException {
+        return dataAccess.isMobileNumberExist(mobileNumber);
     }
     
     
@@ -224,14 +223,10 @@ public class EmployeeServiceImpl implements EmployeeService {
      *
      * @param email employee's email to be searched as string value.
      * @return true if specified email is found, otherwise false.
+     * @exception SQLException if a database access error occurs.
      */ 
-    public boolean isEmailExist(String email) {
-        for (Employee employee : employeesDatabase.values()) {
-            if (email.equals(employee.getEmail())) {
-                return true;
-            }
-        }
-        return false;
+    public boolean isEmailExist(String email) throws SQLException {
+        return dataAccess.isEmailExist(email);
     }
     
     /**
@@ -291,7 +286,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      * @param dateOfJoining employee date of joining to be validated as a 
      *        LocalDate.
-     * @return true if spcified date is valid else false.
+     * @return true if specified date is valid else false.
      */
     public boolean isValidDateOfJoining(LocalDate dateOfJoining) {
         Period experience = calculateExperience(dateOfJoining);
@@ -329,9 +324,58 @@ public class EmployeeServiceImpl implements EmployeeService {
      * Helper function for view, update and delete operations.
      *
      * @return true if employee database is empty else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean isEmployeesDatabaseEmpty() {
-        return employeesDatabase.isEmpty();
+    public boolean isEmployeesDatabaseEmpty() throws SQLException {
+        return dataAccess.isDatabaseEmpty();
+    }
+    
+    /**
+     * Creates a new employee with specified details and stores in the database.
+     *
+     * @param name the name of the employee.
+     * @param gender the gender of the employee.
+     * @param dateOfBirth the date of birth of the employee.
+     * @param mobileNumber the mobile number of the employee.
+     * @param email the email address of the employee.
+     * @param salary the salary of the employee.
+     * @param dateOfJoining the employee's date of joining. 
+     * @return the employee's id as a int.
+     * @exception SQLException if a database access error occurs.
+     */
+    public int createEmployee (String name, LocalDate dateOfBirth,
+            String gender, long mobileNumber, String email, float salary, 
+            LocalDate dateOfJoining) throws SQLException {
+            
+        return dataAccess.insertRecord(new Employee(name, dateOfBirth, 
+                       gender, mobileNumber, email, salary, dateOfJoining));
+    }
+    
+    /**
+     * Retrieves data from the resultset and creates a employee object and 
+     * stores in a list.
+     *
+     * @param resultSet a ResultSet object containing employee details.
+     * @return a list containing employee details.
+     * @exception SQLException if a database access error occurs.
+     */
+    private List<Employee> fillEmployeeList(ResultSet resultSet) 
+            throws SQLException {
+        Employee employee;
+        List<Employee> employees = new ArrayList<Employee>();
+        
+        while (resultSet.next()) {
+            employee = new Employee(resultSet.getInt(1),
+                                    resultSet.getString(2),
+                                    resultSet.getDate(3).toLocalDate(),
+                                    resultSet.getString(4),
+                                    resultSet.getLong(5),
+                                    resultSet.getString(6),
+                                    resultSet.getFloat(7),
+                                    resultSet.getDate(8).toLocalDate());
+            employees.add(employee);
+        }
+        return employees;
     }
     
     /**
@@ -339,35 +383,24 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      * @param id the employee id to be retrieved as a int.
      * @return a List containing the specified employee.
+     * @exception SQLException if a database access error occurs.
      */
-    public List<Employee> getEmployee(int id) {
-        List<Employee> employees = new ArrayList<Employee>();
+    public List<Employee> getEmployee(int id) throws SQLException {
+        ResultSet resultSet = dataAccess.selectRecord(id);
         
-        employees.add(employeesDatabase.get(id));
-        return employees;
+        return fillEmployeeList(resultSet);
     }
     
     /** 
      * Retrieves all employees from the database.
      *
      * @return a List containing all employees.
+     * @exception SQLException if a database access error occurs.
      */
-    public List<Employee> getAllEmployees() {
-        return new ArrayList<Employee>(employeesDatabase.values());
-    }
-   
-    /**
-     * Creates a new employee with specified details and stores in the database.
-     * 
-     * @return true if employee created successfully else false.
-     */
-    public boolean createEmployee (int id, String name, LocalDate dateOfBirth,
-            String gender, long mobileNumber, String email, float salary, 
-            LocalDate dateOfJoining) {
-            
-        return (null == employeesDatabase.put(id, new Employee(id, name, 
-                dateOfBirth, gender, mobileNumber, email, salary, 
-                dateOfJoining)));
+    public List<Employee> getAllEmployees() throws SQLException {
+        ResultSet resultSet = dataAccess.selectAllRecord();
+        
+        return fillEmployeeList(resultSet);
     }
    
     /**
@@ -376,13 +409,11 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param id employee id to be updated as a int.
      * @param name the employee's new name to update.
      * @return true if employee name updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean updateName(int id, String name) {
-         Employee employee = employeesDatabase.get(id);
-        
-         employee.setName(name);
-         return (null != employeesDatabase.replace(id, employee));
-    } 
+    public boolean updateName(int id, String name) throws SQLException {
+         return (1 == dataAccess.updateName(id, name));
+    }
    
     /**
      * Updates specified employee's date of birth and stores in the database.
@@ -390,12 +421,11 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param id employee id to be updated.
      * @param dateOfBirth the employee's new date of birth to update.
      * @return true if employee date of birth updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean updateDateOfBirth(int id, LocalDate dateOfBirth) {
-         Employee employee = employeesDatabase.get(id);
-        
-         employee.setDateOfBirth(dateOfBirth);
-         return (null != employeesDatabase.replace(id, employee));
+    public boolean updateDateOfBirth(int id, LocalDate dateOfBirth) 
+            throws SQLException {
+         return (1 == dataAccess.updateDateOfBirth(id, dateOfBirth));
     }
    
     /**
@@ -404,26 +434,23 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param id employee id to be updated.
      * @param gender the employee's gender to update.
      * @return true if employee gender updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean updateGender(int id, String gender) {
-         Employee employee = employeesDatabase.get(id);
-        
-         employee.setGender(gender);
-         return (null != employeesDatabase.replace(id, employee));
-    } 
+    public boolean updateGender(int id, String gender) throws SQLException {
+         return (1 == dataAccess.updateGender(id, gender));
+    }
    
     /**
      * Updates specified employee's mobile number and stores in the database.
      *
      * @param id employee id to be updated.
-     * @param mobileNumber the employee's new moible number to update.
+     * @param mobileNumber the employee's new mobile number to update.
      * @return true if employee mobile number updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean updateMobileNumber(int id, long mobileNumber) {
-         Employee employee = employeesDatabase.get(id);
-         
-         employee.setMobileNumber(mobileNumber);
-         return (null != employeesDatabase.replace(id, employee));
+    public boolean updateMobileNumber(int id, long mobileNumber) 
+            throws SQLException { 
+         return (1 == dataAccess.updateMobileNumber(id, mobileNumber));
     }
    
     /**
@@ -432,12 +459,10 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param id employee id to be updated.
      * @param email the employee's new email to update.
      * @return true if employee email updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean updateEmail(int id, String email) {
-         Employee employee = employeesDatabase.get(id);
-        
-         employee.setEmail(email);
-         return (null != employeesDatabase.replace(id, employee));
+    public boolean updateEmail(int id, String email) throws SQLException {
+         return (1 == dataAccess.updateEmail(id, email));
     }
    
     /**
@@ -446,12 +471,10 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param id employee id to be updated.
      * @param salary the employee's new salary to update.
      * @return true if employee salary updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean updateSalary(int id, float salary) {
-         Employee employee = employeesDatabase.get(id);
-        
-         employee.setSalary(salary);
-         return (null != employeesDatabase.replace(id, employee));
+    public boolean updateSalary(int id, float salary) throws SQLException {
+         return (1 == dataAccess.updateSalary(id, salary));
     }
    
     /**
@@ -460,12 +483,11 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param id employee id to be updated.
      * @param dateOfJoining the employee's new date of joining to update.
      * @return true if employee date of joining updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-   public boolean updateDateOfJoining(int id, LocalDate dateOfJoining) {
-         Employee employee = employeesDatabase.get(id);
-         
-         employee.setDateOfJoining(dateOfJoining);
-         return (null != employeesDatabase.replace(id, employee));
+   public boolean updateDateOfJoining(int id, LocalDate dateOfJoining) 
+           throws SQLException { 
+         return (1 == dataAccess.updateDateOfJoining(id, dateOfJoining));
     }
    
     /** 
@@ -480,21 +502,15 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param salary the salary of the employee to update.
      * @param dateOfJoining the employee's date of joining to update.
      * @return true if employee updated successfully otherwise false.
+     * @exception SQLException if a database access error occurs.
      */
      public boolean updateAllDetails(int id, String name,LocalDate dateOfBirth,
              String gender, long mobileNumber, String email, float salary, 
-             LocalDate dateOfJoining) {
-         Employee employee = employeesDatabase.get(id);
-        
-         employee.setName(name);
-         employee.setGender(gender);
-         employee.setDateOfBirth(dateOfBirth);
-         employee.setMobileNumber(mobileNumber);
-         employee.setEmail(email);
-         employee.setSalary(salary);
-         employee.setDateOfJoining(dateOfJoining);
-        
-         return (null != employeesDatabase.replace(id, employee));
+             LocalDate dateOfJoining) throws SQLException {
+              
+         return (1 == dataAccess.updateAllColumn(new Employee(id, name, 
+                              dateOfBirth, gender, mobileNumber, email, salary,
+                              dateOfJoining)));
     }
             
     /**
@@ -502,13 +518,19 @@ public class EmployeeServiceImpl implements EmployeeService {
      *
      * @param id employee id to be deleted.
      * @return true if employee deleted successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean deleteEmployee(int id) {
-         return (null != employeesDatabase.remove(id));
+    public boolean deleteEmployee(int id) throws SQLException {
+         return (1 == dataAccess.deleteRecord(id));
     }
    
-    /** Deletes all employees from the database. */
-    public void deleteAllEmployee() {
-         employeesDatabase.clear();  
+    /** 
+     * Deletes all employees from the database. 
+     *
+     * @return true if deleted successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    public boolean deleteAllEmployee() throws SQLException {
+         return dataAccess.deleteAllRecord();  
     }
 }

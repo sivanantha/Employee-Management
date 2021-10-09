@@ -9,8 +9,8 @@ import java.time.format.DateTimeFormatter;
 /**
  * The Employee class is a container for employee details.
  *
- * @author  sivanantham
- * @version 1.0
+ * @author  Sivanantham
+ * @version 1.1
  */
 public class Employee {
     private int id;
@@ -43,6 +43,29 @@ public class Employee {
             long mobileNumber, String email, float salary,
             LocalDate dateOfJoining) {
         this.id = id;
+        this.name = name;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.mobileNumber = mobileNumber;
+        this.email = email;
+        this.salary = salary;
+        this.dateOfJoining = dateOfJoining;
+    }
+    
+    /**
+     * Initializes fields with specified values.
+     *
+     * @param name the name of the employee
+     * @param gender the gender of the employee
+     * @param dateOfBirth the date of birth of the employee
+     * @param mobileNumber the mobile number of the employee
+     * @param email the email address of the employee
+     * @param salary the salary of the employee
+     * @param dateOfJoining the employee's date of joining 
+     */
+    public Employee(String name, LocalDate dateOfBirth, String gender,
+            long mobileNumber, String email, float salary,
+            LocalDate dateOfJoining) {
         this.name = name;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
@@ -199,6 +222,7 @@ public class Employee {
     
     /**
      * Provides this object in human readable form.
+     *
      * @return a string which is description of the object
      */ 
     @Override 
