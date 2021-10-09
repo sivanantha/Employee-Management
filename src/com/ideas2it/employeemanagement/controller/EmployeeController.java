@@ -3,10 +3,12 @@
  */
 package com.ideas2it.employeemanagement.controller;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.ideas2it.employeemanagement.service.impl.EmployeeService;
+import com.ideas2it.employeemanagement.service.EmployeeService;
+import com.ideas2it.employeemanagement.service.impl.EmployeeServiceImpl;
 
 /**
  * The EmployeeController class contains CRUD implementations for employee 
@@ -14,18 +16,19 @@ import com.ideas2it.employeemanagement.service.impl.EmployeeService;
  * delete and validate employee details.
  *
  * @author  Sivanantham
- * @version 1.4
+ * @version 1.5
  */
 public class EmployeeController {
-    private static EmployeeService employeeService = new EmployeeService();
+    private EmployeeService employeeService = new EmployeeServiceImpl();
     
     /**
      * Checks if the specified employee exist.
      *
      * @param id the employee id to be searched.
      * @return true if specified employee found, else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean isEmployeeExist(int id) {
+    public boolean isEmployeeExist(int id) throws SQLException {
         return employeeService.isEmployeeExist(id);
     }
     
@@ -33,8 +36,9 @@ public class EmployeeController {
      * Checks if the employees database is empty.
      * 
      * @return true if database is empty, otherwise false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean isEmployeesDatabaseEmpty() {
+    public boolean isEmployeesDatabaseEmpty() throws SQLException {
         return employeeService.isEmployeesDatabaseEmpty();
     }
     
@@ -93,8 +97,9 @@ public class EmployeeController {
      * 
      * @param mobileNumber the employee mobile number to be searched.
      * @return true if the mobile number found, else false.
+     * @exception SQLException if a database access error occurs.
      */   
-    public boolean isMobileNumberExist(long mobileNumber) {
+    public boolean isMobileNumberExist(long mobileNumber) throws SQLException {
          return employeeService.isMobileNumberExist(mobileNumber);
     }
     
@@ -113,8 +118,9 @@ public class EmployeeController {
      * 
      * @param email the employee email to be searched.
      * @return true if the email found, else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean isEmailExist(String email) {
+    public boolean isEmailExist(String email) throws SQLException {
          return employeeService.isEmailExist(email);
     }
     
@@ -139,28 +145,8 @@ public class EmployeeController {
     }
     
     /**
-     * Retrieves the specified employee.
-     * 
-     * @param id the employee id to be retrieved as a int.
-     * @return a List containing the specified employee.
-     */
-    public List getEmployee(int id) {
-        return employeeService.getEmployee(id);
-    }
-    
-    /** 
-     * Retrieves all employees.
-     *
-     * @return a List containing all employees.
-     */
-    public List getAllEmployees() {
-        return employeeService.getAllEmployees();
-    }
-    
-    /**
      * Creates a new employee with specified details and stores in the database.
      *
-     * @param id employee's id.
      * @param name the name of the employee.
      * @param gender the gender of the employee.
      * @param dateOfBirth the date of birth of the employee.
@@ -168,14 +154,36 @@ public class EmployeeController {
      * @param email the email address of the employee.
      * @param salary the salary of the employee.
      * @param dateOfJoining the employee's date of joining. 
-     * @return true if employee created successfully else false.
+     * @return the employee's id as a int.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean createEmployee (int id, String name, LocalDate dateOfBirth, 
+    public int createEmployee (String name, LocalDate dateOfBirth, 
             String gender, long mobileNumber, String email, float salary, 
-            LocalDate dateOfJoining) {
+            LocalDate dateOfJoining) throws SQLException {
        
-        return employeeService.createEmployee(id, name, dateOfBirth, gender, 
+        return employeeService.createEmployee(name, dateOfBirth, gender, 
                        mobileNumber, email, salary, dateOfJoining);
+    }
+    
+    /**
+     * Retrieves the specified employee.
+     * 
+     * @param id the employee id to be retrieved as a int.
+     * @return a List containing the specified employee.
+     * @exception SQLException if a database access error occurs.
+     */
+    public List getEmployee(int id) throws SQLException {
+        return employeeService.getEmployee(id);
+    }
+    
+    /** 
+     * Retrieves all employees.
+     *
+     * @return a List containing all employees.
+     * @exception SQLException if a database access error occurs.
+     */
+    public List getAllEmployees() throws SQLException {
+        return employeeService.getAllEmployees();
     }
     
     /**
@@ -184,8 +192,9 @@ public class EmployeeController {
      * @param id employee id as a int.
      * @param name the employee's new name to update.
      * @return true if employee name updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean updateName(int id, String name) {
+    public boolean updateName(int id, String name) throws SQLException {
         return employeeService.updateName(id, name);
     }
     
@@ -195,8 +204,10 @@ public class EmployeeController {
      * @param id employee id.
      * @param dateOfBirth the employee's new date of birth to update.
      * @return true if employee date of birth updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean updateDateOfBirth(int id, LocalDate dateOfBirth) {
+    public boolean updateDateOfBirth(int id, LocalDate dateOfBirth) 
+            throws SQLException {
         return employeeService.updateDateOfBirth(id, dateOfBirth);
     }
     
@@ -206,8 +217,9 @@ public class EmployeeController {
      * @param id employee id.
      * @param gender the employee's gender to update.
      * @return true if employee gender updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean updateGender(int id, String gender) {
+    public boolean updateGender(int id, String gender) throws SQLException {
         return employeeService.updateGender(id, gender);
     }
     
@@ -217,8 +229,10 @@ public class EmployeeController {
      * @param id employee id.
      * @param mobileNumber the employee's new mobile number to update.
      * @return true if employee mobile number updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    public boolean updateMobileNumber(int id, long mobileNumber) {
+    public boolean updateMobileNumber(int id, long mobileNumber) 
+            throws SQLException {
         return employeeService.updateMobileNumber(id, mobileNumber);
     }
     
@@ -228,8 +242,9 @@ public class EmployeeController {
     * @param id employee id.
     * @param email the employee's new email to update.
     * @return true if employee email updated successfully else false.
+    * @exception SQLException if a database access error occurs.
     */    
-    public boolean updateEmail(int id, String email) {
+    public boolean updateEmail(int id, String email) throws SQLException {
         return employeeService.updateEmail(id, email);
     }
     
@@ -239,8 +254,9 @@ public class EmployeeController {
     * @param id employee id.
     * @param salary the employee's new salary to update.
     * @return true if employee salary updated successfully else false.
+    * @exception SQLException if a database access error occurs.
     */    
-    public boolean updateSalary(int id, float salary) {
+    public boolean updateSalary(int id, float salary) throws SQLException {
         return employeeService.updateSalary(id, salary);
     }
     
@@ -250,8 +266,10 @@ public class EmployeeController {
     * @param id employee id.
     * @param dateOfJoining the employee's new date of joining to update.
     * @return true if employee date of joining updated successfully else false.
+    * @exception SQLException if a database access error occurs.
     */
-    public boolean updateDateOfJoining(int id, LocalDate dateOfJoining) {
+    public boolean updateDateOfJoining(int id, LocalDate dateOfJoining) 
+            throws SQLException {
         return employeeService.updateDateOfJoining(id, dateOfJoining);
     }
     
@@ -267,10 +285,11 @@ public class EmployeeController {
     * @param salary the salary of the employee to update.
     * @param dateOfJoining the employee's date of joining to update.
     * @return true if employee updated successfully otherwise false.
+    * @exception SQLException if a database access error occurs.
     */    
     public boolean updateAllDetails(int id, String name,LocalDate dateOfBirth,
             String gender, long mobileNumber, String email, float salary, 
-            LocalDate dateOfJoining) {
+            LocalDate dateOfJoining) throws SQLException {
             
         return employeeService.updateAllDetails(id, name, dateOfBirth, gender,
                        mobileNumber, email, salary, dateOfJoining);
@@ -281,13 +300,19 @@ public class EmployeeController {
     *
     * @param id employee id to be deleted.
     * @return true if employee deleted successfully else false.
+    * @exception SQLException if a database access error occurs.
     */    
-    public boolean deleteEmployee(int id) {
+    public boolean deleteEmployee(int id) throws SQLException {
         return employeeService.deleteEmployee(id);
     }
     
-    /** Deletes all employees from the database. */
-    public void deleteAllEmployee() {
-        employeeService.deleteAllEmployee();
+    /** 
+     * Deletes all employees from the database. 
+     *
+     * @return true if deleted successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    public boolean deleteAllEmployee() throws SQLException {
+        return employeeService.deleteAllEmployee();
     }
 }

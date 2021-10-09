@@ -21,9 +21,8 @@ public class DatabaseConnection {
     public static Connection getConnection() {
          if (databaseConnection == null) {
              try {
-                 Class.forName("com.mysql.cj.jdbc.Driver");
                  databaseConnection = DriverManager.getConnection("jdbc:mysql:"
-                         + "//localhost:3306/employee_management","root", 
+                         + "//localhost:3306/employee_management", "root", 
                          "9159");
              } catch (Exception exception) {
                  exception.printStackTrace();

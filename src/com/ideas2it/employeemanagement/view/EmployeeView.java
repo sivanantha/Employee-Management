@@ -3,6 +3,7 @@
  */
 package com.ideas2it.employeemanagement.view;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
@@ -14,11 +15,11 @@ import com.ideas2it.employeemanagement.controller.EmployeeController;
  * retrieve, delete employee for employee management system.
  *
  * @author  Sivanantham
- * @version 1.4
+ * @version 1.5
  */
 public class EmployeeView {
     private Scanner inputReader = new Scanner(System.in);
-    private static EmployeeController employeeController = 
+    private EmployeeController employeeController = 
             new EmployeeController();
     
     /**
@@ -85,45 +86,8 @@ public class EmployeeView {
     }
     
     /**
-     * Gets employee details from the user, validates and creates a new 
-     * employee.
-     */
-    private void createEmployee() {
-        float salary;
-        long mobileNumber;
-        LocalDate dateOfBirth;
-        LocalDate dateOfJoining;
-        String email;
-        String gender;
-        String name;
-        int id = getIdInput();
-        
-        if (employeeController.isEmployeeExist(id)) {
-            System.out.println("\n\t\t\t<<<<<< Employee Id Already Exist! "
-                               + ">>>>>\n");
-            return; 
-        }
-        name = getNameInput();
-        gender = getGenderInput();
-        dateOfBirth = getDateOfBirthInput();
-        mobileNumber = getMobileNumberInput();
-        email = getEmailInput();
-        salary = getSalaryInput();
-        dateOfJoining = getDateOfJoiningInput();
-        
-        if (employeeController.createEmployee(id, name, dateOfBirth, gender, 
-            mobileNumber, email, salary, dateOfJoining)) {      
-            System.out.println("\n\t\t\t<<<<<< Employee Created Successfully! "
-                               + ">>>>>>\n");
-        } else {
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
-        }
-    }
-
-    
-    /**
-     * Gets employee id from the user for creation, view, updation and deletion.
-     * Also validates id.
+     * Gets employee id from the user for view, updation and deletion
+     * operations. Also validates id.
      *
      * @return employee id as integer, only if it is valid.
      */ 
@@ -230,6 +194,7 @@ public class EmployeeView {
     private long getMobileNumberInput() {
         Long mobileNumber = null;
         String userInput;
+        String errorMessage = "\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>";
         String messageForInvalid = "\n\t\t\t<<<<<< Mobile Number Must Be 10  "
                 + "Digits! IST Codes Are Not Allowed. >>>>>>\n";
         String messageForDuplicate = "\n\t\t\t<<<<<< Mobile Number Already "
@@ -240,10 +205,16 @@ public class EmployeeView {
             userInput = inputReader.nextLine();
             mobileNumber = employeeController.validateMobileNumber(userInput);
             
-            if (null == mobileNumber) {
-                System.out.println(messageForInvalid);
-            } else if (employeeController.isMobileNumberExist(mobileNumber)) {
-                System.out.println(messageForDuplicate);
+            try {
+                if (null == mobileNumber) {
+                    System.out.println(messageForInvalid);
+                } else if (employeeController.isMobileNumberExist(mobileNumber))
+                         {
+                    System.out.println(messageForDuplicate);
+                    mobileNumber = null;
+                }
+            } catch (SQLException exception) {
+                System.out.println(errorMessage);
                 mobileNumber = null;
             }
         } 
@@ -260,6 +231,7 @@ public class EmployeeView {
         StringBuilder messageForInvalid = new StringBuilder(50);
         String email = null;
         String userInput;
+        String errorMessage = "\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>";
         String messageForDuplicate = "\n\t\t\t<<<<<< Email Already Exist! "
                                      + ">>>>>>\n";
         
@@ -274,11 +246,16 @@ public class EmployeeView {
             userInput = inputReader.nextLine();
             email = employeeController.validateEmail(userInput);
             
-            if (null == email) {
-                System.out.println(messageForInvalid);
-            } else if (employeeController.isEmailExist(email)) {
+            try {
+                if (null == email) {
+                    System.out.println(messageForInvalid);
+                } else if (employeeController.isEmailExist(email)) {
+                        email = null;
+                        System.out.println(messageForDuplicate);    
+                }
+            } catch (SQLException exception) {
+                System.out.println(errorMessage);
                 email = null;
-                System.out.println(messageForDuplicate);    
             }   
         }
         return email;
@@ -338,6 +315,76 @@ public class EmployeeView {
     }
     
     /**
+     * Gets employee details from the user, validates and creates a new 
+     * employee.
+     */
+    private void createEmployee() {
+        int id;
+        String name = getNameInput();
+        String gender = getGenderInput();
+        LocalDate dateOfBirth = getDateOfBirthInput();
+        long mobileNumber = getMobileNumberInput();
+        String email = getEmailInput();
+        float salary = getSalaryInput();
+        LocalDate dateOfJoining = getDateOfJoiningInput();
+        
+        try {
+            id = employeeController.createEmployee(name, dateOfBirth, gender, 
+                         mobileNumber, email, salary, dateOfJoining);
+            System.out.println("\n\t\t\t<<<<<< Employee Created Successfully! "
+                               + ">>>>>>\n\n\t\t\t ****** The Employee Id Of <"
+                               + name + "> Is -->" + id + " ******");
+        } catch (SQLException exception) {
+            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+        }
+    }
+    
+    /**
+     * Checks if the employee database is empty.
+     *
+     * @return true when database is empty or SQLException occurs, 
+     *         otherwise false.
+     */ 
+    private boolean isEmployeesDatabaseEmpty() {
+        boolean isEmpty = false;
+        
+        try {
+            if (employeeController.isEmployeesDatabaseEmpty()) {
+                System.out.println("\n\t\t\t<<<<<< Database Is Empty! "
+                                   + ">>>>>>\n");
+                isEmpty = true;
+            } 
+        } catch (SQLException exception) {
+            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+            isEmpty = true;
+        }
+        return isEmpty;
+    }
+    
+    /**
+     * Checks if the specified employee exist.
+     *
+     * @param id the employee's id to be searched.
+     * @return false when employee not found or SQLException occurs,
+               otherwise true.
+     */
+    private boolean isEmployeeExist(int id) {
+        boolean isEmployeeFound = true;
+       
+        try {
+            if (!employeeController.isEmployeeExist(id)) {
+                System.out.println("\n\n\t\t\t<<<<<< Employee Not Found! "
+                                   + ">>>>>>\n");
+                isEmployeeFound = false;
+            }
+        } catch (SQLException exception) {
+            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+            isEmployeeFound = false;
+        }
+        return isEmployeeFound;
+    }
+    
+    /**
      * Prints available choices for view operation and asks user to choose a
      * option and executes the selected option if database is not empty.
      */
@@ -346,8 +393,7 @@ public class EmployeeView {
         String errorMessage;
         String userChoice;
         
-        if (employeeController.isEmployeesDatabaseEmpty()) {
-            System.out.println("\n\t\t\t<<<<<< Database Is Empty! >>>>>>\n");
+        if (isEmployeesDatabaseEmpty()) {
             return;
         }
         errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! >>>>>>\n";
@@ -384,11 +430,13 @@ public class EmployeeView {
     private void viewEmployee() {
         int id = getIdInput();
         
-        if (employeeController.isEmployeeExist(id)) {
-            System.out.println("\n\t\t\t\t ~~~~~~~EMPLOYEE DETAILS~~~~~~~\n"
-                               + employeeController.getEmployee(id).get(0));
-        } else { 
-            System.out.println("\n\t\t\t<<<<<< Employee Not Found! >>>>>>\n");
+        try {
+            if (isEmployeeExist(id)) {
+                System.out.println("\n\t\t\t\t ~~~~~~~EMPLOYEE DETAILS~~~~~~~\n"
+                                   + employeeController.getEmployee(id).get(0));
+            }
+        } catch (SQLException exception) {
+            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>"); 
         }
     }
     
@@ -397,12 +445,15 @@ public class EmployeeView {
      * database is not empty.
      */
     private void viewAllEmployee() {
-        List employees = employeeController.getAllEmployees();
+        try {
+            List employees = employeeController.getAllEmployees();
+            System.out.println("\n\t\t\t\t ~~~~~~ALL EMPLOYEE DETAILS~~~~~~\n");
         
-        System.out.println("\n\t\t\t\t ~~~~~~~ALL EMPLOYEE DETAILS~~~~~~~\n");
-        
-        for (int index = 0; index < employees.size(); index++) {
-            System.out.println(employees.get(index));
+            for (int index = 0; index < employees.size(); index++) {
+                System.out.println(employees.get(index));
+            }
+        } catch (SQLException exception) {
+            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
         }
     }
     
@@ -416,10 +467,9 @@ public class EmployeeView {
         String errorMessage;
         String userChoice;
         
-        if (employeeController.isEmployeesDatabaseEmpty()) {
-            System.out.println("\n\t\t\t<<<<<< Database Is Empty! >>>>>>\n");
+        if (isEmployeesDatabaseEmpty()) {
             return;
-        }
+        }     
         errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! >>>>>>\n";
         options = new StringBuilder(80);
         options.append("\n\t\t\t\t\\ Update Menu /\n\t\t\t\t ~~~~~~~~~~~~~\n")
@@ -428,8 +478,7 @@ public class EmployeeView {
                .append("Enter The Option : ");
         id = getIdInput();
         
-        if (!employeeController.isEmployeeExist(id)) {
-            System.out.println("\n<<<<<< Employee Not Found! >>>>>>\n");
+        if (!isEmployeeExist(id)) {
             return;
         }
         
@@ -510,12 +559,17 @@ public class EmployeeView {
      */
     private void updateName(int id) {
         String name = getNameInput();
-            
-        if (employeeController.updateName(id, name)) {
-            System.out.println("\n\t\t\t<<<<<< Name updated successfully! "
-                               + ">>>>>>\n");
-        } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {    
+            if (employeeController.updateName(id, name)) {
+                System.out.println("\n\t\t\t<<<<<< Name updated successfully! "
+                                   + ">>>>>>\n");
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
         }
     }
     
@@ -525,12 +579,17 @@ public class EmployeeView {
      */
     private void updateDateOfBirth(int id) { 
         LocalDate dateOfBirth = getDateOfBirthInput();    
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
-        if (employeeController.updateDateOfBirth(id, dateOfBirth)) {
-            System.out.println("\n\t\t\t<<<<<< Date Of Birth Updated "
-                               + "Successfully! >>>>>>\n");
-        } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
+        try {
+            if (employeeController.updateDateOfBirth(id, dateOfBirth)) {
+                System.out.println("\n\t\t\t<<<<<< Date Of Birth Updated "
+                                   + "Successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);    
         }
     }
     
@@ -540,12 +599,17 @@ public class EmployeeView {
      */
     private void updateGender(int id) {
         String gender = getGenderInput();
-
-        if (employeeController.updateGender(id, gender)) {      
-            System.out.println("\n\t\t\t<<<<<< Gender Updated Successfully!"
-                               + " >>>>>>\n");
-        } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");    
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            if (employeeController.updateGender(id, gender)) {      
+                System.out.println("\n\t\t\t<<<<<< Gender Updated Successfully!"
+                                   + " >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);    
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
         }
     }
     
@@ -555,12 +619,17 @@ public class EmployeeView {
      */
     private void updateMobileNumber(int id) {
         long mobileNumber = getMobileNumberInput();
-            
-        if (employeeController.updateMobileNumber(id, mobileNumber)) {
-            System.out.println("\n\t\t\t<<<<<< Mobile Number Updated "
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            if (employeeController.updateMobileNumber(id, mobileNumber)) {
+                System.out.println("\n\t\t\t<<<<<< Mobile Number Updated "
                                    + "Successfully! >>>>>>\n");
-        } else { 
-            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
+            } else { 
+                System.out.println(errorMessage);
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
         }
     }
     
@@ -570,12 +639,17 @@ public class EmployeeView {
      */
     private void updateEmail(int id) {
         String email = getEmailInput();
-            
-        if (employeeController.updateEmail(id, email)) {
-            System.out.println("\n\t\t\t<<<<<< Email Updated Successfully! "
-                               + ">>>>>>\n");
-        } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");         
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            if (employeeController.updateEmail(id, email)) {
+                System.out.println("\n\t\t\t<<<<<< Email Updated Successfully! "
+                                   + ">>>>>>\n");
+            } else {
+                System.out.println(errorMessage);         
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
         }
     }
     
@@ -585,12 +659,17 @@ public class EmployeeView {
      */
     private void updateSalary(int id) {
         float salary = getSalaryInput();
-            
-        if (employeeController.updateSalary(id, salary)) {
-            System.out.println("\n\t\t\t<<<<< Salary Updated Successfully! "
-                               + ">>>>>>\n");    
-        } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {   
+            if (employeeController.updateSalary(id, salary)) {
+                System.out.println("\n\t\t\t<<<<< Salary Updated Successfully! "
+                                   + ">>>>>>\n");    
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
         }
     }
     
@@ -600,12 +679,17 @@ public class EmployeeView {
      */
     private void updateDateOfJoining(int id) {
         LocalDate date = getDateOfJoiningInput();
-            
-        if (employeeController.updateDateOfJoining(id, date)) {
-            System.out.println("\n\t\t\t<<<<<< Date Of Joining Updated " 
-                               + "Successfully! >>>>>>\n");    
-        } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");        
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {   
+            if (employeeController.updateDateOfJoining(id, date)) {
+                System.out.println("\n\t\t\t<<<<<< Date Of Joining Updated " 
+                                   + "Successfully! >>>>>>\n");    
+            } else {
+                System.out.println(errorMessage);        
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
         }
     }
     
@@ -623,13 +707,18 @@ public class EmployeeView {
         String email = getEmailInput();
         float salary = getSalaryInput();
         LocalDate dateOfJoining = getDateOfJoiningInput();
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
-        if (employeeController.updateAllDetails(id, name, dateOfBirth, gender, 
-                mobileNumber, email, salary, dateOfJoining)) {
-            System.out.println("\n\t\t\t<<<<<< Employee Details Updated "
-                               + "Successfully! >>>>>>\n");
-        } else {
-            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
+        try {
+            if (employeeController.updateAllDetails(id, name, dateOfBirth, 
+                    gender,mobileNumber, email, salary, dateOfJoining)) {
+                System.out.println("\n\t\t\t<<<<<< Employee Details Updated "
+                                   + "Successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
         }
     }
     
@@ -648,10 +737,9 @@ public class EmployeeView {
                .append(" Employees\n\n\t\t3 => Return To Main Menu\n\n\t\t")
                .append("Enter The Option : ");
         
+        
         do {
-       
-            if (employeeController.isEmployeesDatabaseEmpty()) {
-                System.out.println("\n\t\t\t<<<<<< Database Is Empty!>>>>>>\n");
+            if (isEmployeesDatabaseEmpty()) {
                 return;
             }
             System.out.print(options);
@@ -680,14 +768,22 @@ public class EmployeeView {
     public void deleteEmployee() {
         int id = getIdInput();
         
-        if (!employeeController.isEmployeeExist(id)) {
-             System.out.println("\n\t\t\t<<<<<< Employee Not Found! >>>>>>\n");
-             return;
+        if (!isEmployeeExist(id)) {
+            return;
         }
-
-        if (askConfirmationToDelete()) {
-             employeeController.deleteEmployee(id);
-            System.out.println("\n\t\t\t<<<<<< Deleted Successfully! >>>>>>\n");
+        
+        try {
+            if (askConfirmationToDelete()) {
+                if (employeeController.deleteEmployee(id)) {
+                    System.out.println("\n\t\t\t<<<<<< Deleted Successfully! "
+                                       + ">>>>>>\n");
+                } else {
+                    System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
+                                       + ">>>>>>\n");
+                }
+            }
+        } catch (SQLException exception) {
+            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
         }
     }
     
@@ -727,9 +823,19 @@ public class EmployeeView {
      * employee records if database is not empty.
      */
     public void deleteAllEmployee() {
-       if (askConfirmationToDelete()) {
-           employeeController.deleteAllEmployee();
-           System.out.println("\n\t\t\t<<<<<< Deleted Successfully! >>>>>>\n");
-       }
+        if (askConfirmationToDelete()) {
+            try {
+                if (employeeController.deleteAllEmployee()) {
+                    System.out.println("\n\t\t\t<<<<<< Deleted Successfully! "
+                                       + ">>>>>>\n");
+                } else {
+                    System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
+                                       + ">>>>>>\n");
+                }
+            } catch (SQLException exception) {
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
+                                   + ">>>>>>\n");
+            }          
+        }
     }
 }

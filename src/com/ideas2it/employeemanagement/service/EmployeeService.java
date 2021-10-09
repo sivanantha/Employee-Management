@@ -3,17 +3,18 @@
  */
 package com.ideas2it.employeemanagement.service;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
 import com.ideas2it.employeemanagement.model.Employee;
 
 /**
- * The EmployeeServiceInterface interface provides methods for validations and
+ * The EmployeeService interface provides methods for validations and
  * create, update, retrieve, delete operations for employee management system.
  *
  * @author  Sivanantham
- * @version 1.1
+ * @version 1.2
  */
 public interface EmployeeService {
     
@@ -23,8 +24,9 @@ public interface EmployeeService {
      * 
      * @param id  the id of the employee to be searched as a integer.
      * @return true if employee found, otherwise false.
+     * @exception SQLException if a database access error occurs.
      */
-    boolean isEmployeeExist(int id);
+    boolean isEmployeeExist(int id) throws SQLException;
     
     /**
      * Checks if the specified employee id is a non negative integer
@@ -119,8 +121,9 @@ public interface EmployeeService {
      *
      * @param the mobile number to be searched as a long.
      * @return true if mobile number already exist, otherwise false.
+     * @exception SQLException if a database access error occurs.
      */
-    boolean isMobileNumberExist(long mobileNumber);
+    boolean isMobileNumberExist(long mobileNumber) throws SQLException;
     
     /**
      * Checks if the given email is valid. Capital letters are not allowed.
@@ -149,8 +152,9 @@ public interface EmployeeService {
      *
      * @param email employee's email to be searched as string value.
      * @return true if specified email is found, otherwise false.
+     * @exception SQLException if a database access error occurs.
      */ 
-    boolean isEmailExist(String email);
+    boolean isEmailExist(String email) throws SQLException;
     
     /**
      * Checks if the specified salary is non negative and atleast 8,000.
@@ -177,7 +181,7 @@ public interface EmployeeService {
      * 
      * @param dateOfJoining employee date of joining to be validated as a 
      *        LocalDate.
-     * @return true if spcified date is valid else false.
+     * @return true if specified date is valid else false.
      */
     boolean isValidDateOfJoining(LocalDate dateOfJoining);
     
@@ -194,32 +198,43 @@ public interface EmployeeService {
      * Helper function for view, update and delete operations.
      *
      * @return true if employee database is empty else false.
+     * @exception SQLException if a database access error occurs.
      */
-    boolean isEmployeesDatabaseEmpty();
+    boolean isEmployeesDatabaseEmpty() throws SQLException;
+    
+    /**
+     * Creates a new employee with specified details and stores in the database.
+     *
+     * @param name the name of the employee.
+     * @param gender the gender of the employee.
+     * @param dateOfBirth the date of birth of the employee.
+     * @param mobileNumber the mobile number of the employee.
+     * @param email the email address of the employee.
+     * @param salary the salary of the employee.
+     * @param dateOfJoining the employee's date of joining. 
+     * @return the employee's id as a int.
+     * @exception SQLException if a database access error occurs.
+     */
+    int createEmployee (String name,LocalDate dateOfBirth,
+            String gender, long mobileNumber, String email, float salary, 
+            LocalDate dateOfJoining) throws SQLException;
     
     /**
      * Retrieves the specified employee from the database.
      * 
      * @param id the employee id to be retrieved as a int.
      * @return a List containing the specified employee.
+     * @exception SQLException if a database access error occurs.
      */
-    List<Employee> getEmployee(int id);
+    List<Employee> getEmployee(int id) throws SQLException;
     
     /** 
      * Retrieves all employees from the database.
      *
      * @return a List containing all employees.
+     * @exception SQLException if a database access error occurs.
      */
-    List<Employee> getAllEmployees();
-   
-    /**
-     * Creates a new employee with specified details and stores in the database.
-     * 
-     * @return true if employee created successfully else false.
-     */
-    boolean createEmployee (int id,String name,LocalDate dateOfBirth,
-            String gender, long mobileNumber, String email, float salary, 
-            LocalDate dateOfJoining);
+    List<Employee> getAllEmployees() throws SQLException;
    
     /**
      * Updates specified employee's name and stores in the database.
@@ -227,8 +242,9 @@ public interface EmployeeService {
      * @param id employee id to be updated as a int.
      * @param name the employee's new name to update.
      * @return true if employee name updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    boolean updateName(int id, String name);
+    boolean updateName(int id, String name) throws SQLException;
    
     /**
      * Updates specified employee's date of birth and stores in the database.
@@ -236,8 +252,10 @@ public interface EmployeeService {
      * @param id employee id to be updated.
      * @param dateOfBirth the employee's new date of birth to update.
      * @return true if employee date of birth updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    boolean updateDateOfBirth(int id, LocalDate dateOfBirth);
+    boolean updateDateOfBirth(int id, LocalDate dateOfBirth) 
+            throws SQLException;
    
     /**
      * Updates specified employee's gender and stores in the database.
@@ -245,17 +263,19 @@ public interface EmployeeService {
      * @param id employee id to be updated.
      * @param gender the employee's gender to update.
      * @return true if employee gender updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    boolean updateGender(int id, String gender);
+    boolean updateGender(int id, String gender) throws SQLException;
    
     /**
      * Updates specified employee's mobile number and stores in the database.
      *
      * @param id employee id to be updated.
-     * @param mobileNumber the employee's new moible number to update.
+     * @param mobileNumber the employee's new mobile number to update.
      * @return true if employee mobile number updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    boolean updateMobileNumber(int id, long mobileNumber);
+    boolean updateMobileNumber(int id, long mobileNumber) throws SQLException;
    
     /**
      * Updates specified employee's email and stores in the database.
@@ -263,8 +283,9 @@ public interface EmployeeService {
      * @param id employee id to be updated.
      * @param email the employee's new email to update.
      * @return true if employee email updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    boolean updateEmail(int id, String email);
+    boolean updateEmail(int id, String email) throws SQLException;
    
     /**
      * Updates specified employee's salary and stores in the database.
@@ -272,8 +293,9 @@ public interface EmployeeService {
      * @param id employee id to be updated.
      * @param salary the employee's new salary to update.
      * @return true if employee salary updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    boolean updateSalary(int id, float salary);
+    boolean updateSalary(int id, float salary) throws SQLException;
    
     /**
      * Updates specified employee's date of joining and stores in the database.
@@ -281,8 +303,10 @@ public interface EmployeeService {
      * @param id employee id to be updated.
      * @param dateOfJoining the employee's new date of joining to update.
      * @return true if employee date of joining updated successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-   boolean updateDateOfJoining(int id, LocalDate dateOfJoining);
+   boolean updateDateOfJoining(int id, LocalDate dateOfJoining)
+           throws SQLException;
    
     /** 
      * Updates all details of the specified employee and stores in the database.
@@ -296,19 +320,26 @@ public interface EmployeeService {
      * @param salary the salary of the employee to update.
      * @param dateOfJoining the employee's date of joining to update.
      * @return true if employee updated successfully otherwise false.
+     * @exception SQLException if a database access error occurs.
      */
      boolean updateAllDetails(int id, String name,LocalDate dateOfBirth,
              String gender, long mobileNumber, String email, float salary, 
-             LocalDate dateOfJoining);
+             LocalDate dateOfJoining) throws SQLException;
             
     /**
      * Deletes the specified employee.
      *
      * @param id employee id to be deleted.
      * @return true if employee deleted successfully else false.
+     * @exception SQLException if a database access error occurs.
      */
-    boolean deleteEmployee(int id);
+    boolean deleteEmployee(int id) throws SQLException;
    
-    /** Deletes all employees from the database. */
-    void deleteAllEmployee();
+    /** 
+     * Deletes all employees from the database. 
+     *
+     * @return true if deleted successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    boolean deleteAllEmployee() throws SQLException;
 }

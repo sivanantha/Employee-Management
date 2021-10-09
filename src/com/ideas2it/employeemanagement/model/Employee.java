@@ -53,6 +53,29 @@ public class Employee {
     }
     
     /**
+     * Initializes fields with specified values.
+     *
+     * @param name the name of the employee
+     * @param gender the gender of the employee
+     * @param dateOfBirth the date of birth of the employee
+     * @param mobileNumber the mobile number of the employee
+     * @param email the email address of the employee
+     * @param salary the salary of the employee
+     * @param dateOfJoining the employee's date of joining 
+     */
+    public Employee(String name, LocalDate dateOfBirth, String gender,
+            long mobileNumber, String email, float salary,
+            LocalDate dateOfJoining) {
+        this.name = name;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.mobileNumber = mobileNumber;
+        this.email = email;
+        this.salary = salary;
+        this.dateOfJoining = dateOfJoining;
+    }
+    
+    /**
      * Gets the employee id
      *
      * @return the id of the employee
