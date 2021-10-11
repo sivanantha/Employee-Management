@@ -10,11 +10,11 @@ package  com.ideas2it.employeemanagement.model;
  * @version 1.0
  */
 public class Address {
-    int pinCode;
     String city;
     String country;
     String doorNumber;
     String locality;
+    String pinCode;
     String state;
     String street;
     
@@ -32,10 +32,10 @@ public class Address {
      * @param city the city/district name.
      * @param state the state name.
      * @param country the country name.
-     * @param pinCode the postal code as a int.
+     * @param pinCode the postal code as a string.
      */
     public Address(String doorNumber, String street, String locality,
-                   String city, String state, String country, int pinCode) {
+                   String city, String state, String country, String pinCode) {
         this.doorNumber = doorNumber;
         this.street = street;
         this.locality = locality;
@@ -156,18 +156,18 @@ public class Address {
     /**
      * Fetches the pin code of the address.
      *
-     * @return a int representing pin code.
+     * @return a string representing pin code.
      */
-    public int getPinCode() {
+    public String getPinCode() {
         return pinCode;
     }
     
     /** 
      * Assigns the specified pin code to the address.
      *
-     * @param pinCode the pin code of the address as a int.
+     * @param pinCode the pin code of the address as a string.
      */
-    public void setPincode(int pinCode) {
+    public void setPincode(String pinCode) {
         this.pinCode = pinCode;
     }
     
