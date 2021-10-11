@@ -3,13 +3,11 @@
  */
 package com.ideas2it.employeemanagement.service.impl;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -350,34 +348,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return dataAccess.insertRecord(new Employee(name, dateOfBirth, 
                        gender, mobileNumber, email, salary, dateOfJoining));
     }
-    
-    /**
-     * Retrieves data from the resultset and creates a employee object and 
-     * stores in a list.
-     *
-     * @param resultSet a ResultSet object containing employee details.
-     * @return a list containing employee details.
-     * @exception SQLException if a database access error occurs.
-     */
-    private List<Employee> fillEmployeeList(ResultSet resultSet) 
-            throws SQLException {
-        Employee employee;
-        List<Employee> employees = new ArrayList<Employee>();
         
-        while (resultSet.next()) {
-            employee = new Employee(resultSet.getInt(1),
-                                    resultSet.getString(2),
-                                    resultSet.getDate(3).toLocalDate(),
-                                    resultSet.getString(4),
-                                    resultSet.getLong(5),
-                                    resultSet.getString(6),
-                                    resultSet.getFloat(7),
-                                    resultSet.getDate(8).toLocalDate());
-            employees.add(employee);
-        }
-        return employees;
-    }
-    
     /**
      * Retrieves the specified employee from the database.
      * 
@@ -386,9 +357,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @exception SQLException if a database access error occurs.
      */
     public List<Employee> getEmployee(int id) throws SQLException {
-        ResultSet resultSet = dataAccess.selectRecord(id);
-        
-        return fillEmployeeList(resultSet);
+        return dataAccess.selectRecord(id);
     }
     
     /** 
@@ -398,9 +367,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @exception SQLException if a database access error occurs.
      */
     public List<Employee> getAllEmployees() throws SQLException {
-        ResultSet resultSet = dataAccess.selectAllRecord();
-        
-        return fillEmployeeList(resultSet);
+        return dataAccess.selectAllRecord();
     }
    
     /**

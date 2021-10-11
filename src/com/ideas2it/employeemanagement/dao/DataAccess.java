@@ -6,6 +6,7 @@ package com.ideas2it.employeemanagement.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.ideas2it.employeemanagement.model.Employee;
 
@@ -65,18 +66,18 @@ public interface DataAccess {
      * Fetches the specified employee's record.
      *
      * @param id the employee's id as a integer to fetch the record. 
-     * @return a resultset.
+     * @return a List containing the specified employee.
      * @exception SQLException if a database access error occurs.
      */
-    ResultSet selectRecord(int id) throws SQLException;
+    List<Employee> selectRecord(int id) throws SQLException;
     
     /** 
      * Fetches all employees record.
      * 
-     * @return a resultset.
+     * @return a List containing all employees.
      * @exception SQLException if a database access error occurs.
      */
-    ResultSet selectAllRecord() throws SQLException;
+    List<Employee> selectAllRecord() throws SQLException;
     
     /**
      * Updates specified employee's name.

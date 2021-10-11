@@ -10,6 +10,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.ideas2it.employeemanagement.connection_utils.DatabaseConnection;
 import com.ideas2it.employeemanagement.dao.DataAccess;
@@ -23,7 +25,6 @@ import com.ideas2it.employeemanagement.model.Employee;
  * @version 1.1
  */
 public class DataAccessImpl implements DataAccess {
-    private Connection connection = DatabaseConnection.getConnection();
     
     /**
      * Checks if the database is empty.
@@ -32,12 +33,20 @@ public class DataAccessImpl implements DataAccess {
      * @exception SQLException if a database access error occurs.
      */
     public boolean isDatabaseEmpty() throws SQLException {
+        boolean isEmpty;
+        Connection connection = DatabaseConnection.getConnection();
         Statement statement = connection.createStatement();
         
         ResultSet resultSet = statement.executeQuery("SELECT NOT EXISTS(SELECT"
                                       + " 1 FROM employee)");
         resultSet.next();
-        return resultSet.getBoolean(1);
+        isEmpty = resultSet.getBoolean(1);
+        
+        resultSet.close();
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return isEmpty;
     }
     
     /**
@@ -47,14 +56,22 @@ public class DataAccessImpl implements DataAccess {
      * @exception SQLException if a database access error occurs.
      */
     public boolean isEmployeeIdExist(int id) throws SQLException {
+        boolean isEmployeeFound;
         ResultSet resultSet;
+        Connection connection = DatabaseConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(
                 "SELECT EXISTS(SELECT 1 FROM employee WHERE id = ?)");
         
         statement.setInt(1, id);
         resultSet = statement.executeQuery();
         resultSet.next();
-        return resultSet.getBoolean(1);
+        isEmployeeFound = resultSet.getBoolean(1);
+        
+        resultSet.close();
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return isEmployeeFound;
     }
     
     /**
@@ -65,14 +82,22 @@ public class DataAccessImpl implements DataAccess {
      * @exception SQLException if a database access error occurs.
      */
     public boolean isMobileNumberExist(long mobileNumber) throws SQLException {
+        boolean isMobileNumberFound;
         ResultSet resultSet;
+        Connection connection = DatabaseConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT "
                 + "EXISTS (SELECT 1 FROM employee WHERE mobile_number = ?)");
         
         statement.setLong(1, mobileNumber);
         resultSet = statement.executeQuery();
         resultSet.next();
-        return resultSet.getBoolean(1);
+        isMobileNumberFound = resultSet.getBoolean(1);
+        
+        resultSet.close();
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return isMobileNumberFound;
     }
     
     /**
@@ -83,14 +108,22 @@ public class DataAccessImpl implements DataAccess {
      * @exception SQLException if a database access error occurs.
      */
     public boolean isEmailExist(String email) throws SQLException {
+        boolean isEmailFound;
         ResultSet resultSet;
+        Connection connection = DatabaseConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement("SELECT "
                 + "EXISTS (SELECT 1 FROM employee WHERE email = ?)");
         
         statement.setString(1, email);
         resultSet = statement.executeQuery();
         resultSet.next();
-        return resultSet.getBoolean(1);
+        isEmailFound = resultSet.getBoolean(1);
+        
+        resultSet.close();
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return isEmailFound;
     }
     
     /**
@@ -101,7 +134,9 @@ public class DataAccessImpl implements DataAccess {
      * @exception SQLException if a database access error occurs.
      */
     public int insertRecord(Employee employee) throws SQLException {
+        int employeeId;
         ResultSet resultSet;
+        Connection connection = DatabaseConnection.getConnection();
         String sql = "INSERT INTO employee VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(sql, 
                                       Statement.RETURN_GENERATED_KEYS);
@@ -117,34 +152,87 @@ public class DataAccessImpl implements DataAccess {
         statement.executeUpdate();
         resultSet = statement.getGeneratedKeys();
         resultSet.next();
-        return resultSet.getInt(1);   
+        employeeId = resultSet.getInt(1);
+        
+        resultSet.close();
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return employeeId;
+    }
+    
+    /**
+     * Retrieves data from the resultset and creates a employee object and 
+     * stores in a list.
+     *
+     * @param resultSet a ResultSet object containing employee details.
+     * @return a list containing employee details.
+     * @exception SQLException if a database access error occurs.
+     */
+    private List<Employee> fillEmployeesList(ResultSet resultSet) 
+            throws SQLException {
+        Employee employee;
+        List<Employee> employees = new ArrayList<Employee>();
+        
+        while (resultSet.next()) {
+            employee = new Employee(resultSet.getInt(1),
+                                    resultSet.getString(2),
+                                    resultSet.getDate(3).toLocalDate(),
+                                    resultSet.getString(4),
+                                    resultSet.getLong(5),
+                                    resultSet.getString(6),
+                                    resultSet.getFloat(7),
+                                    resultSet.getDate(8).toLocalDate());
+            employees.add(employee);
+        }
+        return employees;
     }
     
     /** 
      * Fetches the specified employee's record.
      *
      * @param id the employee's id as a integer to fetch the record. 
-     * @return a resultset.
+     * @return a List containing the specified employee.
      * @exception SQLException if a database access error occurs.
      */
-    public ResultSet selectRecord(int id) throws SQLException {
+    public List<Employee> selectRecord(int id) throws SQLException {
+        List<Employee> employees;
+        ResultSet resultSet;
+        Connection connection = DatabaseConnection.getConnection();
         String query = "SELECT * FROM employee WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         
         statement.setInt(1, id);
-        return statement.executeQuery();
+        resultSet = statement.executeQuery();
+        employees = fillEmployeesList(resultSet);
+        
+        resultSet.close();
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return employees;
     }
     
     /** 
      * Fetches all employees record.
      * 
-     * @return a resultset.
+     * @return a List containing all employees.
      * @exception SQLException if a database access error occurs.
      */
-    public ResultSet selectAllRecord() throws SQLException {
+    public List<Employee> selectAllRecord() throws SQLException {
+        List<Employee> employees;
+        ResultSet resultSet;
+        Connection connection = DatabaseConnection.getConnection();
         Statement statement = connection.createStatement();
         
-        return statement.executeQuery("SELECT * FROM employee");
+        resultSet = statement.executeQuery("SELECT * FROM employee");
+        employees = fillEmployeesList(resultSet);
+        
+        resultSet.close();
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return employees;
     }
     
     /**
@@ -156,12 +244,19 @@ public class DataAccessImpl implements DataAccess {
      * @exception SQLException if a database access error occurs.
      */
     public int updateName(int id, String name) throws SQLException {
+        int rowsAffected;
+        Connection connection = DatabaseConnection.getConnection();
         String query = "UPDATE employee SET name = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         
         statement.setString(1, name);
         statement.setInt(2, id);
-        return statement.executeUpdate();
+        rowsAffected = statement.executeUpdate();
+        
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return rowsAffected;
     }
     
     /**
@@ -174,12 +269,19 @@ public class DataAccessImpl implements DataAccess {
      */
     public int updateDateOfBirth(int id, LocalDate dateOfBirth) 
             throws SQLException {
+        int rowsAffected;
+        Connection connection = DatabaseConnection.getConnection();
         String query = "UPDATE employee SET date_of_birth = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         
         statement.setDate(1, Date.valueOf(dateOfBirth));
         statement.setInt(2, id);
-        return statement.executeUpdate();
+        rowsAffected = statement.executeUpdate();
+        
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return rowsAffected;
     }
     
     /**
@@ -191,12 +293,19 @@ public class DataAccessImpl implements DataAccess {
      * @exception SQLException if a database access error occurs.
      */
     public int updateGender(int id, String gender) throws SQLException {
+        int rowsAffected;
+        Connection connection = DatabaseConnection.getConnection();
         String query = "UPDATE employee SET gender = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         
         statement.setString(1, gender);
         statement.setInt(2, id);
-        return statement.executeUpdate();
+        rowsAffected = statement.executeUpdate();
+        
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return rowsAffected;
     }
     
     /**
@@ -209,12 +318,19 @@ public class DataAccessImpl implements DataAccess {
      */
     public int updateMobileNumber(int id, long mobileNumber) 
             throws SQLException {
+        int rowsAffected;
+        Connection connection = DatabaseConnection.getConnection();
         String query = "UPDATE employee SET mobile_number = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         
         statement.setLong(1, mobileNumber);
         statement.setInt(2, id);
-        return statement.executeUpdate();
+        rowsAffected = statement.executeUpdate();
+        
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return rowsAffected;
     }
     
     /**
@@ -226,12 +342,19 @@ public class DataAccessImpl implements DataAccess {
      * @exception SQLException if a database access error occurs.
      */
     public int updateEmail(int id, String email) throws SQLException {
+        int rowsAffected;
+        Connection connection = DatabaseConnection.getConnection();
         String query = "UPDATE employee SET email = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         
         statement.setString(1, email);
         statement.setInt(2, id);
-        return statement.executeUpdate();
+        rowsAffected = statement.executeUpdate();
+        
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return rowsAffected;
     }
     
     /**
@@ -243,12 +366,19 @@ public class DataAccessImpl implements DataAccess {
      * @exception SQLException if a database access error occurs.
      */
     public int updateSalary(int id, float salary) throws SQLException {
+        int rowsAffected;
+        Connection connection = DatabaseConnection.getConnection();
         String query = "UPDATE employee SET salary = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         
         statement.setFloat(1, salary);
         statement.setInt(2, id);
-        return statement.executeUpdate();
+        rowsAffected = statement.executeUpdate();
+        
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return rowsAffected;
     }
     
     /**
@@ -261,12 +391,19 @@ public class DataAccessImpl implements DataAccess {
      */
     public int updateDateOfJoining(int id, LocalDate dateOfJoining) 
             throws SQLException {
+        int rowsAffected;
+        Connection connection = DatabaseConnection.getConnection();
         String query = "UPDATE employee SET date_of_joining = ? WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         
         statement.setDate(1, Date.valueOf(dateOfJoining));
         statement.setInt(2, id);
-        return statement.executeUpdate();
+        rowsAffected = statement.executeUpdate();
+        
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return rowsAffected;
     }
     
     /**
@@ -277,6 +414,8 @@ public class DataAccessImpl implements DataAccess {
      * @exception SQLException if a database access error occurs.
      */
     public int updateAllColumn(Employee employee) throws SQLException {
+        int rowsAffected;
+        Connection connection = DatabaseConnection.getConnection();
         String query = "UPDATE employee SET name = ?, date_of_birth = ?, "
                        + "gender = ?, mobile_number = ?, email = ?, salary ="
                        + "?, date_of_joining = ? WHERE id = ?";
@@ -290,8 +429,12 @@ public class DataAccessImpl implements DataAccess {
         statement.setFloat(6, employee.getSalary());
         statement.setDate(7, Date.valueOf(employee.getDateOfJoining()));
         statement.setInt(8, employee.getId());
+        rowsAffected = statement.executeUpdate();
         
-        return statement.executeUpdate();
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return rowsAffected;
     }
     
     /** 
@@ -302,11 +445,18 @@ public class DataAccessImpl implements DataAccess {
      * @exception SQLException if a database access error occurs.
      */
     public int deleteRecord(int id) throws SQLException {
+        int rowsAffected;
+        Connection connection = DatabaseConnection.getConnection();
         String query = "DELETE FROM employee WHERE id = ?";
         PreparedStatement statement = connection.prepareStatement(query);
         
         statement.setInt(1, id);
-        return statement.executeUpdate();
+        rowsAffected = statement.executeUpdate();
+        
+        statement.close();
+        DatabaseConnection.closeConnection();
+        
+        return rowsAffected;
     }
     
     /**
@@ -316,9 +466,11 @@ public class DataAccessImpl implements DataAccess {
      * @exception SQLException if a database access error occurs.
      */
     public boolean deleteAllRecord() throws SQLException {
+        Connection connection = DatabaseConnection.getConnection();
         Statement statement = connection.createStatement();
         
         statement.execute("TRUNCATE TABLE employee");
+        DatabaseConnection.closeConnection();
         return isDatabaseEmpty();
     }   
 }

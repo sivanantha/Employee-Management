@@ -332,8 +332,8 @@ public class EmployeeView {
             id = employeeController.createEmployee(name, dateOfBirth, gender, 
                          mobileNumber, email, salary, dateOfJoining);
             System.out.println("\n\t\t\t<<<<<< Employee Created Successfully! "
-                               + ">>>>>>\n\n\t\t\t ****** The Employee Id Of <"
-                               + name + "> Is -->" + id + " ******");
+                               + ">>>>>>\n\n\t\t\t ****** The Employee Id Of < "
+                               + name + " > Is --> " + id + " ******");
         } catch (SQLException exception) {
             System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
         }
