@@ -19,7 +19,7 @@ import com.ideas2it.employeemanagement.model.Employee;
 
 /**
  * This class provides methods for create, update, view, delete employee  
- * database records in database.
+ * records in database.
  *
  * @author  Sivanantham
  * @version 1.1
