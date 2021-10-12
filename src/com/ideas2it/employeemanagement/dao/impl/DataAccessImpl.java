@@ -19,7 +19,8 @@ import com.ideas2it.employeemanagement.model.Employee;
 
 /**
  * This class provides methods for create, update, view, delete employee  
- * records in database.
+ * records in database. It also has methods for check if the employee id, mobile
+ * number, email already exist in the database.
  *
  * @author  Sivanantham
  * @version 1.1
@@ -130,7 +131,7 @@ public class DataAccessImpl implements DataAccess {
      * Creates a employee record in the database.
      *
      * @param employee the employee to be inserted as a Employee object. 
-     * @return the employee id as a long.
+     * @return the employee id as a int.
      * @exception SQLException if a database access error occurs.
      */
     public int insertRecord(Employee employee) throws SQLException {
