@@ -17,7 +17,7 @@ import com.ideas2it.employeemanagement.model.Employee;
  * @author  Sivanantham
  * @version 1.1
  */
-public interface DataAccess {
+public interface EmployeeDAO {
     
     /**
      * Checks if the database is empty.

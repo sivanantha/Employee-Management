@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ideas2it.employeemanagement.connection_utils.DatabaseConnection;
-import com.ideas2it.employeemanagement.dao.DataAccess;
+import com.ideas2it.employeemanagement.dao.EmployeeDAO;
 import com.ideas2it.employeemanagement.model.Employee;
 
 /**
@@ -25,7 +25,7 @@ import com.ideas2it.employeemanagement.model.Employee;
  * @author  Sivanantham
  * @version 1.1
  */
-public class DataAccessImpl implements DataAccess {
+public class EmployeeDAOImpl implements EmployeeDAO {
     
     /**
      * Checks if the database is empty.

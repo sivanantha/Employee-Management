@@ -11,8 +11,8 @@ import java.time.Period;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.ideas2it.employeemanagement.dao.DataAccess;
-import com.ideas2it.employeemanagement.dao.impl.DataAccessImpl;
+import com.ideas2it.employeemanagement.dao.EmployeeDAO;
+import com.ideas2it.employeemanagement.dao.impl.EmployeeDAOImpl;
 import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.employeemanagement.service.EmployeeService;
 
@@ -24,7 +24,7 @@ import com.ideas2it.employeemanagement.service.EmployeeService;
  * @version 1.5
  */
 public class EmployeeServiceImpl implements EmployeeService {
-    private DataAccess dataAccess = new DataAccessImpl();
+    private EmployeeDAO dataAccess = new EmployeeDAOImpl();
     
     /**
      * Searches for the specified employee id.
