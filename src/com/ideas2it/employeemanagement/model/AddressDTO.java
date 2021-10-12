@@ -4,12 +4,12 @@
 package com.ideas2it.employeemanagement.model;
 
 /**
- * The Address class is a container for address details.
+ * The AddressDTO class is a data transfer object for address details.
  *
  * @author  Sivanantham
  * @version 1.0
  */
-public class Address {
+public class AddressDTO {
     int id;
     String city;
     String country;
@@ -20,12 +20,12 @@ public class Address {
     String street;
     
     /** No parameter constructor. */
-    public Address() {
+    public AddressDTO() {
     
     }
     
     /**
-     * Constructor for the address
+     * Constructor for the address.
      *
      * @param id the address id.
      * @param doorNumber the door number as a string.
@@ -36,7 +36,7 @@ public class Address {
      * @param country the country name.
      * @param pinCode the postal code as a string.
      */
-    public Address(int id, String doorNumber, String street, String locality,
+    public AddressDTO(int id, String doorNumber, String street, String locality,
                    String city, String state, String country, String pinCode) {
         this.id = id;
         this.doorNumber = doorNumber;
@@ -49,31 +49,9 @@ public class Address {
     }
     
     /**
-     * Constructor for the address
+     * Fetches the doorNumber of the address.
      *
-     * @param doorNumber the door number as a string.
-     * @param street the street name.
-     * @param locality the locality/area/village name.
-     * @param city the city/district name.
-     * @param state the state name.
-     * @param country the country name.
-     * @param pinCode the postal code as a string.
-     */
-    public Address(String doorNumber, String street, String locality,
-                   String city, String state, String country, String pinCode) {
-        this.doorNumber = doorNumber;
-        this.street = street;
-        this.locality = locality;
-        this.city = city;
-        this.state = state;
-        this.country = country;
-        this.pinCode = pinCode;
-    }
-    
-    /**
-     * Fetches the id of the address.
-     *
-     * @return the id of the address as a int.
+     * @return the doorNumber of the address as a int.
      */
     public int getId() {
         return id;
@@ -212,5 +190,23 @@ public class Address {
      */
     public void setPincode(String pinCode) {
         this.pinCode = pinCode;
+    }
+    
+    /**
+     * Provides this object in human readable form.
+     *
+     * @return a string which is description of the object
+     */
+    @Override
+    public String toString() {
+        return new StringBuilder(150).append("\n\t\t\t Address         : ")
+                                     .append(doorNumber).append(", ")
+                                     .append(street).append(",\n")
+                                     .append(locality).append(", ")
+                                     .append(city).append(",\n")
+                                     .append(state).append(",\n")
+                                     .append(country).append(" - ")
+                                     .append(pinCode).append(".\n")
+                                     .toString();
     }
 }

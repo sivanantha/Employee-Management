@@ -7,14 +7,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
- 
+
 /**
- * The Employee class is a container for employee details.
+ * This class is a data transfer object for employee details.
  *
  * @author  Sivanantham
- * @version 1.1
+ * @version 1.0
  */
-public class Employee {
+public class EmployeeDTO {
     private int id;
     private float salary;
     private long mobileNumber;
@@ -23,10 +23,10 @@ public class Employee {
     private String email;
     private String gender;
     private String name;
-    private List<Address> addresses;
+    private List<AddressDTO> addresses;
     
     /** Initializes all fields to default values. */
-    public Employee() {
+    public EmployeeDTO() {
     
     }
     
@@ -43,35 +43,10 @@ public class Employee {
      * @param dateOfJoining the employee's date of joining
      * @param addresses the List of addresses of the employee
      */
-    public Employee(int id, String name, LocalDate dateOfBirth, String gender,
-            long mobileNumber, String email, float salary,
-            LocalDate dateOfJoining, List<Address> addresses) {
+    public EmployeeDTO(int id, String name, LocalDate dateOfBirth, 
+            String gender, long mobileNumber, String email, float salary,
+            LocalDate dateOfJoining, List<AddressDTO> addresses) {
         this.id = id;
-        this.name = name;
-        this.gender = gender;
-        this.dateOfBirth = dateOfBirth;
-        this.mobileNumber = mobileNumber;
-        this.email = email;
-        this.salary = salary;
-        this.dateOfJoining = dateOfJoining;
-        this.addresses = addresses;
-    }
-    
-    /**
-     * Initializes fields with specified values.
-     *
-     * @param name the name of the employee
-     * @param gender the gender of the employee
-     * @param dateOfBirth the date of birth of the employee
-     * @param mobileNumber the mobile number of the employee
-     * @param email the email address of the employee
-     * @param salary the salary of the employee
-     * @param dateOfJoining the employee's date of joining 
-     * @param addresses the List of addresses of the employee
-     */
-    public Employee(String name, LocalDate dateOfBirth, String gender,
-            long mobileNumber, String email, float salary,
-            LocalDate dateOfJoining, List<Address> addresses) {
         this.name = name;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
@@ -232,7 +207,7 @@ public class Employee {
      *
      * @return a List containing addresses of employee
      */
-    public List<Address> getAddresses() {
+    public List<AddressDTO> getAddresses() {
         return addresses;
     }
     
@@ -241,7 +216,41 @@ public class Employee {
      *
      * @param addresses the List of addresses of the employee
      */
-    public void setAddresses(List<Address> addresses) {
+    public void setAddresses(List<AddressDTO> addresses) {
         this.addresses = addresses;
-    }     
+    }
+    
+    /**
+     * Provides this object in human readable form.
+     *
+     * @return a string which is description of the object
+     */ 
+    @Override 
+    public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        StringBuilder addressTexts = new StringBuilder(150);
+        
+        for (AddressDTO address : addresses) {
+            addressTexts.append(address.toString());
+        }
+        return new StringBuilder(300).append("\n\t\t Employee Id     : ")
+                                     .append(id)
+                                     .append("\n\n\t\t Name            : ")
+                                     .append(name)
+                                     .append("\n\n\t\t Date of birth   : ")
+                                     .append(dateOfBirth.format(formatter))
+                                     .append("\n\n\t\t Gender          : ")
+                                     .append(gender)
+                                     .append("\n\n\t\t Mobile Number   : ")
+                                     .append(mobileNumber)
+                                     .append("\n\n\t\t Email           : ")
+                                     .append(email)
+                                     .append("\n\n\t\t Salary          : ")
+                                     .append(String.format("%.2f", salary))
+                                     .append("\n\n\t\t Date Of joining : ")
+                                     .append(dateOfJoining.format(formatter))
+                                     .append(addressTexts)
+                                     .append("\n")
+                                     .toString();
+    }      
 }
