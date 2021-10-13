@@ -59,8 +59,9 @@ public class Address {
      * @param country the country name.
      * @param pinCode the postal code as a string.
      */
-    public Address(String doorNumber, String street, String locality,
+    public Address(int id, String doorNumber, String street, String locality,
                    String city, String state, String country, String pinCode) {
+        this.id = id;
         this.doorNumber = doorNumber;
         this.street = street;
         this.locality = locality;
@@ -87,6 +88,24 @@ public class Address {
     public void setId(int id) {
         this.id = id;
     }
+    
+    /**
+     * Fetches the doorNumber of the address.
+     *
+     * @return the doorNumber of the address as a int.
+     */
+    public int getId() {
+        return id;
+    }
+    
+    /** 
+     * Assigns the specified id to the address.
+     *
+     * @param id the id of the address as a int.
+     */
+    public void setId(int id) {
+        this.id = id;
+    } 
     
     /**
      * Fetches the doorNumber of the address.
