@@ -91,6 +91,24 @@ public class Address {
     /**
      * Fetches the doorNumber of the address.
      *
+     * @return the doorNumber of the address as a int.
+     */
+    public int getId() {
+        return id;
+    }
+    
+    /** 
+     * Assigns the specified id to the address.
+     *
+     * @param id the id of the address as a int.
+     */
+    public void setId(int id) {
+        this.id = id;
+    } 
+    
+    /**
+     * Fetches the doorNumber of the address.
+     *
      * @return the doorNumber of the address as a string.
      */
     public String getDoorNumber() {
