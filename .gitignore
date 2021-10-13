@@ -27,3 +27,6 @@ hs_err_pid*
 
 # Temperory files used by editors
 *~
+
+# lib folder
+lib/*
