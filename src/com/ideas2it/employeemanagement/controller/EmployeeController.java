@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.service.EmployeeService;
 import com.ideas2it.employeemanagement.service.impl.EmployeeServiceImpl;
 
@@ -147,22 +148,12 @@ public class EmployeeController {
     /**
      * Creates a new employee with specified details and stores in the database.
      *
-     * @param name the name of the employee.
-     * @param gender the gender of the employee.
-     * @param dateOfBirth the date of birth of the employee.
-     * @param mobileNumber the mobile number of the employee.
-     * @param email the email address of the employee.
-     * @param salary the salary of the employee.
-     * @param dateOfJoining the employee's date of joining. 
+     * @param employeeDTO the EmployeeDTO instance with employee details.
      * @return the employee's id as a int.
      * @exception SQLException if a database access error occurs.
      */
-    public int createEmployee (String name, LocalDate dateOfBirth, 
-            String gender, long mobileNumber, String email, float salary, 
-            LocalDate dateOfJoining) throws SQLException {
-       
-        return employeeService.createEmployee(name, dateOfBirth, gender, 
-                       mobileNumber, email, salary, dateOfJoining);
+    public int createEmployee (EmployeeDTO employeeDTO) throws SQLException {
+        return employeeService.createEmployee(employeeDTO);
     }
     
     /**
@@ -172,7 +163,7 @@ public class EmployeeController {
      * @return a List containing the specified employee.
      * @exception SQLException if a database access error occurs.
      */
-    public List getEmployee(int id) throws SQLException {
+    public List<EmployeeDTO> getEmployee(int id) throws SQLException {
         return employeeService.getEmployee(id);
     }
     
@@ -182,7 +173,7 @@ public class EmployeeController {
      * @return a List containing all employees.
      * @exception SQLException if a database access error occurs.
      */
-    public List getAllEmployees() throws SQLException {
+    public List<EmployeeDTO> getAllEmployees() throws SQLException {
         return employeeService.getAllEmployees();
     }
     
@@ -276,23 +267,13 @@ public class EmployeeController {
    /** 
     * Updates all details of the specified employee and stores in the database.
     *
-    * @param id employee's id to be updated.
-    * @param name the name of the employee to update.
-    * @param gender the gender of the employee to update.
-    * @param dateOfBirth the date of birth of the employee to update.
-    * @param mobileNumber the mobile number of the employee to update.
-    * @param email the email address of the employee to update.
-    * @param salary the salary of the employee to update.
-    * @param dateOfJoining the employee's date of joining to update.
+    * @param employeeDTO the EmployeeDTO instance with employee details.
     * @return true if employee updated successfully otherwise false.
     * @exception SQLException if a database access error occurs.
     */    
-    public boolean updateAllDetails(int id, String name,LocalDate dateOfBirth,
-            String gender, long mobileNumber, String email, float salary, 
-            LocalDate dateOfJoining) throws SQLException {
-            
-        return employeeService.updateAllDetails(id, name, dateOfBirth, gender,
-                       mobileNumber, email, salary, dateOfJoining);
+    public boolean updateAllDetails(EmployeeDTO employeeDTO)
+            throws SQLException {
+        return employeeService.updateAllDetails(employeeDTO);
     }
     
    /**

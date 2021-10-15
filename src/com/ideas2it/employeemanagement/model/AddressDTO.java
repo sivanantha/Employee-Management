@@ -11,6 +11,7 @@ package com.ideas2it.employeemanagement.model;
  */
 public class AddressDTO {
     int id;
+    int employeeId;
     String city;
     String country;
     String doorNumber;
@@ -35,9 +36,11 @@ public class AddressDTO {
      * @param state the state name.
      * @param country the country name.
      * @param pinCode the postal code as a string.
+     * @param employeeId the corresponding employee's id.
      */
     public AddressDTO(int id, String doorNumber, String street, String locality,
-                   String city, String state, String country, String pinCode) {
+                   String city, String state, String country, String pinCode,
+                   int employeeId) {
         this.id = id;
         this.doorNumber = doorNumber;
         this.street = street;
@@ -46,12 +49,39 @@ public class AddressDTO {
         this.state = state;
         this.country = country;
         this.pinCode = pinCode;
+        this.employeeId = employeeId;
     }
     
     /**
-     * Fetches the doorNumber of the address.
+     * Constructor for the address
      *
-     * @return the doorNumber of the address as a int.
+     * @param doorNumber the door number as a string.
+     * @param street the street name.
+     * @param locality the locality/area/village name.
+     * @param city the city/district name.
+     * @param state the state name.
+     * @param country the country name.
+     * @param pinCode the postal code as a string.
+     * @param employeeId the corresponding employee's id.
+     */
+    public AddressDTO(String doorNumber, String street, String locality,
+                   String city, String state, String country, String pinCode, 
+                   int employeeId) {
+        this.doorNumber = doorNumber;
+        this.street = street;
+        this.locality = locality;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.pinCode = pinCode;
+        this.employeeId = employeeId;
+    }
+
+    
+    /**
+     * Fetches the id of the address.
+     *
+     * @return the id of the address as a int.
      */
     public int getId() {
         return id;
@@ -64,6 +94,24 @@ public class AddressDTO {
      */
     public void setId(int id) {
         this.id = id;
+    }
+    
+    /**
+     * Fetches the id of the corresponding employee.
+     *
+     * @return the id of the corresponding employee as a int.
+     */
+    public int getEmployeeId() {
+        return employeeId;
+    }
+    
+    /** 
+     * Assigns the specified employee id to the address.
+     *
+     * @param employeeId the id of corresponding employee as a int.
+     */
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
     }
     
     /**
@@ -199,12 +247,12 @@ public class AddressDTO {
      */
     @Override
     public String toString() {
-        return new StringBuilder(150).append("\n\t\t\t Address         : ")
+        return new StringBuilder(150).append("\n\t\t Address         : ")
                                      .append(doorNumber).append(", ")
-                                     .append(street).append(",\n")
+                                     .append(street).append(",\n\t\t\t\t   ")
                                      .append(locality).append(", ")
-                                     .append(city).append(",\n")
-                                     .append(state).append(",\n")
+                                     .append(city).append(",\n\t\t\t\t   ")
+                                     .append(state).append(",\n\t\t\t\t   ")
                                      .append(country).append(" - ")
                                      .append(pinCode).append(".\n")
                                      .toString();

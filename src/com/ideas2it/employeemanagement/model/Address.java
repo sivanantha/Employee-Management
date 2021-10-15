@@ -11,6 +11,7 @@ package com.ideas2it.employeemanagement.model;
  */
 public class Address {
     int id;
+    int employeeId;
     String city;
     String country;
     String doorNumber;
@@ -35,9 +36,11 @@ public class Address {
      * @param state the state name.
      * @param country the country name.
      * @param pinCode the postal code as a string.
+     * @param employeeId the corresponding employee's id.
      */
     public Address(int id, String doorNumber, String street, String locality,
-                   String city, String state, String country, String pinCode) {
+                   String city, String state, String country, String pinCode,
+                   int employeeId) {
         this.id = id;
         this.doorNumber = doorNumber;
         this.street = street;
@@ -46,6 +49,7 @@ public class Address {
         this.state = state;
         this.country = country;
         this.pinCode = pinCode;
+        this.employeeId = employeeId;
     }
     
     /**
@@ -58,9 +62,11 @@ public class Address {
      * @param state the state name.
      * @param country the country name.
      * @param pinCode the postal code as a string.
+     * @param employeeId the corresponding employee's id.
      */
     public Address(String doorNumber, String street, String locality,
-                   String city, String state, String country, String pinCode) {
+                   String city, String state, String country, String pinCode,
+                   int employeeId) {
         this.doorNumber = doorNumber;
         this.street = street;
         this.locality = locality;
@@ -68,6 +74,7 @@ public class Address {
         this.state = state;
         this.country = country;
         this.pinCode = pinCode;
+        this.employeeId = employeeId;
     }
     
     /**
@@ -86,6 +93,24 @@ public class Address {
      */
     public void setId(int id) {
         this.id = id;
+    }
+    
+    /**
+     * Fetches the id of the corresponding employee.
+     *
+     * @return the id of the corresponding employee as a int.
+     */
+    public int getEmployeeId() {
+        return employeeId;
+    }
+    
+    /** 
+     * Assigns the specified employee id to the address.
+     *
+     * @param employeeId the id of corresponding employee as a int.
+     */
+    public void setEmployeeId(int employeeId) {
+        this.employeeId = employeeId;
     }
     
     /**

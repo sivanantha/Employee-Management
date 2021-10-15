@@ -41,12 +41,34 @@ public class EmployeeDTO {
      * @param email the email address of the employee
      * @param salary the salary of the employee
      * @param dateOfJoining the employee's date of joining
-     * @param addresses the List of addresses of the employee
      */
     public EmployeeDTO(int id, String name, LocalDate dateOfBirth, 
             String gender, long mobileNumber, String email, float salary,
-            LocalDate dateOfJoining, List<AddressDTO> addresses) {
+            LocalDate dateOfJoining) {
         this.id = id;
+        this.name = name;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.mobileNumber = mobileNumber;
+        this.email = email;
+        this.salary = salary;
+        this.dateOfJoining = dateOfJoining;
+    }
+    
+    /**
+     * Initializes fields with specified values.
+     *
+     * @param name the name of the employee
+     * @param gender the gender of the employee
+     * @param dateOfBirth the date of birth of the employee
+     * @param mobileNumber the mobile number of the employee
+     * @param email the email address of the employee
+     * @param salary the salary of the employee
+     * @param dateOfJoining the employee's date of joining 
+     */
+    public EmployeeDTO(String name, LocalDate dateOfBirth, String gender,
+            long mobileNumber, String email, float salary,
+            LocalDate dateOfJoining) {
         this.name = name;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
@@ -228,11 +250,7 @@ public class EmployeeDTO {
     @Override 
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        StringBuilder addressTexts = new StringBuilder(150);
-        
-        for (AddressDTO address : addresses) {
-            addressTexts.append(address.toString());
-        }
+
         return new StringBuilder(300).append("\n\t\t Employee Id     : ")
                                      .append(id)
                                      .append("\n\n\t\t Name            : ")
@@ -249,7 +267,6 @@ public class EmployeeDTO {
                                      .append(String.format("%.2f", salary))
                                      .append("\n\n\t\t Date Of joining : ")
                                      .append(dateOfJoining.format(formatter))
-                                     .append(addressTexts)
                                      .append("\n")
                                      .toString();
     }      

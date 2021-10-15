@@ -27,16 +27,15 @@ public final class Mapper {
      * @return the mapped EmployeeDTO instance.
      */
     public static EmployeeDTO toEmployeeDTO(Employee employee) {
-        List<AddressDTO> addresses = new ArrayList<>();
+  /*      List<AddressDTO> addresses = new ArrayList<>();
        
         for (Address address : employee.getAddresses()) {
             addresses.add(toAddressDTO(address));
-        }
+        }                                                           */
         return new EmployeeDTO(employee.getId(), employee.getName(),
                 employee.getDateOfBirth(), employee.getGender(),
                 employee.getMobileNumber(), employee.getEmail(), 
-                employee.getSalary(), employee.getDateOfJoining(),
-                addresses);    
+                employee.getSalary(), employee.getDateOfJoining());    
     }
     
     /**
@@ -46,16 +45,15 @@ public final class Mapper {
      * @return the mapped Employee instance.
      */
     public static Employee toEmployee(EmployeeDTO employeeDTO) {
-       List<Address> addresses = new ArrayList<>();
+ /*      List<Address> addresses = new ArrayList<>();
        
        for (AddressDTO address : employeeDTO.getAddresses()) {
            addresses.add(toAddress(address));
-       }
+       }                                                            */
        return new Employee(employeeDTO.getId(), employeeDTO.getName(),
                 employeeDTO.getDateOfBirth(), employeeDTO.getGender(),
                 employeeDTO.getMobileNumber(), employeeDTO.getEmail(), 
-                employeeDTO.getSalary(), employeeDTO.getDateOfJoining(),
-                addresses); 
+                employeeDTO.getSalary(), employeeDTO.getDateOfJoining()); 
     }
     
     /**
@@ -67,7 +65,8 @@ public final class Mapper {
     public static AddressDTO  toAddressDTO(Address address) {
         return new AddressDTO(address.getId(), address.getDoorNumber(), 
                 address.getStreet(), address.getLocality(), address.getCity(),
-                address.getState(), address.getCountry(), address.getPinCode());
+                address.getState(), address.getCountry(), address.getPinCode(),
+                address.getEmployeeId());
     }
     
     /**
@@ -80,7 +79,8 @@ public final class Mapper {
         return new Address(addressDTO.getId(), addressDTO.getDoorNumber(), 
                 addressDTO.getStreet(), addressDTO.getLocality(), 
                 addressDTO.getCity(), addressDTO.getState(),
-                addressDTO.getCountry(), addressDTO.getPinCode());
+                addressDTO.getCountry(), addressDTO.getPinCode(),
+                addressDTO.getEmployeeId());
     }
 }
 

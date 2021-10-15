@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.ideas2it.employeemanagement.model.Employee;
+import com.ideas2it.employeemanagement.model.EmployeeDTO;
 
 /**
  * The EmployeeService interface provides methods for validations and
@@ -205,19 +205,11 @@ public interface EmployeeService {
     /**
      * Creates a new employee with specified details and stores in the database.
      *
-     * @param name the name of the employee.
-     * @param gender the gender of the employee.
-     * @param dateOfBirth the date of birth of the employee.
-     * @param mobileNumber the mobile number of the employee.
-     * @param email the email address of the employee.
-     * @param salary the salary of the employee.
-     * @param dateOfJoining the employee's date of joining. 
+     * @param employee the EmployeeDTO instance with employee details.
      * @return the employee's id as a int.
      * @exception SQLException if a database access error occurs.
      */
-    int createEmployee (String name,LocalDate dateOfBirth,
-            String gender, long mobileNumber, String email, float salary, 
-            LocalDate dateOfJoining) throws SQLException;
+    int createEmployee (EmployeeDTO employee) throws SQLException;
     
     /**
      * Retrieves the specified employee from the database.
@@ -226,7 +218,7 @@ public interface EmployeeService {
      * @return a List containing the specified employee.
      * @exception SQLException if a database access error occurs.
      */
-    List<Employee> getEmployee(int id) throws SQLException;
+    List<EmployeeDTO> getEmployee(int id) throws SQLException;
     
     /** 
      * Retrieves all employees from the database.
@@ -234,7 +226,7 @@ public interface EmployeeService {
      * @return a List containing all employees.
      * @exception SQLException if a database access error occurs.
      */
-    List<Employee> getAllEmployees() throws SQLException;
+    List<EmployeeDTO> getAllEmployees() throws SQLException;
    
     /**
      * Updates specified employee's name and stores in the database.
@@ -311,20 +303,11 @@ public interface EmployeeService {
     /** 
      * Updates all details of the specified employee and stores in the database.
      *
-     * @param id employee's id to be updated.
-     * @param name the name of the employee to update.
-     * @param gender the gender of the employee to update.
-     * @param dateOfBirth the date of birth of the employee to update.
-     * @param mobileNumber the mobile number of the employee to update.
-     * @param email the email address of the employee to update.
-     * @param salary the salary of the employee to update.
-     * @param dateOfJoining the employee's date of joining to update.
+     * @param employeeDTO the EmployeeDTO instance with employee details.
      * @return true if employee updated successfully otherwise false.
      * @exception SQLException if a database access error occurs.
      */
-     boolean updateAllDetails(int id, String name,LocalDate dateOfBirth,
-             String gender, long mobileNumber, String email, float salary, 
-             LocalDate dateOfJoining) throws SQLException;
+     boolean updateAllDetails(EmployeeDTO employeeDTO) throws SQLException;
             
     /**
      * Deletes the specified employee.

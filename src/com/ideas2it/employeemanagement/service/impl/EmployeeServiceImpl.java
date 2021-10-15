@@ -8,13 +8,16 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import com.ideas2it.employeemanagement.dao.EmployeeDAO;
 import com.ideas2it.employeemanagement.dao.impl.EmployeeDAOImpl;
 import com.ideas2it.employeemanagement.model.Employee;
+import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.service.EmployeeService;
+import com.ideas2it.employeemanagement.utils.Mapper;
 
 /**
  * The EmployeeServiceImpl class contains validations and implementations for 
@@ -24,7 +27,7 @@ import com.ideas2it.employeemanagement.service.EmployeeService;
  * @version 1.5
  */
 public class EmployeeServiceImpl implements EmployeeService {
-    private EmployeeDAO dataAccess = new EmployeeDAOImpl();
+    private EmployeeDAO employeeDAO = new EmployeeDAOImpl();
     
     /**
      * Searches for the specified employee id.
@@ -34,8 +37,9 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if employee found, otherwise false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean isEmployeeExist(int id) throws SQLException {
-        return dataAccess.isEmployeeIdExist(id);
+        return employeeDAO.isEmployeeIdExist(id);
     }
     
     /**
@@ -47,6 +51,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param the employee id to be validated as a string.
      * @return true if specified employee id is valid, otherwise false. 
      */
+    @Override
     public boolean isValidId(String id) { 
         return Pattern.matches("(^\\s*[1-9][0-9]*\\s*)$", id);
     }
@@ -57,6 +62,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param id the employee id to be validated.
      * @return employee id as a Integer if it is valid else null.
      */
+    @Override
     public Integer validateId(String id) {
         Integer parsedId = null;
         
@@ -78,6 +84,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param name name of the employee to be validated as a string.
      * @return true if specified name is valid, otherwise false.
      */
+    @Override
     public boolean isValidName(String name) {
         return Pattern.matches("^(\\s*[a-zA-Z]{3,20}\\s*)$|^((\\s*[a-zA-Z]"
                 + "{3,20}) ([a-zA-Z]{2,20})\\s*)$|^((\\s*[a-zA-Z]{3,20}) "
@@ -90,6 +97,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param name the employee name to be validated.
      * @return employee name as a string if it is valid else null.
      */
+    @Override
     public String validateName(String name) {
         return isValidName(name) ? name.strip().toLowerCase() : null;
     }
@@ -101,6 +109,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param dateOfBirth the employee's date of birth as a LocalDate.
      * @return true if specified date of birth is valid otherwise false.
      */
+    @Override
     public boolean isValidDateOfBirth(LocalDate dateOfBirth) {
         int age = dateOfBirth.until(LocalDate.now()).getYears();
         
@@ -113,6 +122,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param dateOfBirth the employee date of birth to be validated.
      * @return employee date of birth as a LocalDate if it is valid else null.
      */
+    @Override
     public LocalDate validateDateOfBirth(String dateOfBirth) {
          LocalDate parsedDateOfBirth = parseDate(dateOfBirth.strip());
 
@@ -126,7 +136,8 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      * @param gender employee's gender as string value.
      * @return true if specified gender is valid, otherwise false.
-     */ 
+     */
+    @Override 
     public boolean isValidGender(String gender) {
         return ("male".equals(gender) || "female".equals(gender) 
                 || "others".equals(gender));
@@ -138,6 +149,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param gender the employee gender to be validated.
      * @return employee gender as a string if it is valid else null.
      */
+    @Override
     public String validateGender(String gender) {
         gender = gender.strip().toLowerCase();
         return isValidGender(gender) ? gender : null;
@@ -151,6 +163,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if specified mobile number is valid otherwise false.
      * 
      */
+    @Override
     public boolean isValidMobileNumber(String mobileNumber) {
         return Pattern.matches("^(\\s*[6-9][0-9]{9}\\s*)$", mobileNumber);
     }
@@ -161,6 +174,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param mobileNumber the employee mobile number to be validated.
      * @return employee mobile number as a Long if it is valid else null.
      */
+    @Override
     public Long validateMobileNumber(String mobileNumber) {
          Long parsedMobileNumber = null;
          
@@ -181,8 +195,9 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if mobile number already exist, otherwise false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean isMobileNumberExist(long mobileNumber) throws SQLException {
-        return dataAccess.isMobileNumberExist(mobileNumber);
+        return employeeDAO.isMobileNumberExist(mobileNumber);
     }
     
     
@@ -198,6 +213,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param email employee's email to be validated as string value.
      * @return true if specified email is valid, otherwise false.
      */
+    @Override
     public boolean isValidEmail(String email) {
         return Pattern.matches(new StringBuilder().append("^\\s*(([a-z0-9]")
                 .append("[\\.]?[\\-]?[_]?([a-z0-9][\\.]?[\\-]?[_]?){0,50}")
@@ -212,6 +228,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param email the employee email to be validated.
      * @return employee email as a string if it is valid else null.
      */
+    @Override
     public String validateEmail(String email) {
          return isValidEmail(email) ? email.strip() : null;
     }
@@ -222,9 +239,10 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param email employee's email to be searched as string value.
      * @return true if specified email is found, otherwise false.
      * @exception SQLException if a database access error occurs.
-     */ 
+     */
+    @Override 
     public boolean isEmailExist(String email) throws SQLException {
-        return dataAccess.isEmailExist(email);
+        return employeeDAO.isEmailExist(email);
     }
     
     /**
@@ -235,6 +253,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param salary employee's salary to be validated, as string.
      * @return true if specified salary is valid, otherwise false.
      */
+    @Override
     public boolean isValidSalary(String salary) {
         return Pattern.matches("^\\s*(([8-9][0-9]{3}|[1-9][0-9]{4,})(\\.[0-9]"
                                + "{1,2})?)\\s*$", salary);
@@ -246,6 +265,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param salary the employee salary to be validated.
      * @return employee salary as a Float if it is valid else null.
      */
+    @Override
     public Float validateSalary(String salary) {
          Float parsedSalary = null;
          
@@ -286,6 +306,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      *        LocalDate.
      * @return true if specified date is valid else false.
      */
+    @Override
     public boolean isValidDateOfJoining(LocalDate dateOfJoining) {
         Period experience = calculateExperience(dateOfJoining);
         
@@ -299,6 +320,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param dateOfJoining the employee date of joining to be validated.
      * @return employee date of joining as a LocalDate if it is valid else null.
      */
+    @Override
     public LocalDate validateDateOfJoining(String dateOfJoining) {
         LocalDate parsedDateOfJoining = parseDate(dateOfJoining.strip());
         
@@ -324,31 +346,38 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if employee database is empty else false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean isEmployeesDatabaseEmpty() throws SQLException {
-        return dataAccess.isDatabaseEmpty();
+        return employeeDAO.isDatabaseEmpty();
     }
     
     /**
      * Creates a new employee with specified details and stores in the database.
      *
-     * @param name the name of the employee.
-     * @param gender the gender of the employee.
-     * @param dateOfBirth the date of birth of the employee.
-     * @param mobileNumber the mobile number of the employee.
-     * @param email the email address of the employee.
-     * @param salary the salary of the employee.
-     * @param dateOfJoining the employee's date of joining. 
+     * @param employeeDTO the EmployeeDTO instance with employee details.
      * @return the employee's id as a int.
      * @exception SQLException if a database access error occurs.
      */
-    public int createEmployee (String name, LocalDate dateOfBirth,
-            String gender, long mobileNumber, String email, float salary, 
-            LocalDate dateOfJoining) throws SQLException {
-            
-        return dataAccess.insertRecord(new Employee(name, dateOfBirth, 
-                       gender, mobileNumber, email, salary, dateOfJoining));
+    @Override
+    public int createEmployee (EmployeeDTO employeeDTO) throws SQLException {
+        return employeeDAO.insertRecord(Mapper.toEmployee(employeeDTO));
     }
+    
+    /**
+     * Maps list of Employee instances to EmployeeDTO instances.
+     *
+     * @param employees a List containing employees.
+     * @return a List containing mapped EmployeeDTO instances.
+     */
+    private List<EmployeeDTO> toEmployeeDTO(List<Employee> employees) {
+        List<EmployeeDTO> employeesDTO = new ArrayList<>(employees.size());
         
+        for (Employee employee : employees) {
+            employeesDTO.add(Mapper.toEmployeeDTO(employee));
+        }
+        return employeesDTO;
+    }
+    
     /**
      * Retrieves the specified employee from the database.
      * 
@@ -356,8 +385,11 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return a List containing the specified employee.
      * @exception SQLException if a database access error occurs.
      */
-    public List<Employee> getEmployee(int id) throws SQLException {
-        return dataAccess.selectRecord(id);
+    @Override
+    public List<EmployeeDTO> getEmployee(int id) throws SQLException {
+        List<Employee> employees = employeeDAO.selectRecord(id);
+        
+        return toEmployeeDTO(employees);
     }
     
     /** 
@@ -366,8 +398,11 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return a List containing all employees.
      * @exception SQLException if a database access error occurs.
      */
-    public List<Employee> getAllEmployees() throws SQLException {
-        return dataAccess.selectAllRecord();
+    @Override
+    public List<EmployeeDTO> getAllEmployees() throws SQLException {
+        List<Employee> employees = employeeDAO.selectAllRecord();
+        
+        return toEmployeeDTO(employees);
     }
    
     /**
@@ -378,8 +413,9 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if employee name updated successfully else false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean updateName(int id, String name) throws SQLException {
-         return (1 == dataAccess.updateName(id, name));
+         return (1 == employeeDAO.updateName(id, name));
     }
    
     /**
@@ -390,9 +426,10 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if employee date of birth updated successfully else false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean updateDateOfBirth(int id, LocalDate dateOfBirth) 
             throws SQLException {
-         return (1 == dataAccess.updateDateOfBirth(id, dateOfBirth));
+         return (1 == employeeDAO.updateDateOfBirth(id, dateOfBirth));
     }
    
     /**
@@ -403,8 +440,9 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if employee gender updated successfully else false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean updateGender(int id, String gender) throws SQLException {
-         return (1 == dataAccess.updateGender(id, gender));
+         return (1 == employeeDAO.updateGender(id, gender));
     }
    
     /**
@@ -415,9 +453,10 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if employee mobile number updated successfully else false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean updateMobileNumber(int id, long mobileNumber) 
             throws SQLException { 
-         return (1 == dataAccess.updateMobileNumber(id, mobileNumber));
+         return (1 == employeeDAO.updateMobileNumber(id, mobileNumber));
     }
    
     /**
@@ -428,8 +467,9 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if employee email updated successfully else false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean updateEmail(int id, String email) throws SQLException {
-         return (1 == dataAccess.updateEmail(id, email));
+         return (1 == employeeDAO.updateEmail(id, email));
     }
    
     /**
@@ -440,8 +480,9 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if employee salary updated successfully else false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean updateSalary(int id, float salary) throws SQLException {
-         return (1 == dataAccess.updateSalary(id, salary));
+         return (1 == employeeDAO.updateSalary(id, salary));
     }
    
     /**
@@ -452,32 +493,24 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if employee date of joining updated successfully else false.
      * @exception SQLException if a database access error occurs.
      */
+   @Override
    public boolean updateDateOfJoining(int id, LocalDate dateOfJoining) 
            throws SQLException { 
-         return (1 == dataAccess.updateDateOfJoining(id, dateOfJoining));
+         return (1 == employeeDAO.updateDateOfJoining(id, dateOfJoining));
     }
    
     /** 
      * Updates all details of the specified employee and stores in the database.
      *
-     * @param id employee's id to be updated.
-     * @param name the name of the employee to update.
-     * @param gender the gender of the employee to update.
-     * @param dateOfBirth the date of birth of the employee to update.
-     * @param mobileNumber the mobile number of the employee to update.
-     * @param email the email address of the employee to update.
-     * @param salary the salary of the employee to update.
-     * @param dateOfJoining the employee's date of joining to update.
+     * @param employeeDTO the EmployeeDTO instance with employee details.
      * @return true if employee updated successfully otherwise false.
      * @exception SQLException if a database access error occurs.
      */
-     public boolean updateAllDetails(int id, String name,LocalDate dateOfBirth,
-             String gender, long mobileNumber, String email, float salary, 
-             LocalDate dateOfJoining) throws SQLException {
-              
-         return (1 == dataAccess.updateAllColumn(new Employee(id, name, 
-                              dateOfBirth, gender, mobileNumber, email, salary,
-                              dateOfJoining)));
+     @Override
+     public boolean updateAllDetails(EmployeeDTO employeeDTO)
+            throws SQLException {
+         return (1 == employeeDAO.updateAllColumn(Mapper.toEmployee(
+                            employeeDTO)));
     }
             
     /**
@@ -487,8 +520,9 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if employee deleted successfully else false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean deleteEmployee(int id) throws SQLException {
-         return (1 == dataAccess.deleteRecord(id));
+         return (1 == employeeDAO.deleteRecord(id));
     }
    
     /** 
@@ -497,7 +531,8 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @return true if deleted successfully, otherwise false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean deleteAllEmployee() throws SQLException {
-         return dataAccess.deleteAllRecord();  
+         return employeeDAO.deleteAllRecord();  
     }
 }

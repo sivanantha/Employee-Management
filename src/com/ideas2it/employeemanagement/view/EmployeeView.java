@@ -5,22 +5,27 @@ package com.ideas2it.employeemanagement.view;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;   
 import java.util.Scanner;
 
+import com.ideas2it.employeemanagement.controller.AddressController;
 import com.ideas2it.employeemanagement.controller.EmployeeController;
+import com.ideas2it.employeemanagement.model.AddressDTO;
+import com.ideas2it.employeemanagement.model.EmployeeDTO;
 
 /**
  * The EmployeeView class contains view implementations for create, update,
  * retrieve, delete employee for employee management system.
  *
  * @author  Sivanantham
- * @version 1.5
+ * @version 1.6
  */
 public class EmployeeView {
     private Scanner inputReader = new Scanner(System.in);
-    private EmployeeController employeeController = 
-            new EmployeeController();
+    private EmployeeController employeeController = new EmployeeController();
+    private AddressController addressController = new AddressController();
     
     /**
      * Prints the welcome message and starts the employee management 
@@ -315,6 +320,224 @@ public class EmployeeView {
     }
     
     /**
+     * Gets the door number from the user for create and update address.
+     *
+     * @return the door number as a string.
+     */
+    private String getDoorNumberInput() {
+        String doorNumber = null;
+        String errorMessage = "\n\t\t\t<<<<<< Invalid Door Number! >>>>>>\n";
+        
+        while (null == doorNumber) {
+            System.out.print("\n\t\t Enter Door Number (e.g)12B, 12/4: ");
+            doorNumber = inputReader.nextLine();
+            
+            if (addressController.isValidDoorNumber(doorNumber)) {
+                doorNumber = doorNumber.strip();
+            } else {
+                System.out.println(errorMessage);
+                doorNumber = null;
+            }
+        }
+        return doorNumber;
+    }
+    
+    /**
+     * Gets the street name from the user for create and update address.
+     *
+     * @return street name as a string.
+     */
+    private String getStreetInput() {
+        String street = null;
+        String errorMessage = "\n\t\t\t<<<<<< Invalid Street Name! >>>>>>\n";
+        
+        while (null == street) {
+            System.out.print("\n\t\t Enter Street Name : ");
+            street = inputReader.nextLine();
+            
+            if (addressController.isValidStreet(street)) {
+                street = street.strip().toLowerCase();
+            } else {
+                System.out.println(errorMessage);
+                street = null;
+            }
+        }
+        return street;
+    }
+    
+    /**
+     * Gets the locality from the user for create and update address.
+     *
+     * @return the locality as a string.
+     */
+    private String getLocalityInput() {
+        String locality = null;
+        String errorMessage = "\n\t\t\t<<<<<< Invalid Locality Name! >>>>>>\n";
+        
+        while (null == locality) {
+            System.out.print("\n\t\t Enter Locality/Area/Village : ");
+            locality = inputReader.nextLine();
+            
+            if (addressController.isValidPlaceName(locality)) {
+                locality = locality.strip().toLowerCase();
+            } else {
+                System.out.println(errorMessage);
+                locality = null;
+            }
+        }
+        return locality;
+    }
+    
+    /**
+     * Gets the city from the user for create and update address.
+     *
+     * @return the city as a string.
+     */
+    private String getCityInput() {
+        String city = null;
+        String errorMessage = "\n\t\t\t<<<<<< Invalid City Name! >>>>>>\n";
+        
+        while (null == city) {
+            System.out.print("\n\t\t Enter City : ");
+            city = inputReader.nextLine();
+            
+            if (addressController.isValidPlaceName(city)) {
+                city = city.strip().toLowerCase();
+            } else {
+                System.out.println(errorMessage);
+                city = null;
+            }
+        }
+        return city;
+    }
+    
+    /**
+     * Gets the state from the user for create and update address.
+     *
+     * @return the state as a string.
+     */ 
+    private String getStateInput() {
+        String state = null;
+        String errorMessage = "\n\t\t\t<<<<<< Invalid State Name! >>>>>>\n";
+        
+        while (null == state) {
+            System.out.print("\n\t\t Enter State : ");
+            state = inputReader.nextLine();
+            
+            if (addressController.isValidPlaceName(state)) {
+                state = state.strip().toLowerCase();
+            } else {
+                System.out.println(errorMessage);
+                state = null;
+            }
+        }
+        return state;
+    }
+    
+    /**
+     * Gets the country from the user for create and update address.
+     *
+     * @return the country as a string.
+     */
+    private String getCountryInput() {
+        String country = null;
+        String errorMessage = "\n\t\t\t<<<<<< Invalid Country Name! >>>>>>\n";
+        
+        while (null == country) {
+            System.out.print("\n\t\t Enter Country : ");
+            country = inputReader.nextLine();
+            
+            if (addressController.isValidPlaceName(country)) {
+                country = country.strip().toLowerCase();
+            } else {
+                System.out.println(errorMessage);
+                country = null;
+            }
+        }
+        return country;
+    }
+    
+    /**
+     * Gets the postal code from the user for create and update address.
+     *
+     * @return the postal code as a string.
+     */
+    private String getPinCodeInput() {
+        String pinCode = null;
+        String errorMessage = "\n\t\t\t<<<<<< Invalid PinCode! >>>>>>\n";
+        
+        while (null == pinCode) {
+            System.out.print("\n\t\t Enter PinCode : ");
+            pinCode = inputReader.nextLine();
+            
+            if (addressController.isValidPinCode(pinCode)) {
+                pinCode = pinCode.strip();
+            } else {
+                System.out.println(errorMessage);
+                pinCode = null;
+            }
+        }
+        return pinCode;
+    }
+    
+    /**
+     * Asks user if they want to add another address.
+     * 
+     * @return true if user's input is 'y' or false if user input is 'n'.
+     */
+    private boolean askToAddAnotherAddress() {
+        String userInput = null;
+        String errorMessage = "\n\t\t\t<<<<<< Please Enter 'Y' To Add Another "
+                              + "Address Or 'N' To Submit Details! >>>>>>\n";                
+        String message = "\n\t\t Do You Want To Add Another Address? (Y/N) : ";
+        
+        while (null == userInput) {
+            System.out.print(message);
+            userInput = inputReader.nextLine().strip().toLowerCase();
+            
+            if (!("y".equals(userInput) || "n".equals(userInput))) {
+                userInput = null;
+                System.out.println(errorMessage);
+            }
+        }
+        
+        if ("y".equals(userInput)) {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Gets multiple addresses from the user.
+     * 
+     * @return a List containing addresses.
+     */
+    private List<AddressDTO> getAddressesInput(int employeeId) {
+        String city;
+        String country;
+        String doorNumber;
+        String locality;
+        String pinCode;
+        String state;
+        String street;
+        List<AddressDTO> addresses = new ArrayList<>();
+        
+        do {
+            doorNumber = getDoorNumberInput();
+            street = getStreetInput();
+            locality = getLocalityInput();
+            city = getCityInput();
+            state = getStateInput();
+            country = getCountryInput();
+            pinCode = getPinCodeInput();
+        
+            addresses.add(new AddressDTO(doorNumber, street, locality, city, 
+                                         state, country, pinCode, employeeId));
+        } while (askToAddAnotherAddress());
+        return addresses;
+    }
+    
+    /**
      * Gets employee details from the user, validates and creates a new 
      * employee.
      */
@@ -329,8 +552,11 @@ public class EmployeeView {
         LocalDate dateOfJoining = getDateOfJoiningInput();
         
         try {
-            id = employeeController.createEmployee(name, dateOfBirth, gender, 
-                         mobileNumber, email, salary, dateOfJoining);
+            id = employeeController.createEmployee(new EmployeeDTO(name, 
+                         dateOfBirth, gender, mobileNumber, email, salary,
+                         dateOfJoining));
+            addressController.createAddress(getAddressesInput(id));
+            
             System.out.println("\n\t\t\t<<<<<< Employee Created Successfully! "
                                + ">>>>>>\n\n\t\t\t ****** The Employee Id Of < "
                                + name + " > Is --> " + id + " ******");
@@ -428,12 +654,23 @@ public class EmployeeView {
      * valid.
      */
     private void viewEmployee() {
+        StringBuilder employeeDetails;
         int id = getIdInput();
         
         try {
             if (isEmployeeExist(id)) {
-                System.out.println("\n\t\t\t\t ~~~~~~~EMPLOYEE DETAILS~~~~~~~\n"
-                                   + employeeController.getEmployee(id).get(0));
+                employeeDetails = new StringBuilder(300);
+                employeeDetails.append("\n\t\t\t\t ~~~~~~~EMPLOYEE DETAILS~~~~")
+                               .append("~~~\n")
+                               .append(employeeController.getEmployee(id).get(0)
+                                                         .toString());
+                
+                for (AddressDTO addressDTO : addressController
+                                             .getAddresses(id)) {
+                    employeeDetails.append(addressDTO.toString());
+                    
+                }
+                System.out.println(employeeDetails);
             }
         } catch (SQLException exception) {
             System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>"); 
@@ -446,11 +683,21 @@ public class EmployeeView {
      */
     private void viewAllEmployee() {
         try {
-            List employees = employeeController.getAllEmployees();
+            List<AddressDTO> addresses;
+            List<EmployeeDTO> employees = employeeController.getAllEmployees();
+            Map<Integer, List<AddressDTO>> addressesDTO = addressController
+                                             .getAllAddresses();
+            
             System.out.println("\n\t\t\t\t ~~~~~~ALL EMPLOYEE DETAILS~~~~~~\n");
-        
-            for (int index = 0; index < employees.size(); index++) {
-                System.out.println(employees.get(index));
+            
+            for (EmployeeDTO employeeDTO : employees) {
+                System.out.println(employeeDTO);
+                addresses = addressesDTO.get(employeeDTO.getId());
+                
+                for (AddressDTO address : addresses) {
+                    System.out.println(address);
+                }
+                System.out.println("\n\n\t\t\t-------------------------------");
             }
         } catch (SQLException exception) {
             System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
@@ -710,8 +957,9 @@ public class EmployeeView {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         try {
-            if (employeeController.updateAllDetails(id, name, dateOfBirth, 
-                    gender,mobileNumber, email, salary, dateOfJoining)) {
+            if (employeeController.updateAllDetails(new EmployeeDTO(id, name, 
+                    dateOfBirth, gender,mobileNumber, email, salary, 
+                    dateOfJoining))) {
                 System.out.println("\n\t\t\t<<<<<< Employee Details Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
@@ -793,25 +1041,23 @@ public class EmployeeView {
      * @return true if user's input is yes or false if user input is no.
      */
     private boolean askConfirmationToDelete() {
-        String confirmationToDelete = null;
+        String userInput = null;
         String errorMessage = "\n\t\t\t<<<<<< Please Enter 'Y' To Delete Or 'N'"
                               + " To Cancel And Return To Main Menu >>>>>>\n";
         String messageForAbort = "\n\t\t\t<<<<<< Aborted! Returning To Main"
                                  + " Menu... >>>>>>\n";                
         
-        while (null == confirmationToDelete) {
-            System.out.print("\n\t\t Do You Want To Delete ? (Y/N) ");
-            confirmationToDelete = inputReader.nextLine().strip()
-                                                         .toLowerCase();
+        while (null == userInput) {
+            System.out.print("\n\t\t Do You Want To Delete ? (Y/N) : ");
+            userInput = inputReader.nextLine().strip().toLowerCase();
             
-            if (!("y".equals(confirmationToDelete)
-                    || "n".equals(confirmationToDelete))) {
-                confirmationToDelete = null;
+            if (!("y".equals(userInput) || "n".equals(userInput))) {
+                userInput = null;
                 System.out.println(errorMessage);
             }
         }
         
-        if ("y".equals(confirmationToDelete)) {
+        if ("y".equals(userInput)) {
             return true;
         }
         System.out.println(messageForAbort);

@@ -33,6 +33,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return true if database is empty, otherwise false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean isDatabaseEmpty() throws SQLException {
         boolean isEmpty;
         Connection connection = DatabaseConnection.getConnection();
@@ -56,6 +57,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return true if found, otherwise false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean isEmployeeIdExist(int id) throws SQLException {
         boolean isEmployeeFound;
         ResultSet resultSet;
@@ -82,6 +84,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return true if found, else false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean isMobileNumberExist(long mobileNumber) throws SQLException {
         boolean isMobileNumberFound;
         ResultSet resultSet;
@@ -108,6 +111,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return true if found, otherwise false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean isEmailExist(String email) throws SQLException {
         boolean isEmailFound;
         ResultSet resultSet;
@@ -134,6 +138,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return the employee id as a int.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public int insertRecord(Employee employee) throws SQLException {
         int employeeId;
         ResultSet resultSet;
@@ -196,6 +201,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return a List containing the specified employee.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public List<Employee> selectRecord(int id) throws SQLException {
         List<Employee> employees;
         ResultSet resultSet;
@@ -220,6 +226,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return a List containing all employees.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public List<Employee> selectAllRecord() throws SQLException {
         List<Employee> employees;
         ResultSet resultSet;
@@ -244,6 +251,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return the number of rows affected.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public int updateName(int id, String name) throws SQLException {
         int rowsAffected;
         Connection connection = DatabaseConnection.getConnection();
@@ -268,6 +276,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return the number of rows affected.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public int updateDateOfBirth(int id, LocalDate dateOfBirth) 
             throws SQLException {
         int rowsAffected;
@@ -293,6 +302,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return the number of rows affected.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public int updateGender(int id, String gender) throws SQLException {
         int rowsAffected;
         Connection connection = DatabaseConnection.getConnection();
@@ -317,6 +327,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return the number of rows affected.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public int updateMobileNumber(int id, long mobileNumber) 
             throws SQLException {
         int rowsAffected;
@@ -342,6 +353,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return the number of rows affected.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public int updateEmail(int id, String email) throws SQLException {
         int rowsAffected;
         Connection connection = DatabaseConnection.getConnection();
@@ -366,6 +378,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return the number of rows affected.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public int updateSalary(int id, float salary) throws SQLException {
         int rowsAffected;
         Connection connection = DatabaseConnection.getConnection();
@@ -390,6 +403,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return the number of rows affected.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public int updateDateOfJoining(int id, LocalDate dateOfJoining) 
             throws SQLException {
         int rowsAffected;
@@ -414,6 +428,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return the number of rows affected.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public int updateAllColumn(Employee employee) throws SQLException {
         int rowsAffected;
         Connection connection = DatabaseConnection.getConnection();
@@ -445,6 +460,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return the number of rows affected.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public int deleteRecord(int id) throws SQLException {
         int rowsAffected;
         Connection connection = DatabaseConnection.getConnection();
@@ -466,6 +482,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * @return true if deleted successfully, otherwise false.
      * @exception SQLException if a database access error occurs.
      */
+    @Override
     public boolean deleteAllRecord() throws SQLException {
         Connection connection = DatabaseConnection.getConnection();
         Statement statement = connection.createStatement();
