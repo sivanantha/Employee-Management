@@ -487,7 +487,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         Connection connection = DatabaseConnection.getConnection();
         Statement statement = connection.createStatement();
         
-        statement.execute("TRUNCATE TABLE employee");
+        statement.execute("DELETE FROM employee");
         DatabaseConnection.closeConnection();
         return isDatabaseEmpty();
     }   

@@ -93,4 +93,123 @@ public class AddressController {
             SQLException {
         return addressService.getAllAddresses();
     }
+    
+    /**
+     * Updates the specified address door number.
+     *
+     * @param id the id of the address to be updated.
+     * @param doorNumber the door number as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    public boolean updateDoorNumber(int id, String doorNumber) throws 
+            SQLException {
+        return addressService.updateDoorNumber(id, doorNumber);   
+    }
+    
+    /**
+     * Updates the specified address street.
+     * 
+     * @param id the id of the address to be updated.
+     * @param street the street name as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    public boolean updateStreet(int id, String street) throws SQLException {
+        return addressService.updateStreet(id, street);
+    }
+    
+    /**
+     * Updates the specified address locality.
+     *
+     * @param id the id of the address to be updated.
+     * @param locality the locality name as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    public boolean updateLocality(int id, String locality) throws SQLException {
+        return addressService.updateLocality(id, locality);
+    }
+    
+    /**
+     * Updates the specified address city.
+     *
+     * @param id the id of the address to be updated.
+     * @param city the city name as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    public boolean updateCity(int id, String city) throws SQLException {
+        return addressService.updateCity(id, city);
+    }
+    
+    /**
+     * Updates the specified address state.
+     *
+     * @param id the id of the address to be updated.
+     * @param state the state name as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    public boolean updateState(int id, String state) throws SQLException {
+        return addressService.updateState(id, state);
+    }
+    
+    /**
+     * Updates the specified address country.
+     *
+     * @param id the id of the address to be updated.
+     * @param country the country name as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    public boolean updateCountry(int id, String country) throws SQLException {
+        return addressService.updateCountry(id, country);
+    }
+    
+    /**
+     * Updates the specified address postal code.
+     *
+     * @param id the id of the address to be updated.
+     * @param pinCode the postal code as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    public boolean updatePinCode(int id, String pinCode) throws SQLException {
+        return addressService.updatePinCode(id, pinCode);
+    }
+    
+    /**
+     * Updates the specified address's all details.
+     *
+     * @param id the id of the address to be updated.
+     * @param address the AddressDTO instance containing address details.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+     public boolean updateAllDetails(AddressDTO addressDTO) throws
+            SQLException {
+        return addressService.updateAllDetails(addressDTO);
+     }
+     
+     /**
+      * Deletes the specified address.
+      *
+      * @param id the id of the address to be updated.
+      * @return true if deleted successfully, otherwise false.
+      * @exception SQLException if a database access error occurs.
+      */
+     public boolean deleteAddress(int id) throws SQLException {
+        return addressService.deleteAddress(id);
+     }
+     
+     /**
+      * Deletes all addresses.
+      *
+      * @return true if deleted successfully, otherwise false.
+      * @exception SQLException if a database access error occurs.
+      */
+     public boolean deleteAllAddress() throws SQLException {
+        return addressService.deleteAllAddress();
+     }
 }

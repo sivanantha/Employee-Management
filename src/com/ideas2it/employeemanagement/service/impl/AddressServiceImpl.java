@@ -168,4 +168,95 @@ public class AddressServiceImpl implements AddressService {
         
         return groupByEmployee(addressesDTO);
     }
+    
+    /**
+     * {@inheritDoc} 
+     *
+     */
+    @Override
+    public boolean updateDoorNumber(int id, String doorNumber) throws 
+            SQLException {
+        return (1 == addressDAO.updateDoorNumber(id, doorNumber));
+    }
+    
+    /**
+     * {@inheritDoc} 
+     *
+     */
+    @Override
+    public boolean updateStreet(int id, String street) throws SQLException {
+        return (1 == addressDAO.updateStreet(id, street));
+    }
+    
+    /**
+     * {@inheritDoc} 
+     *
+     */
+    @Override
+    public boolean updateLocality(int id, String locality) throws SQLException {
+        return (1 == addressDAO.updateLocality(id, locality));
+    }
+    
+    /**
+     * {@inheritDoc} 
+     *
+     */
+    @Override
+    public boolean updateCity(int id, String city) throws SQLException {
+        return (1 == addressDAO.updateCity(id, city));
+    }
+    
+    /**
+     * {@inheritDoc} 
+     *
+     */
+    @Override
+    public boolean updateState(int id, String state) throws SQLException {
+        return (1 == addressDAO.updateState(id, state));
+    }
+    
+    /**
+     * {@inheritDoc} 
+     *
+     */
+    @Override
+    public boolean updateCountry(int id, String country) throws SQLException {
+        return (1 == addressDAO.updateCountry(id, country));
+    }
+    
+    /**
+     * {@inheritDoc} 
+     *
+     */
+    @Override
+    public boolean updatePinCode(int id, String pinCode) throws SQLException {
+        return (1 == addressDAO.updatePinCode(id, pinCode));
+    }
+    
+    /**
+     * {@inheritDoc} 
+     *
+     */
+    @Override
+    public boolean updateAllDetails(AddressDTO addressDTO) throws SQLException {
+        return (1 == addressDAO.updateAllColumn(Mapper.toAddress(addressDTO)));
+    }
+    
+    /**
+     * {@inheritDoc} 
+     *
+     */
+    @Override
+    public boolean deleteAddress(int id) throws SQLException {
+        return (1 == addressDAO.deleteRecord(id));
+    }
+    
+    /**
+     * {@inheritDoc} 
+     *
+     */
+    @Override
+    public boolean deleteAllAddress() throws SQLException {
+        return (0 != addressDAO.deleteAllRecord());
+    } 
 }

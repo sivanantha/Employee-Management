@@ -738,9 +738,9 @@ public class EmployeeView {
                     updateSingleField(id);
                     break;
                 case "2": 
-                    updateAllDetails(id);
+                    showUpdateAllChoices(id);
                     break;
-                case "3":  
+                case "3": 
                     break;
                 default:  
                     System.out.println(errorMessage);
@@ -762,7 +762,8 @@ public class EmployeeView {
                .append("~~~~~~~~~~~~~~~~~~~~~\n\t\t1 => Name\t\t\t2 => Date Of")
                .append(" Birth\n\n\t\t3 => Gender\t\t\t4 => Mobile Number\n\n")
                .append("\t\t5 => Email\t\t\t6 => Salary\n\n\t\t7 => Date Of ")
-               .append("Joining\t\t8 => Return To Previous Menu\n\n\t\t")
+               .append("Joining\t\t8 => Update Address\n\n\t\t 9 => Return To") 
+               .append(" Previous Menu\n\n\t\t")
                .append("Enter The Option : "); 
         
         do {
@@ -791,13 +792,16 @@ public class EmployeeView {
                 case "7": 
                     updateDateOfJoining(id);
                     break;
-                case "8":  
+                case "8":
+                    showUpdateAddressChoices(id);
+                    break;
+                case "9":
                     break;
                 default:  
                     System.out.println(errorMessage);
                     break;
             }
-        } while (!"8".equals(userChoice));
+        } while (!"9".equals(userChoice));
     }
     
     /**
@@ -941,6 +945,343 @@ public class EmployeeView {
     }
     
     /**
+     * Shows all addresses of the specified employee and returns the selected 
+     * address id.
+     *
+     * @param employeeId the id of the employee whose address to be shown.
+     * @return the id of selected the address or 0 if an employee does not have 
+     * any address or -1 if exit option is selected.
+     */
+    private int showAndGetAddress(int employeeId) {
+        int addressId = 0;
+        int size = 0;
+        int count = 1;
+        StringBuilder addressText;
+        List<AddressDTO> addresses;
+        
+        try {
+            addresses = addressController.getAddresses(employeeId);
+            size = addresses.size();
+            
+            if (size > 0) {
+                for (AddressDTO addressDTO : addresses) {
+                addressText =  new StringBuilder(150).append("\n\t\t ")
+                                          .append(count).append(" =>   ")
+                                          .append(addressDTO.getDoorNumber())
+                                          .append(", ")
+                                          .append(addressDTO.getStreet())
+                                          .append(",\n\t\t\t")
+                                          .append(addressDTO.getLocality())
+                                          .append(", ")
+                                          .append(addressDTO.getCity())
+                                          .append(",\n\t\t\t")
+                                          .append(addressDTO.getState())
+                                          .append(",\n\t\t\t")
+                                          .append(addressDTO.getCountry())
+                                          .append(" - ")
+                                          .append(addressDTO.getPinCode());
+                    System.out.println(addressText);
+                    count++;
+                }
+                System.out.println("\n\t\t -1 =>  Go Back\n");
+                addressId = getAddressId(addresses);
+            } else {
+                System.out.println("\n\t\t\t<<<<<< No Address Found! >>>>>>\n");
+            }
+        } catch (SQLException exception) {
+            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
+            addressId = 0;
+        }
+        return addressId;
+    }
+    
+    /**
+     * Shows all the addresses of an employee and asks the user to select an 
+     * address then gets the address id of the selected address.
+     *
+     * @param addresses the List of addresses of an employee.
+     * @return the addressId of the selected address or -1 if exit choice is 
+     *         selected.
+     */
+    private int getAddressId(List<AddressDTO> addresses) {
+        Integer addressId = null;
+        Integer userChoice;
+        String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! "
+                              + ">>>>>>\n";
+        
+        while (null == addressId) {
+            System.out.print("\n\t\t\tEnter The Choice : ");
+                
+            try {
+                userChoice = Integer.parseInt(inputReader.nextLine());
+                if (userChoice == -1) {
+                    addressId = -1;   
+                } else {
+                    addressId = addresses.get(userChoice - 1).getId();
+                }
+            } catch (NumberFormatException | IndexOutOfBoundsException 
+                     exception) {
+                System.out.println(errorMessage);
+                addressId = null;
+            }
+        }
+        return addressId;
+    }
+    
+    /**
+     * Shows the available choices for update single detail of the address and
+     * gets the choice and executes the corresponding operation.
+     *
+     * @param employeeId the id of the employee whose address to be updated.
+     */
+    private void showUpdateAddressChoices(int employeeId) {
+        int addressId = showAndGetAddress(employeeId);
+        String errorMessage;
+        String userChoice;
+        StringBuilder options;
+        
+        if (0 >= addressId) {
+            return;
+        }
+        errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! "
+                              + ">>>>>>\n";
+        options = new StringBuilder(80);
+        options.append("\n\t\t\t\\ Address Update Menu /\n\t\t\t ~~~~~~")
+               .append("~~~~~~~~~~~~~~~~\n\t\t1 => Door Number\t\t2 => ")
+               .append("Street Name\n\n\t\t3 => Locality\t\t\t4 => City\n\n")
+               .append("\t\t5 => State\t\t\t6 => Country\n\n\t\t7 => Postal")
+               .append("Code\t\t\t8 => Return To Previous Menu\n\n\t\t")
+               .append("Enter The Option : "); 
+        
+        do {
+            System.out.print(options);
+            userChoice = inputReader.nextLine().strip();
+            
+            switch (userChoice) {
+                case "1": 
+                    updateDoorNumber(addressId);
+                    break;
+                case "2": 
+                    updateStreet(addressId);
+                    break;
+                case "3": 
+                    updateLocality(addressId);
+                    break;
+                case "4": 
+                    updateCity(addressId);
+                    break;
+                case "5": 
+                    updateState(addressId);
+                    break;
+                case "6": 
+                    updateCountry(addressId);
+                    break;
+                case "7": 
+                    updatePinCode(addressId);
+                    break;
+                case "8":
+                    break;
+                default:  
+                    System.out.println(errorMessage);
+                    break;
+            }
+        } while (!"8".equals(userChoice));
+    }
+    
+    /**
+     * Gets door number from the user and updates the door number of the
+     * specified address.
+     *
+     * @param addressId the id of the address to be updated.
+     */
+    private void updateDoorNumber(int addressId) {
+        String doorNumber = getDoorNumberInput();
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            if (addressController.updateDoorNumber(addressId, doorNumber)) {      
+                System.out.println("\n\t\t\t<<<<<< Door Number Updated "
+                                   + "Successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);  
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Gets street from the user and updates the street of the
+     * specified address.
+     *
+     * @param addressId the id of the address to be updated.
+     */
+    private void updateStreet(int addressId) {
+        String street = getStreetInput();
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            if (addressController.updateStreet(addressId, street)) {      
+                System.out.println("\n\t\t\t<<<<<< Street Updated Successfully!"
+                                   + " >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Gets locality from the user and updates the locality of the
+     * specified address.
+     *
+     * @param addressId the id of the address to be updated.
+     */
+    private void updateLocality(int addressId) {
+        String locality = getLocalityInput();
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            if (addressController.updateLocality(addressId, locality)) {      
+                System.out.println("\n\t\t\t<<<<<< Locality Updated "
+                                   + "Successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);  
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Gets city from the user and updates the city of the
+     * specified address.
+     *
+     * @param addressId the id of the address to be updated.
+     */
+    private void updateCity(int addressId) {
+        String city = getCityInput();
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            if (addressController.updateCity(addressId, city)) {      
+                System.out.println("\n\t\t\t<<<<<< Locality Updated "
+                                   + "Successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);  
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Gets state from the user and updates the state of the
+     * specified address.
+     *
+     * @param addressId the id of the address to be updated.
+     */
+    private void updateState(int addressId) {
+        String state = getStateInput();
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            if (addressController.updateState(addressId, state)) {      
+                System.out.println("\n\t\t\t<<<<<< State Updated "
+                                   + "Successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);  
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Gets country from the user and updates the country of the
+     * specified address.
+     *
+     * @param addressId the id of the address to be updated.
+     */
+    private void updateCountry(int addressId) {
+        String country = getCountryInput();
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            if (addressController.updateCountry(addressId, country)) {      
+                System.out.println("\n\t\t\t<<<<<< Country Updated "
+                                   + "Successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);  
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Gets postal code from the user and updates the postal code of the
+     * specified address.
+     *
+     * @param addressId the id of the address to be updated.
+     */
+    private void updatePinCode(int addressId) {
+        String pinCode = getPinCodeInput();
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            if (addressController.updatePinCode(addressId, pinCode)) {      
+                System.out.println("\n\t\t\t<<<<<< Pin Code Updated "
+                                   + "Successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);  
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Shows the choices available for update all menu and gets the desired 
+     * choice from the user. Executes the specified choice.
+     *
+     * @param employeeId the id of the employee whose details to be updated.
+     */
+    private void showUpdateAllChoices(int employeeId) {
+        StringBuilder options;
+        String errorMessage;
+        String userChoice;
+
+        errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! >>>>>>\n";
+        options = new StringBuilder(80);
+        options.append("\n\t\t\t\t\\ Update All Details Menu /\n\t\t\t\t ")
+               .append("~~~~~~~~~~~~~\n\n\t\t1 => Update Employee's Details")
+               .append("\t\t2 => Update Address Details\n\n\t\t")
+               .append("3 => Return to Main Menu\n\n\t\t")
+               .append("Enter The Option : ");
+        
+        do {
+            System.out.print(options);
+            userChoice = inputReader.nextLine().strip();
+            
+            switch (userChoice) {
+                case "1":
+                    updateAllDetails(employeeId);
+                    break;
+                case "2":
+                    updateAddressDetails(employeeId);
+                    break;
+                case "3":
+                    break;
+                default:
+                    System.out.println(errorMessage);
+                    break;
+            }
+        } while (!"3".equals(userChoice));
+    }
+    
+    /**
      * Gets all details of the employee from the user, validates and updates
      * all details. It does not check for employee existence.
      *
@@ -971,6 +1312,41 @@ public class EmployeeView {
     }
     
     /**
+     * Asks user to select an address to update. If selected gets input from 
+     * the user and updates all details of the specified address.
+     *
+     * @param employeeId the id of the employee whose address to be updated.
+     */
+    private void updateAddressDetails(int employeeId) {
+        int addressId = showAndGetAddress(employeeId);
+       
+        if (0 >= addressId) {
+            return;
+        }
+        String doorNumber = getDoorNumberInput();
+        String street = getStreetInput();
+        String locality = getLocalityInput();
+        String city = getCityInput();
+        String state = getStateInput();
+        String country = getCountryInput();
+        String pinCode = getPinCodeInput();
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        AddressDTO addressDTO = new AddressDTO(addressId, doorNumber, street, 
+                                            locality, city, state, country, 
+                                            pinCode, employeeId);
+        try {
+            if (addressController.updateAllDetails(addressDTO)) {
+                System.out.println("\n\t\t\t<<<<<< Address Updated "         
+                                       + "Successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (SQLException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
      * Prints available choices for delete operation and asks the user to select
      * a choice if database is not empty.
      */
@@ -982,9 +1358,9 @@ public class EmployeeView {
         
         options.append("\n\t\t\t\t\\ Delete Menu /\n\t\t\t\t ~~~~~~~~~~~~~\n")
                .append("\n\t\t1 => Delete Single Employee\t\t2 => Delete All")
-               .append(" Employees\n\n\t\t3 => Return To Main Menu\n\n\t\t")
+               .append(" Employees\n\n\t\t3 => Delete Only Address Of An ")
+               .append("Employee\n\n\t\t4 => Return To Main Menu\n\n\t\t")
                .append("Enter The Option : ");
-        
         
         do {
             if (isEmployeesDatabaseEmpty()) {
@@ -1000,39 +1376,16 @@ public class EmployeeView {
                 case "2": 
                     deleteAllEmployee();
                     break;
-                case "3":  
+                case "3": 
+                    deleteAddress(); 
+                    break;
+                case "4":
                     break;
                 default:  
                     System.out.println(errorMessage);
                     break;
             }
-        } while (!"3".equals(userChoice)); 
-    }
-    
-    /**
-     * Gets employee id from the user, validates id. Asks user for confirmation 
-     * and deletes the employee if found.
-     */
-    public void deleteEmployee() {
-        int id = getIdInput();
-        
-        if (!isEmployeeExist(id)) {
-            return;
-        }
-        
-        try {
-            if (askConfirmationToDelete()) {
-                if (employeeController.deleteEmployee(id)) {
-                    System.out.println("\n\t\t\t<<<<<< Deleted Successfully! "
-                                       + ">>>>>>\n");
-                } else {
-                    System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
-                                       + ">>>>>>\n");
-                }
-            }
-        } catch (SQLException exception) {
-            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
-        }
+        } while (!"4".equals(userChoice)); 
     }
     
     /**
@@ -1062,6 +1415,65 @@ public class EmployeeView {
         }
         System.out.println(messageForAbort);
         return false;
+    }
+    
+    /**
+     * Gets employee id from the user, validates id. Asks user for confirmation 
+     * and deletes the employee if found.
+     */
+    public void deleteEmployee() {
+        int id = getIdInput();
+        
+        if (!isEmployeeExist(id)) {
+            return;
+        }
+        
+        try {
+            if (askConfirmationToDelete()) {
+                if (employeeController.deleteEmployee(id)) {
+                    System.out.println("\n\t\t\t<<<<<< Deleted Successfully! "
+                                       + ">>>>>>\n");
+                } else {
+                    System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
+                                       + ">>>>>>\n");
+                }
+            }
+        } catch (SQLException exception) {
+            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
+        }
+    }
+    
+    /**
+     * Asks user to select the address to be deleted and deletes the specified
+     * address.
+     */
+    private void deleteAddress() {
+        int addressId;
+        int employeeId = getIdInput();
+        
+        if (!isEmployeeExist(employeeId)) {
+            return;
+        }
+        addressId = showAndGetAddress(employeeId);
+        
+        if (0 >= addressId) {
+            if (askConfirmationToDelete()) {
+                try {
+                    if (addressController.deleteAddress(addressId)) {
+                        System.out.println("\n\t\t\t<<<<<< Deleted Successfully"
+                                           + "! >>>>>>\n");
+                    } else {
+                        System.out.println("\n\t\t\t<<<<<< Cannot Delete The "
+                                           + "Address! >>>>>>\n");
+                    }
+                } catch (SQLException exception) {
+                    System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
+                                       + ">>>>>>\n");
+                }
+            }
+        } else {
+            System.out.println("\n\t\t\t<<<<<< No Address To Delete! >>>>>>\n");
+        }
     }
     
     /** 

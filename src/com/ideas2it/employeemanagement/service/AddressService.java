@@ -91,4 +91,101 @@ public interface AddressService {
      * @exception SQLException if a database access error occurs.
      */
     Map<Integer, List<AddressDTO>> getAllAddresses() throws SQLException;
+    
+    /**
+     * Updates the specified address door number.
+     *
+     * @param id the id of the address to be updated.
+     * @param doorNumber the door number as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    boolean updateDoorNumber(int id, String doorNumber) throws SQLException;
+    
+    /**
+     * Updates the specified address street.
+     * 
+     * @param id the id of the address to be updated.
+     * @param street the street name as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    boolean updateStreet(int id, String street) throws SQLException;
+    
+    /**
+     * Updates the specified address locality.
+     *
+     * @param id the id of the address to be updated.
+     * @param locality the locality name as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    boolean updateLocality(int id, String locality) throws SQLException;
+    
+    /**
+     * Updates the specified address city.
+     *
+     * @param id the id of the address to be updated.
+     * @param city the city name as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    boolean updateCity(int id, String city) throws SQLException;
+    
+    /**
+     * Updates the specified address state.
+     *
+     * @param id the id of the address to be updated.
+     * @param state the state name as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    boolean updateState(int id, String state) throws SQLException;
+    
+    /**
+     * Updates the specified address country.
+     *
+     * @param id the id of the address to be updated.
+     * @param country the country name as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    boolean updateCountry(int id, String country) throws SQLException;
+    
+    /**
+     * Updates the specified address postal code.
+     *
+     * @param id the id of the address to be updated.
+     * @param pinCode the postal code as a string.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+    boolean updatePinCode(int id, String pinCode) throws SQLException;
+    
+    /**
+     * Updates the specified address's all details.
+     *
+     * @param id the id of the address to be updated.
+     * @param address the AddressDTO instance containing address details.
+     * @return true if updated successfully, otherwise false.
+     * @exception SQLException if a database access error occurs.
+     */
+     boolean updateAllDetails(AddressDTO addressDTO) throws SQLException;
+     
+     /**
+      * Deletes the specified address.
+      *
+      * @param id the id of the address to be deleted.
+      * @return true if deleted successfully, otherwise false.
+      * @exception SQLException if a database access error occurs.
+      */
+     boolean deleteAddress(int id) throws SQLException;
+     
+     /**
+      * Deletes all addresses.
+      *
+      * @return true if deleted successfully, otherwise false.
+      * @exception SQLException if a database access error occurs.
+      */
+     boolean deleteAllAddress() throws SQLException;
 }
