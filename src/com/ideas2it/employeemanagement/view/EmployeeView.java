@@ -1044,7 +1044,7 @@ public class EmployeeView {
             return;
         }
         errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! "
-                              + ">>>>>>\n";
+                       + ">>>>>>\n";
         options = new StringBuilder(80);
         options.append("\n\t\t\t\\ Address Update Menu /\n\t\t\t ~~~~~~")
                .append("~~~~~~~~~~~~~~~~\n\t\t1 => Door Number\t\t2 => ")
@@ -1456,7 +1456,7 @@ public class EmployeeView {
         }
         addressId = showAndGetAddress(employeeId);
         
-        if (0 >= addressId) {
+        if (0 <= addressId) {
             if (askConfirmationToDelete()) {
                 try {
                     if (addressController.deleteAddress(addressId)) {
@@ -1471,8 +1471,6 @@ public class EmployeeView {
                                        + ">>>>>>\n");
                 }
             }
-        } else {
-            System.out.println("\n\t\t\t<<<<<< No Address To Delete! >>>>>>\n");
         }
     }
     
