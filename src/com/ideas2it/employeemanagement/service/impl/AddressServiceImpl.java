@@ -36,9 +36,11 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public boolean isValidDoorNumber(String doorNumber) {
         return Pattern.matches("^[\\s]*([1-9][0-9]{0,4}([-][A-Z]|[A-Z])?[/]"
-                + "[1-9][0-9]{0,4}|[1-9][0-9]{0,4}([-][A-Z]|[A-Z])?|([A-Z]|"
-                + "[A-Z][-])?[1-9][0-9]{0,4}|([A-Z]|[A-Z][-])[1-9][0-9]{0,4}"
-                + "[/][1-9][0-9]{0,4})[\\s]*$", doorNumber);
+                       + "[1-9][0-9]{0,4}[A-Z]?|[1-9][0-9]{0,4}([-][A-Z]|[A-Z])"
+                       + "?|([A-Z]|[A-Z][-])?[1-9][0-9]{0,4}|([A-Z]|[A-Z][-])"
+                       + "[1-9][0-9]{0,4}[/][A-Z]?[1-9][0-9]{0,4}|[1-9][0-9]"
+                       + "{0,4}([-][A-Z]|[A-Z])?[/][A-Z]?[1-9][0-9]{0,4})[\\s]*"
+                       + "$", doorNumber);
     }
     
     /**
