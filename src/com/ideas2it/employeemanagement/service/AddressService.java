@@ -25,7 +25,8 @@ public interface AddressService {
      * Door number starts with 0 is not allowed. door number can have maximum
      * of 5 digits, can contain single capital letter with or without '-' hyphen
      * single '/' is allowed. Leading trailing spaces are accepted.
-     * (e.g) 12, 12B, C1, A-9, 3-F, 1/30, B12/2, 10C/23, D-30/5, 4-F/224.
+     * (e.g) 12, 12B, C1, A-9, 3-F, 1/30, B12/2C, 10C/23, D-30/5, 4-F/224, 
+     * 12/B5
      *
      * @param doorNumber the door number to be validated.
      * @return true if it is valid, otherwise false.

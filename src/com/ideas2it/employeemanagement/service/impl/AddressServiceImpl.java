@@ -64,7 +64,7 @@ public class AddressServiceImpl implements AddressService {
         return Pattern.matches("^[\\s]*(([a-zA-Z]{3,50}[ ]?|[ ][a-zA-Z]{2})"
                                + "{1,2})[\\s]*$", name);
     }
-    
+   
     /**
      * 
      * {@inheritDoc}

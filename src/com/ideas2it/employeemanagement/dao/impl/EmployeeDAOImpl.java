@@ -145,7 +145,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
         Connection connection = DatabaseConnection.getConnection();
         String sql = "INSERT INTO employee VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement statement = connection.prepareStatement(sql, 
-                                      Statement.RETURN_GENERATED_KEYS);
+                                              Statement.RETURN_GENERATED_KEYS);
         
         statement.setString(1, employee.getName());
         statement.setDate(2, Date.valueOf(employee.getDateOfBirth()));

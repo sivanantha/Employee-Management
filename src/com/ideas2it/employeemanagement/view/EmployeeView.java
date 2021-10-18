@@ -17,7 +17,8 @@ import com.ideas2it.employeemanagement.model.EmployeeDTO;
 
 /**
  * The EmployeeView class contains view implementations for create, update,
- * retrieve, delete employee for employee management system.
+ * retrieve, delete employee for employee management system. It has validation
+ * methods for employee details.
  *
  * @author  Sivanantham
  * @version 1.6
@@ -127,6 +128,7 @@ public class EmployeeView {
                                  + " Names Are Optional) : ";
         String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Name! >>>>"
                               + ">>\n";
+        
         while (null == name) {
             System.out.print(messageForInput);
             userInput = inputReader.nextLine();
@@ -555,8 +557,8 @@ public class EmployeeView {
             id = employeeController.createEmployee(new EmployeeDTO(name, 
                          dateOfBirth, gender, mobileNumber, email, salary,
                          dateOfJoining));
-            addressController.createAddress(getAddressesInput(id));
             
+            addressController.createAddress(getAddressesInput(id));
             System.out.println("\n\t\t\t<<<<<< Employee Created Successfully! "
                                + ">>>>>>\n\n\t\t\t ****** The Employee Id Of < "
                                + name + " > Is --> " + id + " ******");
@@ -662,13 +664,12 @@ public class EmployeeView {
                 employeeDetails = new StringBuilder(300);
                 employeeDetails.append("\n\t\t\t\t ~~~~~~~EMPLOYEE DETAILS~~~~")
                                .append("~~~\n")
-                               .append(employeeController.getEmployee(id).get(0)
-                                                         .toString());
+                               .append(employeeController.getEmployee(id)
+                                                         .get(0));
                 
                 for (AddressDTO addressDTO : addressController
-                                             .getAddresses(id)) {
-                    employeeDetails.append(addressDTO.toString());
-                    
+                        .getAddresses(id)) {
+                    employeeDetails.append(addressDTO);
                 }
                 System.out.println(employeeDetails);
             }
@@ -682,12 +683,13 @@ public class EmployeeView {
      * database is not empty.
      */
     private void viewAllEmployee() {
+        Map<Integer, List<AddressDTO>> addressesDTO;
+        List<AddressDTO> addresses;
+        List<EmployeeDTO> employees;
+        
         try {
-            List<AddressDTO> addresses;
-            List<EmployeeDTO> employees = employeeController.getAllEmployees();
-            Map<Integer, List<AddressDTO>> addressesDTO = addressController
-                                             .getAllAddresses();
-            
+            employees = employeeController.getAllEmployees();
+            addressesDTO = addressController.getAllAddresses();
             System.out.println("\n\t\t\t\t ~~~~~~ALL EMPLOYEE DETAILS~~~~~~\n");
             
             for (EmployeeDTO employeeDTO : employees) {
@@ -751,9 +753,11 @@ public class EmployeeView {
     
     /**
      * Prints choices available for update a single employee detail and gets 
-     * the choice from the user. Executes the selected choice.  
+     * the choice from the user. Executes the selected choice.
+     *
+     * @param employeeId the id of the employee whose details to be updated.
      */
-    private void updateSingleField(int id) {
+    private void updateSingleField(int employeeId) {
         StringBuilder options = new StringBuilder(80);
         String userChoice;
         String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! "
@@ -772,28 +776,28 @@ public class EmployeeView {
             
             switch (userChoice) {
                 case "1": 
-                    updateName(id);
+                    updateName(employeeId);
                     break;
                 case "2": 
-                    updateDateOfBirth(id);
+                    updateDateOfBirth(employeeId);
                     break;
                 case "3": 
-                    updateGender(id);
+                    updateGender(employeeId);
                     break;
                 case "4": 
-                    updateMobileNumber(id);
+                    updateMobileNumber(employeeId);
                     break;
                 case "5": 
-                    updateEmail(id);
+                    updateEmail(employeeId);
                     break;
                 case "6": 
-                    updateSalary(id);
+                    updateSalary(employeeId);
                     break;
                 case "7": 
-                    updateDateOfJoining(id);
+                    updateDateOfJoining(employeeId);
                     break;
                 case "8":
-                    showUpdateAddressChoices(id);
+                    showUpdateAddressChoices(employeeId);
                     break;
                 case "9":
                     break;
@@ -807,6 +811,8 @@ public class EmployeeView {
     /**
      * Gets employee id, name from the user, validates and updates the employee
      * name if id is found.
+     *
+     * @param employeeId the id of the employee whose details to be updated.
      */
     private void updateName(int id) {
         String name = getNameInput();
@@ -827,6 +833,8 @@ public class EmployeeView {
     /**
      * Gets employee id, date of birth from the user, validates and updates the   
      * employee date of birth if employee id is found.
+     *
+     * @param id the id of the employee whose details to be updated.
      */
     private void updateDateOfBirth(int id) { 
         LocalDate dateOfBirth = getDateOfBirthInput();    
@@ -847,6 +855,8 @@ public class EmployeeView {
     /**
      * Gets employee id, gender from the user, validates and updates the   
      * employee gender if employee id is found.
+     *
+     * @param id the id of the employee whose details to be updated.
      */
     private void updateGender(int id) {
         String gender = getGenderInput();
@@ -867,6 +877,8 @@ public class EmployeeView {
     /**
      * Gets employee id, mobile number from the user, validates and updates   
      * the employee gender if id is found.
+     *
+     * @param id the id of the employee whose details to be updated.
      */
     private void updateMobileNumber(int id) {
         long mobileNumber = getMobileNumberInput();
@@ -887,6 +899,8 @@ public class EmployeeView {
     /**
      * Gets employee id, email from the user, validates and updates   
      * the employee email if id is found.
+     *
+     * @param id the id of the employee whose details to be updated.
      */
     private void updateEmail(int id) {
         String email = getEmailInput();
@@ -907,6 +921,8 @@ public class EmployeeView {
     /**
      * Gets employee id, salary from the user, validates and updates   
      * the employee salary if id is found.
+     *
+     * @param id the id of the employee whose details to be updated.
      */
     private void updateSalary(int id) {
         float salary = getSalaryInput();
@@ -927,6 +943,8 @@ public class EmployeeView {
     /**
      * Gets employee id, date of joining from the user, validates and updates   
      * the employee date of joining if id is found.
+     *
+     * @param id the id of the employee whose details to be updated.
      */
     private void updateDateOfJoining(int id) {
         LocalDate date = getDateOfJoiningInput();
@@ -950,7 +968,7 @@ public class EmployeeView {
      *
      * @param employeeId the id of the employee whose address to be shown.
      * @return the id of selected the address or 0 if an employee does not have 
-     * any address or -1 if exit option is selected.
+     *         any address or -1 if exit option is selected.
      */
     private int showAndGetAddress(int employeeId) {
         int addressId = 0;
@@ -964,22 +982,22 @@ public class EmployeeView {
             size = addresses.size();
             
             if (size > 0) {
-                for (AddressDTO addressDTO : addresses) {
-                addressText =  new StringBuilder(150).append("\n\t\t ")
-                                          .append(count).append(" =>   ")
-                                          .append(addressDTO.getDoorNumber())
-                                          .append(", ")
-                                          .append(addressDTO.getStreet())
-                                          .append(",\n\t\t\t")
-                                          .append(addressDTO.getLocality())
-                                          .append(", ")
-                                          .append(addressDTO.getCity())
-                                          .append(",\n\t\t\t")
-                                          .append(addressDTO.getState())
-                                          .append(",\n\t\t\t")
-                                          .append(addressDTO.getCountry())
-                                          .append(" - ")
-                                          .append(addressDTO.getPinCode());
+                for (AddressDTO address : addresses) {
+                    addressText =  new StringBuilder(150).append("\n\t\t ")
+                                              .append(count).append(" =>   ")
+                                              .append(address.getDoorNumber())
+                                              .append(", ")
+                                              .append(address.getStreet())
+                                              .append(",\n\t\t\t")
+                                              .append(address.getLocality())
+                                              .append(", ")
+                                              .append(address.getCity())
+                                              .append(",\n\t\t\t")
+                                              .append(address.getState())
+                                              .append(",\n\t\t\t")
+                                              .append(address.getCountry())
+                                              .append(" - ")
+                                              .append(address.getPinCode());
                     System.out.println(addressText);
                     count++;
                 }
@@ -1015,7 +1033,7 @@ public class EmployeeView {
             try {
                 userChoice = Integer.parseInt(inputReader.nextLine());
                 if (userChoice == -1) {
-                    addressId = -1;   
+                    addressId = -1;
                 } else {
                     addressId = addresses.get(userChoice - 1).getId();
                 }
@@ -1282,8 +1300,8 @@ public class EmployeeView {
     }
     
     /**
-     * Gets all details of the employee from the user, validates and updates
-     * all details. It does not check for employee existence.
+     * Gets all details of the employee from the user except address, validates 
+     * and updates all details. It does not check for employee existence.
      *
      * @param id employee id to be updated.
      */
@@ -1318,22 +1336,30 @@ public class EmployeeView {
      * @param employeeId the id of the employee whose address to be updated.
      */
     private void updateAddressDetails(int employeeId) {
+        AddressDTO addressDTO;
+        String city;
+        String country;
+        String doorNumber;
+        String errorMessage;
+        String locality;
+        String pinCode;
+        String street;
         int addressId = showAndGetAddress(employeeId);
        
         if (0 >= addressId) {
             return;
         }
-        String doorNumber = getDoorNumberInput();
-        String street = getStreetInput();
-        String locality = getLocalityInput();
-        String city = getCityInput();
+        doorNumber = getDoorNumberInput();
+        street = getStreetInput();
+        locality = getLocalityInput();
+        city = getCityInput();
         String state = getStateInput();
-        String country = getCountryInput();
-        String pinCode = getPinCodeInput();
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        AddressDTO addressDTO = new AddressDTO(addressId, doorNumber, street, 
-                                            locality, city, state, country, 
-                                            pinCode, employeeId);
+        country = getCountryInput();
+        pinCode = getPinCodeInput();
+        errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        addressDTO = new AddressDTO(addressId, doorNumber, street, locality, 
+                                            city, state, country, pinCode, 
+                                            employeeId);
         try {
             if (addressController.updateAllDetails(addressDTO)) {
                 System.out.println("\n\t\t\t<<<<<< Address Updated "         

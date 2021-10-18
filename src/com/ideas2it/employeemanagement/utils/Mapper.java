@@ -27,11 +27,6 @@ public final class Mapper {
      * @return the mapped EmployeeDTO instance.
      */
     public static EmployeeDTO toEmployeeDTO(Employee employee) {
-  /*      List<AddressDTO> addresses = new ArrayList<>();
-       
-        for (Address address : employee.getAddresses()) {
-            addresses.add(toAddressDTO(address));
-        }                                                           */
         return new EmployeeDTO(employee.getId(), employee.getName(),
                 employee.getDateOfBirth(), employee.getGender(),
                 employee.getMobileNumber(), employee.getEmail(), 
@@ -45,11 +40,6 @@ public final class Mapper {
      * @return the mapped Employee instance.
      */
     public static Employee toEmployee(EmployeeDTO employeeDTO) {
- /*      List<Address> addresses = new ArrayList<>();
-       
-       for (AddressDTO address : employeeDTO.getAddresses()) {
-           addresses.add(toAddress(address));
-       }                                                            */
        return new Employee(employeeDTO.getId(), employeeDTO.getName(),
                 employeeDTO.getDateOfBirth(), employeeDTO.getGender(),
                 employeeDTO.getMobileNumber(), employeeDTO.getEmail(), 
