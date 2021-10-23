@@ -235,7 +235,7 @@ public class Address {
      *
      * @param pinCode the pin code of the address as a string.
      */
-    public void setPincode(String pinCode) {
+    public void setPinCode(String pinCode) {
         this.pinCode = pinCode;
     }
 }
