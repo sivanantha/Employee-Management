@@ -1032,6 +1032,7 @@ public class EmployeeView {
                 
             try {
                 userChoice = Integer.parseInt(inputReader.nextLine());
+                
                 if (userChoice == -1) {
                     addressId = -1;
                 } else {
