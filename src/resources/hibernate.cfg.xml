@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+    
+    <session-factory>
+        
+        <!-- hibernate properties  -->
+        <property name="hbm2ddl.auto">update</property>
+        
+        <property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
+        
+        <property name="show_sql">true</property>
+        
+        <property name="format_sql">true</property>
+        
+        <!-- connection properties   -->
+        <property name="connection.driver_class">
+                  com.mysql.cj.jdbc.Driver
+        </property>
+        
+        <property name="connection.url">
+                  jdbc:mysql://localhost:3306/test_employee_db
+        </property>
+        
+        <property name="connection.username">root</property>
+        
+        <property name="connection.password">9159</property>
+        
+        <!-- mapping files  -->
+        <mapping resource="../resources/Employee.hbm.xml"/>
+        
+        <mapping resource="../resources/Address.hbm.xml"/>
+        
+    </session-factory>
+
+</hibernate-configuration>
+        
