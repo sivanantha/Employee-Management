@@ -3,10 +3,12 @@
  */
 package com.ideas2it.employeemanagement.controller;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.hibernate.HibernateException;
+
+import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.service.EmployeeService;
 import com.ideas2it.employeemanagement.service.impl.EmployeeServiceImpl;
@@ -17,7 +19,7 @@ import com.ideas2it.employeemanagement.service.impl.EmployeeServiceImpl;
  * delete and validate employee details.
  *
  * @author  Sivanantham
- * @version 1.5
+ * @version 1.6
  */
 public class EmployeeController {
     private EmployeeService employeeService = new EmployeeServiceImpl();
@@ -27,9 +29,9 @@ public class EmployeeController {
      *
      * @param id the employee id to be searched.
      * @return true if specified employee found, else false.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */
-    public boolean isEmployeeExist(int id) throws SQLException {
+    public boolean isEmployeeExist(int id) throws HibernateException {
         return employeeService.isEmployeeExist(id);
     }
     
@@ -37,9 +39,9 @@ public class EmployeeController {
      * Checks if the employees database is empty.
      * 
      * @return true if database is empty, otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */
-    public boolean isEmployeesDatabaseEmpty() throws SQLException {
+    public boolean isEmployeesDatabaseEmpty() throws HibernateException {
         return employeeService.isEmployeesDatabaseEmpty();
     }
     
@@ -98,9 +100,9 @@ public class EmployeeController {
      * 
      * @param mobileNumber the employee mobile number to be searched.
      * @return true if the mobile number found, else false.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */   
-    public boolean isMobileNumberExist(long mobileNumber) throws SQLException {
+    public boolean isMobileNumberExist(long mobileNumber) throws HibernateException {
          return employeeService.isMobileNumberExist(mobileNumber);
     }
     
@@ -119,9 +121,9 @@ public class EmployeeController {
      * 
      * @param email the employee email to be searched.
      * @return true if the email found, else false.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */
-    public boolean isEmailExist(String email) throws SQLException {
+    public boolean isEmailExist(String email) throws HibernateException {
          return employeeService.isEmailExist(email);
     }
     
@@ -146,14 +148,69 @@ public class EmployeeController {
     }
     
     /**
+     * Validates the specified door number.
+     *
+     * @param doorNumber the door number to be validated.
+     * @return true if it is valid, otherwise false.
+     */
+    public boolean isValidDoorNumber(String doorNumber) {
+        return employeeService.isValidDoorNumber(doorNumber);
+    }
+    
+    /**
+     * Validates the specified street name.
+     * 
+     * @param street the street name to be validated.
+     * @return true if it is valid, otherwise false.
+     */  
+    public boolean isValidStreet(String street) {
+        return employeeService.isValidStreet(street);
+    }
+    
+    /**
+     * Validates the specified locality/city/state/country name.
+     *
+     * @param locality the name of the locality/city/state/country to be 
+     *        validated.
+     * @return true if valid, otherwise false.
+     */
+    public boolean isValidPlaceName(String name) {
+        return employeeService.isValidPlaceName(name);
+    }
+    
+    /**
+     * Validates the specified pin code.
+     *
+     * @param pinCode the pin code to be validated as a string.
+     * @return true if it is valid, otherwise false.
+     */
+    public boolean isValidPinCode(String pinCode) {
+        return employeeService.isValidPinCode(pinCode);
+    }
+    
+    /**
      * Creates a new employee with specified details and stores in the database.
      *
      * @param employeeDTO the EmployeeDTO instance with employee details.
      * @return the employee's id as a int.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */
-    public int createEmployee (EmployeeDTO employeeDTO) throws SQLException {
+    public int createEmployee (EmployeeDTO employeeDTO) throws
+            HibernateException {
         return employeeService.createEmployee(employeeDTO);
+    }
+    
+    /**
+     * Creates new addresses with specified details and stores in the 
+     * database.
+     *
+     * @param employeeDTO the EmployeeDTO instance with address details.
+     * @return true if addresses created successfully, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    public boolean createAddresses(EmployeeDTO employeeDTO) throws 
+            HibernateException {
+        return employeeService.createAddresses(employeeDTO);
     }
     
     /**
@@ -161,9 +218,9 @@ public class EmployeeController {
      * 
      * @param id the employee id to be retrieved as a int.
      * @return a List containing the specified employee.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */
-    public List<EmployeeDTO> getEmployee(int id) throws SQLException {
+    public List<EmployeeDTO> getEmployee(int id) throws HibernateException {
         return employeeService.getEmployee(id);
     }
     
@@ -171,109 +228,34 @@ public class EmployeeController {
      * Retrieves all employees.
      *
      * @return a List containing all employees.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */
-    public List<EmployeeDTO> getAllEmployees() throws SQLException {
+    public List<EmployeeDTO> getAllEmployees() throws HibernateException {
         return employeeService.getAllEmployees();
     }
-    
-    /**
-     * Updates specified employee's name and stores in the database.
+       
+    /** 
+     * Updates all details of the specified employee and stores in the database.
      *
-     * @param id employee id as a int.
-     * @param name the employee's new name to update.
-     * @return true if employee name updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    public boolean updateName(int id, String name) throws SQLException {
-        return employeeService.updateName(id, name);
-    }
-    
-    /**
-     * Updates specified employee's date of birth and stores in the database.
-     *
-     * @param id employee id.
-     * @param dateOfBirth the employee's new date of birth to update.
-     * @return true if employee date of birth updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    public boolean updateDateOfBirth(int id, LocalDate dateOfBirth) 
-            throws SQLException {
-        return employeeService.updateDateOfBirth(id, dateOfBirth);
-    }
-    
-    /**
-     * Updates specified employee's gender and stores in the database.
-     *
-     * @param id employee id.
-     * @param gender the employee's gender to update.
-     * @return true if employee gender updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    public boolean updateGender(int id, String gender) throws SQLException {
-        return employeeService.updateGender(id, gender);
-    }
-    
-    /**
-     * Updates specified employee's mobile number and stores in the database.
-     *
-     * @param id employee id.
-     * @param mobileNumber the employee's new mobile number to update.
-     * @return true if employee mobile number updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    public boolean updateMobileNumber(int id, long mobileNumber) 
-            throws SQLException {
-        return employeeService.updateMobileNumber(id, mobileNumber);
-    }
-    
-   /**
-    * Updates specified employee's email and stores in the database.
-    *
-    * @param id employee id.
-    * @param email the employee's new email to update.
-    * @return true if employee email updated successfully else false.
-    * @exception SQLException if a database access error occurs.
-    */    
-    public boolean updateEmail(int id, String email) throws SQLException {
-        return employeeService.updateEmail(id, email);
-    }
-    
-   /**
-    * Updates specified employee's salary and stores in the database.
-    *
-    * @param id employee id.
-    * @param salary the employee's new salary to update.
-    * @return true if employee salary updated successfully else false.
-    * @exception SQLException if a database access error occurs.
-    */    
-    public boolean updateSalary(int id, float salary) throws SQLException {
-        return employeeService.updateSalary(id, salary);
-    }
-    
-   /**
-    * Updates specified employee's date of joining and stores in the database.
-    *
-    * @param id employee id.
-    * @param dateOfJoining the employee's new date of joining to update.
-    * @return true if employee date of joining updated successfully else false.
-    * @exception SQLException if a database access error occurs.
-    */
-    public boolean updateDateOfJoining(int id, LocalDate dateOfJoining) 
-            throws SQLException {
-        return employeeService.updateDateOfJoining(id, dateOfJoining);
-    }
-    
-   /** 
-    * Updates all details of the specified employee and stores in the database.
-    *
-    * @param employeeDTO the EmployeeDTO instance with employee details.
-    * @return true if employee updated successfully otherwise false.
-    * @exception SQLException if a database access error occurs.
-    */    
-    public boolean updateAllDetails(EmployeeDTO employeeDTO)
-            throws SQLException {
-        return employeeService.updateAllDetails(employeeDTO);
+     * @param employeeDTO the EmployeeDTO instance with employee details.
+     * @return true if employee updated successfully otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */    
+     public boolean updateEmployee(EmployeeDTO employeeDTO)
+             throws HibernateException {
+         return employeeService.updateEmployee(employeeDTO);
+     }
+     
+     /** 
+      * Updates employee's address details and stores in the database.
+      *
+      * @param addressDTO the addressDTO instance with address details.
+      * @return true if address updated successfully otherwise false.
+      * @throws HibernateException if a database access error occurs.
+      */
+     public boolean updateAddress(AddressDTO addressDTO)
+            throws HibernateException {
+         return employeeService.updateAddress(addressDTO);
     }
     
    /**
@@ -281,19 +263,30 @@ public class EmployeeController {
     *
     * @param id employee id to be deleted.
     * @return true if employee deleted successfully else false.
-    * @exception SQLException if a database access error occurs.
+    * @throws HibernateException if a database access error occurs.
     */    
-    public boolean deleteEmployee(int id) throws SQLException {
+    public boolean deleteEmployee(int id) throws HibernateException {
         return employeeService.deleteEmployee(id);
+    }
+    
+    /**
+     * Deletes the specified address of an employee.
+     *
+     * @param addressId id of the address to be deleted.
+     * @return true if address deleted successfully else false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    public boolean deleteAddress(int addressId) throws HibernateException {
+         return employeeService.deleteAddress(addressId);
     }
     
     /** 
      * Deletes all employees from the database. 
      *
      * @return true if deleted successfully, otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
-    public boolean deleteAllEmployee() throws SQLException {
-        return employeeService.deleteAllEmployee();
+    public boolean deleteAllEmployees() throws HibernateException {
+        return employeeService.deleteAllEmployees();
     }
 }

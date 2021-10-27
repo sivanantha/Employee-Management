@@ -3,14 +3,14 @@
  */
 package com.ideas2it.employeemanagement.view;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;   
+import java.util.Map;
 import java.util.Scanner;
 
-import com.ideas2it.employeemanagement.controller.AddressController;
+import org.hibernate.HibernateException;
+
 import com.ideas2it.employeemanagement.controller.EmployeeController;
 import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
@@ -26,7 +26,6 @@ import com.ideas2it.employeemanagement.model.EmployeeDTO;
 public class EmployeeView {
     private Scanner inputReader = new Scanner(System.in);
     private EmployeeController employeeController = new EmployeeController();
-    private AddressController addressController = new AddressController();
     
     /**
      * Prints the welcome message and starts the employee management 
@@ -220,8 +219,9 @@ public class EmployeeView {
                     System.out.println(messageForDuplicate);
                     mobileNumber = null;
                 }
-            } catch (SQLException exception) {
+            } catch (HibernateException exception) {
                 System.out.println(errorMessage);
+                exception.printStackTrace();
                 mobileNumber = null;
             }
         } 
@@ -260,7 +260,7 @@ public class EmployeeView {
                         email = null;
                         System.out.println(messageForDuplicate);    
                 }
-            } catch (SQLException exception) {
+            } catch (HibernateException exception) {
                 System.out.println(errorMessage);
                 email = null;
             }   
@@ -334,7 +334,7 @@ public class EmployeeView {
             System.out.print("\n\t\t Enter Door Number (e.g)12B, 12/4: ");
             doorNumber = inputReader.nextLine();
             
-            if (addressController.isValidDoorNumber(doorNumber)) {
+            if (employeeController.isValidDoorNumber(doorNumber)) {
                 doorNumber = doorNumber.strip();
             } else {
                 System.out.println(errorMessage);
@@ -357,7 +357,7 @@ public class EmployeeView {
             System.out.print("\n\t\t Enter Street Name : ");
             street = inputReader.nextLine();
             
-            if (addressController.isValidStreet(street)) {
+            if (employeeController.isValidStreet(street)) {
                 street = street.strip().toLowerCase();
             } else {
                 System.out.println(errorMessage);
@@ -380,7 +380,7 @@ public class EmployeeView {
             System.out.print("\n\t\t Enter Locality/Area/Village : ");
             locality = inputReader.nextLine();
             
-            if (addressController.isValidPlaceName(locality)) {
+            if (employeeController.isValidPlaceName(locality)) {
                 locality = locality.strip().toLowerCase();
             } else {
                 System.out.println(errorMessage);
@@ -403,7 +403,7 @@ public class EmployeeView {
             System.out.print("\n\t\t Enter City : ");
             city = inputReader.nextLine();
             
-            if (addressController.isValidPlaceName(city)) {
+            if (employeeController.isValidPlaceName(city)) {
                 city = city.strip().toLowerCase();
             } else {
                 System.out.println(errorMessage);
@@ -426,7 +426,7 @@ public class EmployeeView {
             System.out.print("\n\t\t Enter State : ");
             state = inputReader.nextLine();
             
-            if (addressController.isValidPlaceName(state)) {
+            if (employeeController.isValidPlaceName(state)) {
                 state = state.strip().toLowerCase();
             } else {
                 System.out.println(errorMessage);
@@ -449,7 +449,7 @@ public class EmployeeView {
             System.out.print("\n\t\t Enter Country : ");
             country = inputReader.nextLine();
             
-            if (addressController.isValidPlaceName(country)) {
+            if (employeeController.isValidPlaceName(country)) {
                 country = country.strip().toLowerCase();
             } else {
                 System.out.println(errorMessage);
@@ -472,7 +472,7 @@ public class EmployeeView {
             System.out.print("\n\t\t Enter PinCode : ");
             pinCode = inputReader.nextLine();
             
-            if (addressController.isValidPinCode(pinCode)) {
+            if (employeeController.isValidPinCode(pinCode)) {
                 pinCode = pinCode.strip();
             } else {
                 System.out.println(errorMessage);
@@ -514,27 +514,13 @@ public class EmployeeView {
      * 
      * @return a List containing addresses.
      */
-    private List<AddressDTO> getAddressesInput(int employeeId) {
-        String city;
-        String country;
-        String doorNumber;
-        String locality;
-        String pinCode;
-        String state;
-        String street;
+    private List<AddressDTO> getAddressesInput() {
         List<AddressDTO> addresses = new ArrayList<>();
         
         do {
-            doorNumber = getDoorNumberInput();
-            street = getStreetInput();
-            locality = getLocalityInput();
-            city = getCityInput();
-            state = getStateInput();
-            country = getCountryInput();
-            pinCode = getPinCodeInput();
-        
-            addresses.add(new AddressDTO(doorNumber, street, locality, city, 
-                                         state, country, pinCode, employeeId));
+            addresses.add(new AddressDTO(getDoorNumberInput(), getStreetInput(),
+                    getLocalityInput(), getCityInput(), getStateInput(),
+                    getCountryInput(), getPinCodeInput()));
         } while (askToAddAnotherAddress());
         return addresses;
     }
@@ -546,23 +532,18 @@ public class EmployeeView {
     private void createEmployee() {
         int id;
         String name = getNameInput();
-        String gender = getGenderInput();
-        LocalDate dateOfBirth = getDateOfBirthInput();
-        long mobileNumber = getMobileNumberInput();
-        String email = getEmailInput();
-        float salary = getSalaryInput();
-        LocalDate dateOfJoining = getDateOfJoiningInput();
         
         try {
             id = employeeController.createEmployee(new EmployeeDTO(name, 
-                         dateOfBirth, gender, mobileNumber, email, salary,
-                         dateOfJoining));
+                         getDateOfBirthInput(), getGenderInput(),
+                         getMobileNumberInput(), getEmailInput(),
+                         getSalaryInput(), getDateOfJoiningInput(),
+                         getAddressesInput()));
             
-            addressController.createAddress(getAddressesInput(id));
             System.out.println("\n\t\t\t<<<<<< Employee Created Successfully! "
                                + ">>>>>>\n\n\t\t\t ****** The Employee Id Of < "
                                + name + " > Is --> " + id + " ******");
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
         }
     }
@@ -570,7 +551,7 @@ public class EmployeeView {
     /**
      * Checks if the employee database is empty.
      *
-     * @return true when database is empty or SQLException occurs, 
+     * @return true when database is empty or HibernateException occurs, 
      *         otherwise false.
      */ 
     private boolean isEmployeesDatabaseEmpty() {
@@ -582,7 +563,8 @@ public class EmployeeView {
                                    + ">>>>>>\n");
                 isEmpty = true;
             } 
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
+            exception.printStackTrace();
             System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
             isEmpty = true;
         }
@@ -593,8 +575,8 @@ public class EmployeeView {
      * Checks if the specified employee exist.
      *
      * @param id the employee's id to be searched.
-     * @return false when employee not found or SQLException occurs,
-               otherwise true.
+     * @return false when employee not found or HibernateException occurs,
+     *         otherwise true.
      */
     private boolean isEmployeeExist(int id) {
         boolean isEmployeeFound = true;
@@ -605,7 +587,7 @@ public class EmployeeView {
                                    + ">>>>>>\n");
                 isEmployeeFound = false;
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
             isEmployeeFound = false;
         }
@@ -651,57 +633,51 @@ public class EmployeeView {
         } while (!"3".equals(userChoice)); 
     }
     
+    private EmployeeDTO getEmployee(int id) {
+        List<EmployeeDTO> employees = employeeController.getEmployee(id);
+        
+        return employees.isEmpty() ? null : employees.get(0);
+    }
+    
     /**
      * Gets employee id from the user and prints employee details if the id is
      * valid.
      */
     private void viewEmployee() {
-        StringBuilder employeeDetails;
         int id = getIdInput();
+        EmployeeDTO employee;
         
         try {
-            if (isEmployeeExist(id)) {
-                employeeDetails = new StringBuilder(300);
-                employeeDetails.append("\n\t\t\t\t ~~~~~~~EMPLOYEE DETAILS~~~~")
-                               .append("~~~\n")
-                               .append(employeeController.getEmployee(id)
-                                                         .get(0));
-                
-                for (AddressDTO addressDTO : addressController
-                        .getAddresses(id)) {
-                    employeeDetails.append(addressDTO);
-                }
-                System.out.println(employeeDetails);
+            employee = getEmployee(id);
+            
+            if (null != employee) {
+               System.out.println("\n\t\t\t\t ~~~~~~~EMPLOYEE DETAILS~~~~~~~"
+                                  + "\n" + employee);
+            } else {
+                System.out.println("\n\n\t\t\t<<<<<< Employee Not Found! "
+                                   + ">>>>>>\n");
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
+            exception.printStackTrace();
             System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>"); 
         }
     }
-    
+   
     /** 
      * Checks if database is empty and prints all employee's details if 
      * database is not empty.
      */
-    private void viewAllEmployee() {
-        Map<Integer, List<AddressDTO>> addressesDTO;
-        List<AddressDTO> addresses;
-        List<EmployeeDTO> employees;
-        
+   private void viewAllEmployee() {
         try {
-            employees = employeeController.getAllEmployees();
-            addressesDTO = addressController.getAllAddresses();
+            List<EmployeeDTO> employees = employeeController.getAllEmployees();
+            
             System.out.println("\n\t\t\t\t ~~~~~~ALL EMPLOYEE DETAILS~~~~~~\n");
             
             for (EmployeeDTO employeeDTO : employees) {
                 System.out.println(employeeDTO);
-                addresses = addressesDTO.get(employeeDTO.getId());
-                
-                for (AddressDTO address : addresses) {
-                    System.out.println(address);
-                }
                 System.out.println("\n\n\t\t\t-------------------------------");
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
         }
     }
@@ -715,21 +691,25 @@ public class EmployeeView {
         StringBuilder options;
         String errorMessage;
         String userChoice;
+        EmployeeDTO employee;
         
         if (isEmployeesDatabaseEmpty()) {
             return;
-        }     
+        }
+        id = getIdInput();
+        employee = getEmployee(id);
+        if (null == employee) {
+            System.out.println("\n\n\t\t\t<<<<<< Employee Not Found! "
+                                   + ">>>>>>\n");
+            return;
+        }
+        
         errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! >>>>>>\n";
         options = new StringBuilder(80);
         options.append("\n\t\t\t\t\\ Update Menu /\n\t\t\t\t ~~~~~~~~~~~~~\n")
                .append("\n\t\t1 => Update Single Detail\t\t2 => Update All ")
-               .append("Details\n\n\t\t3 => Return to Main Menu\n\n\t\t")
-               .append("Enter The Option : ");
-        id = getIdInput();
-        
-        if (!isEmployeeExist(id)) {
-            return;
-        }
+               .append("Details\n\n\t\t3 => Add New Address\t\t\t4 => Return")
+               .append(" to Main Menu\n\n\t\tEnter The Option : ");
         
         do {
             System.out.print(options);
@@ -737,27 +717,30 @@ public class EmployeeView {
             
             switch (userChoice) {
                 case "1": 
-                    updateSingleField(id);
+                    updateSingleField(employee);
                     break;
                 case "2": 
-                    showUpdateAllChoices(id);
+                    showUpdateAllChoices(employee);
                     break;
-                case "3": 
+                case "3":
+                    createAddress(employee);
+                    break;
+                case "4":
                     break;
                 default:  
                     System.out.println(errorMessage);
                     break;
             }
-        } while (!"3".equals(userChoice)); 
+        } while (!"4".equals(userChoice)); 
     }
     
     /**
      * Prints choices available for update a single employee detail and gets 
      * the choice from the user. Executes the selected choice.
      *
-     * @param employeeId the id of the employee whose details to be updated.
+     * @param employee the employee whose details to be updated.
      */
-    private void updateSingleField(int employeeId) {
+    private void updateSingleField(EmployeeDTO employee) {
         StringBuilder options = new StringBuilder(80);
         String userChoice;
         String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! "
@@ -766,7 +749,7 @@ public class EmployeeView {
                .append("~~~~~~~~~~~~~~~~~~~~~\n\t\t1 => Name\t\t\t2 => Date Of")
                .append(" Birth\n\n\t\t3 => Gender\t\t\t4 => Mobile Number\n\n")
                .append("\t\t5 => Email\t\t\t6 => Salary\n\n\t\t7 => Date Of ")
-               .append("Joining\t\t8 => Update Address\n\n\t\t 9 => Return To") 
+               .append("Joining\t\t8 => Update Address\n\n\t\t9 => Return To") 
                .append(" Previous Menu\n\n\t\t")
                .append("Enter The Option : "); 
         
@@ -776,28 +759,28 @@ public class EmployeeView {
             
             switch (userChoice) {
                 case "1": 
-                    updateName(employeeId);
+                    updateName(employee);
                     break;
                 case "2": 
-                    updateDateOfBirth(employeeId);
+                    updateDateOfBirth(employee);
                     break;
                 case "3": 
-                    updateGender(employeeId);
+                    updateGender(employee);
                     break;
                 case "4": 
-                    updateMobileNumber(employeeId);
+                    updateMobileNumber(employee);
                     break;
                 case "5": 
-                    updateEmail(employeeId);
+                    updateEmail(employee);
                     break;
                 case "6": 
-                    updateSalary(employeeId);
+                    updateSalary(employee);
                     break;
                 case "7": 
-                    updateDateOfJoining(employeeId);
+                    updateDateOfJoining(employee);
                     break;
                 case "8":
-                    showUpdateAddressChoices(employeeId);
+                    showUpdateAddressChoices(employee);
                     break;
                 case "9":
                     break;
@@ -809,257 +792,261 @@ public class EmployeeView {
     }
     
     /**
-     * Gets employee id, name from the user, validates and updates the employee
-     * name if id is found.
+     * Gets employee name from the user, validates and updates the employee
+     * name.
      *
-     * @param employeeId the id of the employee whose details to be updated.
+     * @param employee the employee whose details to be updated.
      */
-    private void updateName(int id) {
-        String name = getNameInput();
+    private void updateName(EmployeeDTO employee) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
-        try {    
-            if (employeeController.updateName(id, name)) {
+        try {
+            employee.setName(getNameInput());
+            
+            if (employeeController.updateEmployee(employee)) {
                 System.out.println("\n\t\t\t<<<<<< Name updated successfully! "
                                    + ">>>>>>\n");
             } else {
                 System.out.println(errorMessage);
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
+            exception.printStackTrace();
             System.out.println(errorMessage);
         }
     }
     
     /**
-     * Gets employee id, date of birth from the user, validates and updates the   
-     * employee date of birth if employee id is found.
+     * Gets employee date of birth from the user, validates and updates the   
+     * employee date of birth.
      *
-     * @param id the id of the employee whose details to be updated.
+     * @param employee the employee whose details to be updated.
      */
-    private void updateDateOfBirth(int id) { 
-        LocalDate dateOfBirth = getDateOfBirthInput();    
+    private void updateDateOfBirth(EmployeeDTO employee) {     
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         try {
-            if (employeeController.updateDateOfBirth(id, dateOfBirth)) {
+            employee.setDateOfBirth(getDateOfBirthInput());
+            
+            if (employeeController.updateEmployee(employee)) {
                 System.out.println("\n\t\t\t<<<<<< Date Of Birth Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println(errorMessage);    
         }
     }
     
     /**
-     * Gets employee id, gender from the user, validates and updates the   
-     * employee gender if employee id is found.
+     * Gets employee gender from the user, validates and updates the   
+     * employee gender.
      *
-     * @param id the id of the employee whose details to be updated.
+     * @param employee the employee whose details to be updated.
      */
-    private void updateGender(int id) {
-        String gender = getGenderInput();
+    private void updateGender(EmployeeDTO employee) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         try {
-            if (employeeController.updateGender(id, gender)) {      
+            employee.setGender(getGenderInput());
+            
+            if (employeeController.updateEmployee(employee)) {      
                 System.out.println("\n\t\t\t<<<<<< Gender Updated Successfully!"
                                    + " >>>>>>\n");
             } else {
                 System.out.println(errorMessage);    
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println(errorMessage);
         }
     }
     
     /**
-     * Gets employee id, mobile number from the user, validates and updates   
-     * the employee gender if id is found.
+     * Gets employee mobile number from the user, validates and updates   
+     * the employee mobile number.
      *
-     * @param id the id of the employee whose details to be updated.
+     * @param employee the employee whose details to be updated.
      */
-    private void updateMobileNumber(int id) {
-        long mobileNumber = getMobileNumberInput();
+    private void updateMobileNumber(EmployeeDTO employee) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         try {
-            if (employeeController.updateMobileNumber(id, mobileNumber)) {
+            employee.setMobileNumber(getMobileNumberInput());
+            
+            if (employeeController.updateEmployee(employee)) {
                 System.out.println("\n\t\t\t<<<<<< Mobile Number Updated "
                                    + "Successfully! >>>>>>\n");
             } else { 
                 System.out.println(errorMessage);
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println(errorMessage);
         }
     }
     
     /**
-     * Gets employee id, email from the user, validates and updates   
-     * the employee email if id is found.
+     * Gets employee email from the user, validates and updates   
+     * the employee email.
      *
-     * @param id the id of the employee whose details to be updated.
+     * @param employee the employee whose details to be updated.
      */
-    private void updateEmail(int id) {
-        String email = getEmailInput();
+    private void updateEmail(EmployeeDTO employee) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         try {
-            if (employeeController.updateEmail(id, email)) {
+            employee.setEmail(getEmailInput());
+            
+            if (employeeController.updateEmployee(employee)) {
                 System.out.println("\n\t\t\t<<<<<< Email Updated Successfully! "
                                    + ">>>>>>\n");
             } else {
                 System.out.println(errorMessage);         
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println(errorMessage);
         }
     }
     
     /**
-     * Gets employee id, salary from the user, validates and updates   
-     * the employee salary if id is found.
+     * Gets employee salary from the user, validates and updates   
+     * the employee salary.
      *
-     * @param id the id of the employee whose details to be updated.
+     * @param employee the employee whose details to be updated.
      */
-    private void updateSalary(int id) {
-        float salary = getSalaryInput();
+    private void updateSalary(EmployeeDTO employee) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
-        try {   
-            if (employeeController.updateSalary(id, salary)) {
+        try {
+            employee.setSalary(getSalaryInput());
+            
+            if (employeeController.updateEmployee(employee)) {
                 System.out.println("\n\t\t\t<<<<< Salary Updated Successfully! "
                                    + ">>>>>>\n");    
             } else {
                 System.out.println(errorMessage);
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println(errorMessage);
         }
     }
     
     /**
-     * Gets employee id, date of joining from the user, validates and updates   
-     * the employee date of joining if id is found.
+     * Gets employee date of joining from the user, validates and updates   
+     * the employee date of joining.
      *
-     * @param id the id of the employee whose details to be updated.
+     * @param employee the employee whose details to be updated.
      */
-    private void updateDateOfJoining(int id) {
-        LocalDate date = getDateOfJoiningInput();
+    private void updateDateOfJoining(EmployeeDTO employee) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
-        try {   
-            if (employeeController.updateDateOfJoining(id, date)) {
+        try {
+            employee.setDateOfJoining(getDateOfJoiningInput());
+            
+            if (employeeController.updateEmployee(employee)) {
                 System.out.println("\n\t\t\t<<<<<< Date Of Joining Updated " 
                                    + "Successfully! >>>>>>\n");    
             } else {
                 System.out.println(errorMessage);        
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println(errorMessage);
         }
     }
     
     /**
-     * Shows all addresses of the specified employee and returns the selected 
-     * address id.
+     * Converts list of addresses to text string with serial number.
      *
-     * @param employeeId the id of the employee whose address to be shown.
-     * @return the id of selected the address or 0 if an employee does not have 
-     *         any address or -1 if exit option is selected.
+     * @param addresses a list of addresses to be converted to string.
+     * @return a StringBuilder containing addresses as string.
      */
-    private int showAndGetAddress(int employeeId) {
-        int addressId = 0;
-        int size = 0;
+    private StringBuilder getAddressesString(List<AddressDTO> addresses) {
         int count = 1;
-        StringBuilder addressText;
-        List<AddressDTO> addresses;
+        StringBuilder addressText =  new StringBuilder(150);
         
-        try {
-            addresses = addressController.getAddresses(employeeId);
-            size = addresses.size();
-            
-            if (size > 0) {
-                for (AddressDTO address : addresses) {
-                    addressText =  new StringBuilder(150).append("\n\t\t ")
-                                              .append(count).append(" =>   ")
-                                              .append(address.getDoorNumber())
-                                              .append(", ")
-                                              .append(address.getStreet())
-                                              .append(",\n\t\t\t")
-                                              .append(address.getLocality())
-                                              .append(", ")
-                                              .append(address.getCity())
-                                              .append(",\n\t\t\t")
-                                              .append(address.getState())
-                                              .append(",\n\t\t\t")
-                                              .append(address.getCountry())
-                                              .append(" - ")
-                                              .append(address.getPinCode());
-                    System.out.println(addressText);
-                    count++;
-                }
-                System.out.println("\n\t\t -1 =>  Go Back\n");
-                addressId = getAddressId(addresses);
-            } else {
-                System.out.println("\n\t\t\t<<<<<< No Address Found! >>>>>>\n");
-            }
-        } catch (SQLException exception) {
-            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
-            addressId = 0;
+        for (AddressDTO address : addresses) {
+             addressText.append("\n\t\t ")
+                        .append(count).append(" =>   ")
+                        .append(address.getDoorNumber()).append(", ")
+                        .append(address.getStreet()).append(",\n\t\t\t")
+                        .append(address.getLocality()).append(", ")
+                        .append(address.getCity()).append(",\n\t\t\t")
+                        .append(address.getState()).append(",\n\t\t\t")
+                        .append(address.getCountry()).append(" - ")
+                        .append(address.getPinCode()).append("\n\n");       
+             count++;
         }
-        return addressId;
+        return addressText;
     }
     
     /**
-     * Shows all the addresses of an employee and asks the user to select an 
-     * address then gets the address id of the selected address.
+     * Shows all addresses of the specified employee and returns the selected 
+     * address. This method is used for update and delete operations.
+     *
+     * @param employee the employee whose address to be shown.
+     * @return the address or null if an employee does not have 
+     *         any address or exit option is selected.
+     */
+    private AddressDTO showAndGetAddress(EmployeeDTO employee) {
+        AddressDTO address = null;
+        List<AddressDTO> addresses = employee.getAddresses();
+        int size = addresses.size();
+        
+        if (size > 0) {
+            System.out.println(getAddressesString(addresses));
+            System.out.println("\n\t\t -1 =>  Go Back\n");
+            address = getAddress(addresses);
+        } else {
+            System.out.println("\n\t\t\t<<<<<< No Address Found! >>>>>>\n");
+        }
+        return address;
+    }
+    
+    /**
+     * Asks the user to select an address for update or delete operation.
      *
      * @param addresses the List of addresses of an employee.
-     * @return the addressId of the selected address or -1 if exit choice is 
+     * @return the address of the selected address or null if exit choice is 
      *         selected.
      */
-    private int getAddressId(List<AddressDTO> addresses) {
-        Integer addressId = null;
-        Integer userChoice;
+    private AddressDTO getAddress(List<AddressDTO> addresses) {
+        Integer userChoice = null;
         String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! "
                               + ">>>>>>\n";
+        AddressDTO address = null;
         
-        while (null == addressId) {
-            System.out.print("\n\t\t\tEnter The Choice : ");
+        while (null == userChoice) {
+            System.out.print("\n\t\tEnter The Choice : ");
                 
             try {
                 userChoice = Integer.parseInt(inputReader.nextLine());
                 
                 if (userChoice == -1) {
-                    addressId = -1;
+                    address = null;
                 } else {
-                    addressId = addresses.get(userChoice - 1).getId();
+                    address = addresses.get(userChoice - 1);
                 }
             } catch (NumberFormatException | IndexOutOfBoundsException 
                      exception) {
                 System.out.println(errorMessage);
-                addressId = null;
+                userChoice = null;
             }
         }
-        return addressId;
+        return address;
     }
     
     /**
      * Shows the available choices for update single detail of the address and
      * gets the choice and executes the corresponding operation.
      *
-     * @param employeeId the id of the employee whose address to be updated.
+     * @param employee the employee whose address to be updated.
      */
-    private void showUpdateAddressChoices(int employeeId) {
-        int addressId = showAndGetAddress(employeeId);
+    private void showUpdateAddressChoices(EmployeeDTO employee) {
+        AddressDTO address = showAndGetAddress(employee);
         String errorMessage;
         String userChoice;
         StringBuilder options;
         
-        if (0 >= addressId) {
+        if (null == address) {
             return;
         }
         errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! "
@@ -1078,25 +1065,25 @@ public class EmployeeView {
             
             switch (userChoice) {
                 case "1": 
-                    updateDoorNumber(addressId);
+                    updateDoorNumber(address);
                     break;
                 case "2": 
-                    updateStreet(addressId);
+                    updateStreet(address);
                     break;
                 case "3": 
-                    updateLocality(addressId);
+                    updateLocality(address);
                     break;
                 case "4": 
-                    updateCity(addressId);
+                    updateCity(address);
                     break;
                 case "5": 
-                    updateState(addressId);
+                    updateState(address);
                     break;
                 case "6": 
-                    updateCountry(addressId);
+                    updateCountry(address);
                     break;
                 case "7": 
-                    updatePinCode(addressId);
+                    updatePinCode(address);
                     break;
                 case "8":
                     break;
@@ -1108,45 +1095,48 @@ public class EmployeeView {
     }
     
     /**
-     * Gets door number from the user and updates the door number of the
-     * specified address.
+     * Gets door number from the user, validates the door number and updates 
+     * the door number of the specified address.
      *
-     * @param addressId the id of the address to be updated.
+     * @param address the address to be updated.
      */
-    private void updateDoorNumber(int addressId) {
-        String doorNumber = getDoorNumberInput();
+    private void updateDoorNumber(AddressDTO address) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         try {
-            if (addressController.updateDoorNumber(addressId, doorNumber)) {      
+            address.setDoorNumber(getDoorNumberInput());
+            
+            if (employeeController.updateAddress(address)) {      
                 System.out.println("\n\t\t\t<<<<<< Door Number Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);  
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
+            exception.printStackTrace();
             System.out.println(errorMessage);
         }
     }
     
     /**
-     * Gets street from the user and updates the street of the
+     * Gets street from the user, validates street and updates the street of the
      * specified address.
      *
-     * @param addressId the id of the address to be updated.
+     * @param address the address to be updated.
      */
-    private void updateStreet(int addressId) {
-        String street = getStreetInput();
+    private void updateStreet(AddressDTO address) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         try {
-            if (addressController.updateStreet(addressId, street)) {      
+            address.setStreet(getStreetInput());
+            
+            if (employeeController.updateAddress(address)) {      
                 System.out.println("\n\t\t\t<<<<<< Street Updated Successfully!"
                                    + " >>>>>>\n");
             } else {
                 System.out.println(errorMessage);
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println(errorMessage);
         }
     }
@@ -1155,20 +1145,21 @@ public class EmployeeView {
      * Gets locality from the user and updates the locality of the
      * specified address.
      *
-     * @param addressId the id of the address to be updated.
+     * @param address the address to be updated.
      */
-    private void updateLocality(int addressId) {
-        String locality = getLocalityInput();
+    private void updateLocality(AddressDTO address) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         try {
-            if (addressController.updateLocality(addressId, locality)) {      
+            address.setLocality(getLocalityInput());
+            
+            if (employeeController.updateAddress(address)) {      
                 System.out.println("\n\t\t\t<<<<<< Locality Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);  
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println(errorMessage);
         }
     }
@@ -1177,20 +1168,21 @@ public class EmployeeView {
      * Gets city from the user and updates the city of the
      * specified address.
      *
-     * @param addressId the id of the address to be updated.
+     * @param address the address to be updated.
      */
-    private void updateCity(int addressId) {
-        String city = getCityInput();
+    private void updateCity(AddressDTO address) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         try {
-            if (addressController.updateCity(addressId, city)) {      
+            address.setCity(getCityInput());
+            
+            if (employeeController.updateAddress(address)) {      
                 System.out.println("\n\t\t\t<<<<<< Locality Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);  
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println(errorMessage);
         }
     }
@@ -1199,20 +1191,21 @@ public class EmployeeView {
      * Gets state from the user and updates the state of the
      * specified address.
      *
-     * @param addressId the id of the address to be updated.
+     * @param address the address to be updated.
      */
-    private void updateState(int addressId) {
-        String state = getStateInput();
+    private void updateState(AddressDTO address) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         try {
-            if (addressController.updateState(addressId, state)) {      
+            address.setState(getStateInput());
+            
+            if (employeeController.updateAddress(address)) {      
                 System.out.println("\n\t\t\t<<<<<< State Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);  
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println(errorMessage);
         }
     }
@@ -1221,20 +1214,21 @@ public class EmployeeView {
      * Gets country from the user and updates the country of the
      * specified address.
      *
-     * @param addressId the id of the address to be updated.
+     * @param address the address to be updated.
      */
-    private void updateCountry(int addressId) {
-        String country = getCountryInput();
+    private void updateCountry(AddressDTO address) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         try {
-            if (addressController.updateCountry(addressId, country)) {      
+            address.setCountry(getCountryInput());
+            
+            if (employeeController.updateAddress(address)) {      
                 System.out.println("\n\t\t\t<<<<<< Country Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);  
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println(errorMessage);
         }
     }
@@ -1243,20 +1237,21 @@ public class EmployeeView {
      * Gets postal code from the user and updates the postal code of the
      * specified address.
      *
-     * @param addressId the id of the address to be updated.
+     * @param address the address to be updated.
      */
-    private void updatePinCode(int addressId) {
-        String pinCode = getPinCodeInput();
+    private void updatePinCode(AddressDTO address) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         try {
-            if (addressController.updatePinCode(addressId, pinCode)) {      
+            address.setPinCode(getPinCodeInput());
+            
+            if (employeeController.updateAddress(address)) {      
                 System.out.println("\n\t\t\t<<<<<< Pin Code Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);  
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println(errorMessage);
         }
     }
@@ -1265,9 +1260,9 @@ public class EmployeeView {
      * Shows the choices available for update all menu and gets the desired 
      * choice from the user. Executes the specified choice.
      *
-     * @param employeeId the id of the employee whose details to be updated.
+     * @param employee the employee whose details to be updated.
      */
-    private void showUpdateAllChoices(int employeeId) {
+    private void showUpdateAllChoices(EmployeeDTO employee) {
         StringBuilder options;
         String errorMessage;
         String userChoice;
@@ -1286,10 +1281,10 @@ public class EmployeeView {
             
             switch (userChoice) {
                 case "1":
-                    updateAllDetails(employeeId);
+                    updateAllDetails(employee);
                     break;
                 case "2":
-                    updateAddressDetails(employeeId);
+                    updateAddressDetails(employee);
                     break;
                 case "3":
                     break;
@@ -1304,71 +1299,79 @@ public class EmployeeView {
      * Gets all details of the employee from the user except address, validates 
      * and updates all details. It does not check for employee existence.
      *
-     * @param id employee id to be updated.
+     * @param employee employee to be updated.
      */
-    private void updateAllDetails(int id) {
-        String name = getNameInput();
-        String gender = getGenderInput();
-        LocalDate dateOfBirth = getDateOfBirthInput();
-        long mobileNumber = getMobileNumberInput();
-        String email = getEmailInput();
-        float salary = getSalaryInput();
-        LocalDate dateOfJoining = getDateOfJoiningInput();
+    private void updateAllDetails(EmployeeDTO employee) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
+        employee.setAll(getNameInput(), getDateOfBirthInput(), getGenderInput(), 
+                getMobileNumberInput(), getEmailInput(), getSalaryInput(),
+                getDateOfJoiningInput());
+        
         try {
-            if (employeeController.updateAllDetails(new EmployeeDTO(id, name, 
-                    dateOfBirth, gender,mobileNumber, email, salary, 
-                    dateOfJoining))) {
+            if (employeeController.updateEmployee(employee)) {
                 System.out.println("\n\t\t\t<<<<<< Employee Details Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
             System.out.println(errorMessage);
         }
     }
     
     /**
-     * Asks user to select an address to update. If selected gets input from 
+     * Asks user to select an address to update. If selected, gets input from 
      * the user and updates all details of the specified address.
      *
-     * @param employeeId the id of the employee whose address to be updated.
+     * @param employee the employee whose address to be updated.
      */
-    private void updateAddressDetails(int employeeId) {
-        AddressDTO addressDTO;
-        String city;
-        String country;
-        String doorNumber;
+    private void updateAddressDetails(EmployeeDTO employee) {
         String errorMessage;
-        String locality;
-        String pinCode;
-        String street;
-        int addressId = showAndGetAddress(employeeId);
+        AddressDTO address = showAndGetAddress(employee);
        
-        if (0 >= addressId) {
+        if (null == address) {
             return;
         }
-        doorNumber = getDoorNumberInput();
-        street = getStreetInput();
-        locality = getLocalityInput();
-        city = getCityInput();
-        String state = getStateInput();
-        country = getCountryInput();
-        pinCode = getPinCodeInput();
         errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        addressDTO = new AddressDTO(addressId, doorNumber, street, locality, 
-                                            city, state, country, pinCode, 
-                                            employeeId);
+        address.setAll(getDoorNumberInput(), getStreetInput(),
+                getLocalityInput(), getCityInput(), getStateInput(),
+                getCountryInput(), getPinCodeInput());
+        
         try {
-            if (addressController.updateAllDetails(addressDTO)) {
+            if (employeeController.updateAddress(address)) {
                 System.out.println("\n\t\t\t<<<<<< Address Updated "         
-                                       + "Successfully! >>>>>>\n");
+                                   + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Gets multiple addresses from the user and creates the specified 
+     * addresses.
+     *
+     * @param employee the corresponding employee to add address.
+     */
+    private void createAddress(EmployeeDTO employee) {
+        List<AddressDTO> addresses = getAddressesInput();
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        employee.getAddresses().clear();
+        employee.setAddresses(addresses);
+        
+        try {
+            if (employeeController.createAddresses(employee)) {
+                System.out.println("\n\t\t\t<<<<<< Addresses Created "         
+                                   + "Successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (HibernateException exception) {
+            exception.printStackTrace();
             System.out.println(errorMessage);
         }
     }
@@ -1401,7 +1404,7 @@ public class EmployeeView {
                     deleteEmployee();
                     break;
                 case "2": 
-                    deleteAllEmployee();
+                    deleteAllEmployees();
                     break;
                 case "3": 
                     deleteAddress(); 
@@ -1465,7 +1468,8 @@ public class EmployeeView {
                                        + ">>>>>>\n");
                 }
             }
-        } catch (SQLException exception) {
+        } catch (HibernateException exception) {
+            exception.printStackTrace();
             System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
         }
     }
@@ -1475,28 +1479,34 @@ public class EmployeeView {
      * address.
      */
     private void deleteAddress() {
-        int addressId;
+        AddressDTO address;
         int employeeId = getIdInput();
+        EmployeeDTO employee = getEmployee(employeeId);
         
-        if (!isEmployeeExist(employeeId)) {
+        if (null == employee) {
+            System.out.println("\n\n\t\t\t<<<<<< Employee Not Found! "
+                                   + ">>>>>>\n");
             return;
         }
-        addressId = showAndGetAddress(employeeId);
+        address = showAndGetAddress(employee);
         
-        if (0 <= addressId) {
-            if (askConfirmationToDelete()) {
-                try {
-                    if (addressController.deleteAddress(addressId)) {
-                        System.out.println("\n\t\t\t<<<<<< Deleted Successfully"
+        if (null == address) {
+            return;
+        }
+
+        if (askConfirmationToDelete()) {
+            try {
+                if (employeeController.deleteAddress(address.getId())) {
+                    System.out.println("\n\t\t\t<<<<<< Deleted Successfully"
                                            + "! >>>>>>\n");
-                    } else {
-                        System.out.println("\n\t\t\t<<<<<< Cannot Delete The "
+                } else {
+                    System.out.println("\n\t\t\t<<<<<< Cannot Delete The "
                                            + "Address! >>>>>>\n");
-                    }
-                } catch (SQLException exception) {
-                    System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
-                                       + ">>>>>>\n");
                 }
+            } catch (HibernateException exception) {
+                exception.printStackTrace();
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
+                                       + ">>>>>>\n");
             }
         }
     }
@@ -1505,17 +1515,18 @@ public class EmployeeView {
      * Asks user for confirmation to delete all employee records and deletes all
      * employee records if database is not empty.
      */
-    public void deleteAllEmployee() {
+    public void deleteAllEmployees() {
         if (askConfirmationToDelete()) {
             try {
-                if (employeeController.deleteAllEmployee()) {
+                if (employeeController.deleteAllEmployees()) {
                     System.out.println("\n\t\t\t<<<<<< Deleted Successfully! "
                                        + ">>>>>>\n");
                 } else {
                     System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
                                        + ">>>>>>\n");
                 }
-            } catch (SQLException exception) {
+            } catch (HibernateException exception) {
+                exception.printStackTrace();
                 System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
                                    + ">>>>>>\n");
             }          

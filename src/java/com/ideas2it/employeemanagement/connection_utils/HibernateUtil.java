@@ -22,10 +22,11 @@ public class HibernateUtil {
      * @exception HibernateException if a database access error occurs.
      */
     public static SessionFactory getSessionFactory() throws HibernateException {
+         String path = System.getProperty("user.dir");
          if (sessionFactory == null) {
              Configuration configuration = new Configuration();
              sessionFactory = configuration.configure(
-                    "resources/hibernate.cfg.xml").buildSessionFactory(); 
+                    "/resources/hibernate.cfg.xml").buildSessionFactory(); 
          }
          return sessionFactory;
     }

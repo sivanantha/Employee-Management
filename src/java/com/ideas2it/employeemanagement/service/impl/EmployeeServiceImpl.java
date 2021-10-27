@@ -3,7 +3,6 @@
  */
 package com.ideas2it.employeemanagement.service.impl;
 
-import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.LocalDate;
@@ -12,8 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.hibernate.HibernateException;
+
 import com.ideas2it.employeemanagement.dao.EmployeeDAO;
 import com.ideas2it.employeemanagement.dao.impl.EmployeeDAOImpl;
+import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.service.EmployeeService;
@@ -35,11 +37,11 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      * @param id  the id of the employee to be searched as a integer.
      * @return true if employee found, otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public boolean isEmployeeExist(int id) throws SQLException {
-        return employeeDAO.isEmployeeIdExist(id);
+    public boolean isEmployeeExist(int id) throws HibernateException {
+        return !(employeeDAO.getById(id).isEmpty());
     }
     
     /**
@@ -193,11 +195,12 @@ public class EmployeeServiceImpl implements EmployeeService {
      *
      * @param the mobile number to be searched as a long.
      * @return true if mobile number already exist, otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public boolean isMobileNumberExist(long mobileNumber) throws SQLException {
-        return employeeDAO.isMobileNumberExist(mobileNumber);
+    public boolean isMobileNumberExist(long mobileNumber) throws 
+            HibernateException {
+        return !(employeeDAO.getByMobileNumber(mobileNumber).isEmpty());
     }
     
     
@@ -238,11 +241,11 @@ public class EmployeeServiceImpl implements EmployeeService {
      *
      * @param email employee's email to be searched as string value.
      * @return true if specified email is found, otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override 
-    public boolean isEmailExist(String email) throws SQLException {
-        return employeeDAO.isEmailExist(email);
+    public boolean isEmailExist(String email) throws HibernateException {
+        return !(employeeDAO.getByEmail(email).isEmpty());
     }
     
     /**
@@ -340,15 +343,61 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * Checks if the employee database is empty.
-     * Helper function for view, update and delete operations.
-     *
-     * @return true if employee database is empty else false.
-     * @exception SQLException if a database access error occurs.
+     * 
+     * {@inheritDoc}
+     * 
      */
     @Override
-    public boolean isEmployeesDatabaseEmpty() throws SQLException {
-        return employeeDAO.isDatabaseEmpty();
+    public boolean isValidDoorNumber(String doorNumber) {
+        return Pattern.matches("^[\\s]*([1-9][0-9]{0,4}([-][A-Z]|[A-Z])?[/]"
+                       + "[1-9][0-9]{0,4}[A-Z]?|[1-9][0-9]{0,4}([-][A-Z]|[A-Z])"
+                       + "?|([A-Z]|[A-Z][-])?[1-9][0-9]{0,4}|([A-Z]|[A-Z][-])"
+                       + "[1-9][0-9]{0,4}[/][A-Z]?[1-9][0-9]{0,4}|[1-9][0-9]"
+                       + "{0,4}([-][A-Z]|[A-Z])?[/][A-Z]?[1-9][0-9]{0,4})[\\s]*"
+                       + "$", doorNumber);
+    }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+    public boolean isValidStreet(String street) {
+        return Pattern.matches("^[\\s]*(([1-9][0-9]{0,4})?([ ]?[A-Za-z][\\.]?|"
+                + "[A-Za-z][ ]?){4,50}([1-9][0-9]{0,4})?)[\\s]*$", street);
+    }
+    
+    /**
+     * 
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+    public boolean isValidPlaceName(String name) {
+        return Pattern.matches("^[\\s]*(([a-zA-Z]{3,50}[ ]?|[ ][a-zA-Z]{2})"
+                               + "{1,2})[\\s]*$", name);
+    }
+   
+    /**
+     * 
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+    public boolean isValidPinCode(String pinCode) {
+        return Pattern.matches("^[\\s]*([0-9]{3,9})[\\s]*$", pinCode);
+    }
+
+    /**
+     * Checks if the employee database is empty.
+     *
+     * @return true if employee database is empty else false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    @Override
+    public boolean isEmployeesDatabaseEmpty() throws HibernateException {
+        return (0 == employeeDAO.getEmployeeCount());
     }
     
     /**
@@ -356,11 +405,27 @@ public class EmployeeServiceImpl implements EmployeeService {
      *
      * @param employeeDTO the EmployeeDTO instance with employee details.
      * @return the employee's id as a int.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public int createEmployee (EmployeeDTO employeeDTO) throws SQLException {
-        return employeeDAO.insertRecord(Mapper.toEmployee(employeeDTO));
+    public int createEmployee (EmployeeDTO employeeDTO) throws
+            HibernateException {
+        return employeeDAO.insertEmployee(Mapper.toEmployee(employeeDTO));
+    }
+    
+    /**
+     * Creates new addresses with specified details and stores in the 
+     * database.
+     *
+     * @param employeeDTO the EmployeeDTO instance with address details.
+     * @return true if addresses created successfully, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    @Override
+    public boolean createAddresses(EmployeeDTO employeeDTO) throws 
+            HibernateException {
+        return (0 != employeeDAO.insertAddresses(Mapper.toEmployee(employeeDTO)
+                ));
     }
     
     /**
@@ -383,11 +448,11 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      * @param id the employee id to be retrieved as a int.
      * @return a List containing the specified employee.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public List<EmployeeDTO> getEmployee(int id) throws SQLException {
-        List<Employee> employees = employeeDAO.selectRecord(id);
+    public List<EmployeeDTO> getEmployee(int id) throws HibernateException {
+        List<Employee> employees = employeeDAO.getById(id);
         
         return toEmployeeDTO(employees);
     }
@@ -396,107 +461,13 @@ public class EmployeeServiceImpl implements EmployeeService {
      * Retrieves all employees from the database.
      *
      * @return a List containing all employees.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public List<EmployeeDTO> getAllEmployees() throws SQLException {
-        List<Employee> employees = employeeDAO.selectAllRecord();
+    public List<EmployeeDTO> getAllEmployees() throws HibernateException {
+        List<Employee> employees = employeeDAO.getAllEmployees();
         
         return toEmployeeDTO(employees);
-    }
-   
-    /**
-     * Updates specified employee's name and stores in the database.
-     *
-     * @param id employee id to be updated as a int.
-     * @param name the employee's new name to update.
-     * @return true if employee name updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public boolean updateName(int id, String name) throws SQLException {
-         return (1 == employeeDAO.updateName(id, name));
-    }
-   
-    /**
-     * Updates specified employee's date of birth and stores in the database.
-     *
-     * @param id employee id to be updated.
-     * @param dateOfBirth the employee's new date of birth to update.
-     * @return true if employee date of birth updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public boolean updateDateOfBirth(int id, LocalDate dateOfBirth) 
-            throws SQLException {
-         return (1 == employeeDAO.updateDateOfBirth(id, dateOfBirth));
-    }
-   
-    /**
-     * Updates specified employee's gender and stores in the database.
-     *
-     * @param id employee id to be updated.
-     * @param gender the employee's gender to update.
-     * @return true if employee gender updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public boolean updateGender(int id, String gender) throws SQLException {
-         return (1 == employeeDAO.updateGender(id, gender));
-    }
-   
-    /**
-     * Updates specified employee's mobile number and stores in the database.
-     *
-     * @param id employee id to be updated.
-     * @param mobileNumber the employee's new mobile number to update.
-     * @return true if employee mobile number updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public boolean updateMobileNumber(int id, long mobileNumber) 
-            throws SQLException { 
-         return (1 == employeeDAO.updateMobileNumber(id, mobileNumber));
-    }
-   
-    /**
-     * Updates specified employee's email and stores in the database.
-     *
-     * @param id employee id to be updated.
-     * @param email the employee's new email to update.
-     * @return true if employee email updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public boolean updateEmail(int id, String email) throws SQLException {
-         return (1 == employeeDAO.updateEmail(id, email));
-    }
-   
-    /**
-     * Updates specified employee's salary and stores in the database.
-     *
-     * @param id employee id to be updated.
-     * @param salary the employee's new salary to update.
-     * @return true if employee salary updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public boolean updateSalary(int id, float salary) throws SQLException {
-         return (1 == employeeDAO.updateSalary(id, salary));
-    }
-   
-    /**
-     * Updates specified employee's date of joining and stores in the database.
-     *
-     * @param id employee id to be updated.
-     * @param dateOfJoining the employee's new date of joining to update.
-     * @return true if employee date of joining updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-   @Override
-   public boolean updateDateOfJoining(int id, LocalDate dateOfJoining) 
-           throws SQLException { 
-         return (1 == employeeDAO.updateDateOfJoining(id, dateOfJoining));
     }
    
     /** 
@@ -504,13 +475,27 @@ public class EmployeeServiceImpl implements EmployeeService {
      *
      * @param employeeDTO the EmployeeDTO instance with employee details.
      * @return true if employee updated successfully otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */
      @Override
-     public boolean updateAllDetails(EmployeeDTO employeeDTO)
-            throws SQLException {
-         return (1 == employeeDAO.updateAllColumn(Mapper.toEmployee(
+     public boolean updateEmployee(EmployeeDTO employeeDTO)
+            throws HibernateException {
+         return (null != employeeDAO.updateEmployee(Mapper.toEmployee(
                             employeeDTO)));
+    }
+    
+    /** 
+     * Updates employee's address details and stores in the database.
+     *
+     * @param addressDTO the addressDTO instance with address details.
+     * @return true if address updated successfully otherwise false.
+     * @exception HibernateException if a database access error occurs.
+     */
+     @Override
+     public boolean updateAddress(AddressDTO addressDTO)
+            throws HibernateException {
+         return (null != employeeDAO.updateAddress(Mapper.toAddress(
+                            addressDTO)));
     }
             
     /**
@@ -518,21 +503,33 @@ public class EmployeeServiceImpl implements EmployeeService {
      *
      * @param id employee id to be deleted.
      * @return true if employee deleted successfully else false.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public boolean deleteEmployee(int id) throws SQLException {
-         return (1 == employeeDAO.deleteRecord(id));
+    public boolean deleteEmployee(int id) throws HibernateException {
+         return employeeDAO.deleteEmployee(id);
+    }
+    
+    /**
+     * Deletes the specified address of an employee.
+     *
+     * @param addressId id of the address to be deleted.
+     * @return true if address deleted successfully else false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    @Override
+    public boolean deleteAddress(int addressId) throws HibernateException {
+         return employeeDAO.deleteAddress(addressId);
     }
    
     /** 
      * Deletes all employees from the database. 
      *
      * @return true if deleted successfully, otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public boolean deleteAllEmployee() throws SQLException {
-         return employeeDAO.deleteAllRecord();  
+    public boolean deleteAllEmployees() throws HibernateException {
+         return employeeDAO.deleteAllEmployees();  
     }
 }

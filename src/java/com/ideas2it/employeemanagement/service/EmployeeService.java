@@ -3,10 +3,12 @@
  */
 package com.ideas2it.employeemanagement.service;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.hibernate.HibernateException;
+
+import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 
 /**
@@ -24,9 +26,9 @@ public interface EmployeeService {
      * 
      * @param id  the id of the employee to be searched as a integer.
      * @return true if employee found, otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */
-    boolean isEmployeeExist(int id) throws SQLException;
+    boolean isEmployeeExist(int id) throws HibernateException;
     
     /**
      * Checks if the specified employee id is a non negative integer
@@ -121,9 +123,9 @@ public interface EmployeeService {
      *
      * @param the mobile number to be searched as a long.
      * @return true if mobile number already exist, otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */
-    boolean isMobileNumberExist(long mobileNumber) throws SQLException;
+    boolean isMobileNumberExist(long mobileNumber) throws HibernateException;
     
     /**
      * Checks if the given email is valid. Capital letters are not allowed.
@@ -152,9 +154,9 @@ public interface EmployeeService {
      *
      * @param email employee's email to be searched as string value.
      * @return true if specified email is found, otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */ 
-    boolean isEmailExist(String email) throws SQLException;
+    boolean isEmailExist(String email) throws HibernateException;
     
     /**
      * Checks if the specified salary is non negative and atleast 8,000.
@@ -198,131 +200,135 @@ public interface EmployeeService {
      * Helper function for view, update and delete operations.
      *
      * @return true if employee database is empty else false.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */
-    boolean isEmployeesDatabaseEmpty() throws SQLException;
+    boolean isEmployeesDatabaseEmpty() throws HibernateException;
+    
+    /**
+     * Validates the specified door number.
+     * Door number starts with 0 is not allowed. door number can have maximum
+     * of 5 digits, can contain single capital letter with or without '-' hyphen
+     * single '/' is allowed. Leading trailing spaces are accepted.
+     * (e.g) 12, 12B, C1, A-9, 3-F, 1/30, B12/2C, 10C/23, D-30/5, 4-F/224, 
+     * 12/B5
+     *
+     * @param doorNumber the door number to be validated.
+     * @return true if it is valid, otherwise false.
+     */
+    boolean isValidDoorNumber(String doorNumber);
+    
+    /**
+     * Validates the specified street name.
+     * capital and small letters are accepted.
+     * minimum of 4 and maximum of 55 characters are accepted. single '.' 
+     * between letters is accepted. maximum of 5 digits are accepted. Leading, 
+     * trailing spaces are accepted.
+     * (e.g) 1st st, street no.34, k.k st.
+     * 
+     * @param street the street name to be validated.
+     * @return true if it is valid, otherwise false.
+     */  
+    boolean isValidStreet(String street);
+    
+    /**
+     * Validates the specified locality/city/state/country name.
+     * only single space is accepted between words. Leading and trailing spaces
+     * are accepted. The name can have total of 100 characters. Only alphabets
+     * are allowed (can be capital or small letters).
+     *
+     * @param locality the name of the locality/city/state/country to be 
+     *        validated.
+     * @return true if valid, otherwise false.
+     */
+    boolean isValidPlaceName(String name);
+    
+    /**
+     * Validates the specified pin code.
+     * Space is not accepted between digits. Leading and trailing spaces are 
+     * allowed. pin code can be 3 to 9 digits long. Numbers only allowed.
+     *
+     * @param pinCode the pin code to be validated as a string.
+     * @return true if it is valid, otherwise false.
+     */
+    boolean isValidPinCode(String pinCode);
     
     /**
      * Creates a new employee with specified details and stores in the database.
      *
      * @param employee the EmployeeDTO instance with employee details.
      * @return the employee's id as a int.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */
-    int createEmployee (EmployeeDTO employee) throws SQLException;
+    int createEmployee (EmployeeDTO employee) throws HibernateException;
+    
+    /**
+     * Creates new addresses with specified details and stores in the 
+     * database.
+     *
+     * @param employeeDTO the EmployeeDTO instance with address details.
+     * @return true if addresses created successfully, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    boolean createAddresses(EmployeeDTO employeeDTO) throws HibernateException;
     
     /**
      * Retrieves the specified employee from the database.
      * 
      * @param id the employee id to be retrieved as a int.
      * @return a List containing the specified employee.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */
-    List<EmployeeDTO> getEmployee(int id) throws SQLException;
+    List<EmployeeDTO> getEmployee(int id) throws HibernateException;
     
     /** 
      * Retrieves all employees from the database.
      *
      * @return a List containing all employees.
-     * @exception SQLException if a database access error occurs.
+     * @exception HibernateException if a database access error occurs.
      */
-    List<EmployeeDTO> getAllEmployees() throws SQLException;
-   
-    /**
-     * Updates specified employee's name and stores in the database.
-     *
-     * @param id employee id to be updated as a int.
-     * @param name the employee's new name to update.
-     * @return true if employee name updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    boolean updateName(int id, String name) throws SQLException;
-   
-    /**
-     * Updates specified employee's date of birth and stores in the database.
-     *
-     * @param id employee id to be updated.
-     * @param dateOfBirth the employee's new date of birth to update.
-     * @return true if employee date of birth updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    boolean updateDateOfBirth(int id, LocalDate dateOfBirth) 
-            throws SQLException;
-   
-    /**
-     * Updates specified employee's gender and stores in the database.
-     *
-     * @param id employee id to be updated.
-     * @param gender the employee's gender to update.
-     * @return true if employee gender updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    boolean updateGender(int id, String gender) throws SQLException;
-   
-    /**
-     * Updates specified employee's mobile number and stores in the database.
-     *
-     * @param id employee id to be updated.
-     * @param mobileNumber the employee's new mobile number to update.
-     * @return true if employee mobile number updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    boolean updateMobileNumber(int id, long mobileNumber) throws SQLException;
-   
-    /**
-     * Updates specified employee's email and stores in the database.
-     *
-     * @param id employee id to be updated.
-     * @param email the employee's new email to update.
-     * @return true if employee email updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    boolean updateEmail(int id, String email) throws SQLException;
-   
-    /**
-     * Updates specified employee's salary and stores in the database.
-     *
-     * @param id employee id to be updated.
-     * @param salary the employee's new salary to update.
-     * @return true if employee salary updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-    boolean updateSalary(int id, float salary) throws SQLException;
-   
-    /**
-     * Updates specified employee's date of joining and stores in the database.
-     *
-     * @param id employee id to be updated.
-     * @param dateOfJoining the employee's new date of joining to update.
-     * @return true if employee date of joining updated successfully else false.
-     * @exception SQLException if a database access error occurs.
-     */
-   boolean updateDateOfJoining(int id, LocalDate dateOfJoining)
-           throws SQLException;
+    List<EmployeeDTO> getAllEmployees() throws HibernateException;
    
     /** 
      * Updates all details of the specified employee and stores in the database.
      *
      * @param employeeDTO the EmployeeDTO instance with employee details.
      * @return true if employee updated successfully otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
-     boolean updateAllDetails(EmployeeDTO employeeDTO) throws SQLException;
+    boolean updateEmployee(EmployeeDTO employeeDTO) throws HibernateException;
+    
+    /** 
+     * Updates employee's address details and stores in the database.
+     *
+     * @param addressDTO the addressDTO instance with address details.
+     * @return true if address updated successfully otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+     boolean updateAddress(AddressDTO addressDTO) throws HibernateException;
             
     /**
      * Deletes the specified employee.
      *
      * @param id employee id to be deleted.
      * @return true if employee deleted successfully else false.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
-    boolean deleteEmployee(int id) throws SQLException;
-   
+    boolean deleteEmployee(int id) throws HibernateException;
+    
+    /**
+     * Deletes the specified address of an employee.
+     *
+     * @param addressId id of the address to be deleted.
+     * @return true if address deleted successfully else false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    boolean deleteAddress(int addressId) throws HibernateException;
+    
     /** 
      * Deletes all employees from the database. 
      *
      * @return true if deleted successfully, otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
-    boolean deleteAllEmployee() throws SQLException;
+    boolean deleteAllEmployees() throws HibernateException;
 }

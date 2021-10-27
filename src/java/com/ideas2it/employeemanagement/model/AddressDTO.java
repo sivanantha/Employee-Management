@@ -7,11 +7,10 @@ package com.ideas2it.employeemanagement.model;
  * The AddressDTO class is a data transfer object for address details.
  *
  * @author  Sivanantham
- * @version 1.0
+ * @version 1.1
  */
 public class AddressDTO {
     int id;
-    int employeeId;
     String city;
     String country;
     String doorNumber;
@@ -19,6 +18,7 @@ public class AddressDTO {
     String pinCode;
     String state;
     String street;
+    EmployeeDTO employeeDTO;
     
     /** No parameter constructor. */
     public AddressDTO() {
@@ -36,11 +36,11 @@ public class AddressDTO {
      * @param state the state name.
      * @param country the country name.
      * @param pinCode the postal code as a string.
-     * @param employeeId the corresponding employee's id.
+     * @param employeeDTO the corresponding employee.
      */
     public AddressDTO(int id, String doorNumber, String street, String locality,
-                   String city, String state, String country, String pinCode,
-                   int employeeId) {
+            String city, String state, String country, String pinCode,
+            EmployeeDTO employeeDTO) {
         this.id = id;
         this.doorNumber = doorNumber;
         this.street = street;
@@ -49,7 +49,31 @@ public class AddressDTO {
         this.state = state;
         this.country = country;
         this.pinCode = pinCode;
-        this.employeeId = employeeId;
+        this.employeeDTO = employeeDTO;
+    }
+    
+    /**
+     * Constructor for the address
+     *
+     * @param id the address id.
+     * @param doorNumber the door number as a string.
+     * @param street the street name.
+     * @param locality the locality/area/village name.
+     * @param city the city/district name.
+     * @param state the state name.
+     * @param country the country name.
+     * @param pinCode the postal code as a string.
+     */
+    public AddressDTO(int id, String doorNumber, String street, String locality,
+            String city, String state, String country, String pinCode) {
+        this.id = id;
+        this.doorNumber = doorNumber;
+        this.street = street;
+        this.locality = locality;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.pinCode = pinCode;
     }
     
     /**
@@ -62,11 +86,9 @@ public class AddressDTO {
      * @param state the state name.
      * @param country the country name.
      * @param pinCode the postal code as a string.
-     * @param employeeId the corresponding employee's id.
      */
     public AddressDTO(String doorNumber, String street, String locality,
-                   String city, String state, String country, String pinCode, 
-                   int employeeId) {
+            String city, String state, String country, String pinCode) {
         this.doorNumber = doorNumber;
         this.street = street;
         this.locality = locality;
@@ -74,9 +96,7 @@ public class AddressDTO {
         this.state = state;
         this.country = country;
         this.pinCode = pinCode;
-        this.employeeId = employeeId;
     }
-
     
     /**
      * Fetches the id of the address.
@@ -97,21 +117,21 @@ public class AddressDTO {
     }
     
     /**
-     * Fetches the id of the corresponding employee.
+     * Fetches the corresponding employee.
      *
-     * @return the id of the corresponding employee as a int.
+     * @return the corresponding employee.
      */
-    public int getEmployeeId() {
-        return employeeId;
+    public EmployeeDTO getEmployee() {
+        return employeeDTO;
     }
     
     /** 
-     * Assigns the specified employee id to the address.
+     * Assigns the specified employee to the address.
      *
-     * @param employeeId the id of corresponding employee as a int.
+     * @param employeeDTO the corresponding employee.
      */
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
+    public void setEmployee(EmployeeDTO employeeDTO) {
+        this.employeeDTO = employeeDTO;
     }
     
     /**
@@ -237,6 +257,28 @@ public class AddressDTO {
      * @param pinCode the pin code of the address as a string.
      */
     public void setPinCode(String pinCode) {
+        this.pinCode = pinCode;
+    }
+    
+    /**
+     * Assingns all fields with specified values.
+     *
+     * @param doorNumber the door number as a string.
+     * @param street the street name.
+     * @param locality the locality/area/village name.
+     * @param city the city/district name.
+     * @param state the state name.
+     * @param country the country name.
+     * @param pinCode the postal code as a string.
+     */
+    public void setAll(String doorNumber, String street, String locality,
+            String city, String state, String country, String pinCode) {
+        this.doorNumber = doorNumber;
+        this.street = street;
+        this.locality = locality;
+        this.city = city;
+        this.state = state;
+        this.country = country;
         this.pinCode = pinCode;
     }
     

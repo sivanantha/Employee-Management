@@ -123,12 +123,12 @@ public class AddressServiceImpl implements AddressService {
      * {@inheritDoc}
      *
      */
-    @Override
-    public List<AddressDTO> getAddresses(int employeeId) throws SQLException {
+/*    @Override
+   public List<AddressDTO> getAddresses(int employeeId) throws SQLException {
         List<Address> addresses = addressDAO.selectRecord(employeeId);
         
         return toAddressDTO(addresses);
-    }
+    }      */
     
     /**
      * Groups the addresses by employee id.
@@ -136,7 +136,7 @@ public class AddressServiceImpl implements AddressService {
      * @param addressDTO a list containing address details.
      * @return a Map containing addresses with employee id as key.
      */
-    private Map<Integer, List<AddressDTO>> groupByEmployee(
+/*    private Map<Integer, List<AddressDTO>> groupByEmployee(
             List<AddressDTO> addressesDTO) {
         int employeeId;
         List<AddressDTO> addresses;
@@ -156,109 +156,109 @@ public class AddressServiceImpl implements AddressService {
             }
         }
         return groupedAddresses;
-    }
+    }        */
     
     /**
      * {@inheritDoc} 
      *
      */
-    @Override
+/*    @Override
     public Map<Integer, List<AddressDTO>> getAllAddresses() throws 
             SQLException {
         List<Address> addresses = addressDAO.selectAllRecord();
         List<AddressDTO> addressesDTO = toAddressDTO(addresses);
         
         return groupByEmployee(addressesDTO);
-    }
+    }      */
     
     /**
      * {@inheritDoc} 
      *
      */
-    @Override
+/*    @Override
     public boolean updateDoorNumber(int id, String doorNumber) throws 
             SQLException {
         return (1 == addressDAO.updateDoorNumber(id, doorNumber));
-    }
+    }      */
     
     /**
      * {@inheritDoc} 
      *
      */
-    @Override
+/*    @Override
     public boolean updateStreet(int id, String street) throws SQLException {
         return (1 == addressDAO.updateStreet(id, street));
-    }
+    }            */
     
     /**
      * {@inheritDoc} 
      *
      */
-    @Override
+/*    @Override
     public boolean updateLocality(int id, String locality) throws SQLException {
         return (1 == addressDAO.updateLocality(id, locality));
-    }
+    }      */
     
     /**
      * {@inheritDoc} 
      *
      */
-    @Override
+/*    @Override
     public boolean updateCity(int id, String city) throws SQLException {
         return (1 == addressDAO.updateCity(id, city));
-    }
+    }    */
     
     /**
      * {@inheritDoc} 
      *
      */
-    @Override
+/*    @Override
     public boolean updateState(int id, String state) throws SQLException {
         return (1 == addressDAO.updateState(id, state));
-    }
+    }        */
     
     /**
      * {@inheritDoc} 
      *
      */
-    @Override
+/*    @Override
     public boolean updateCountry(int id, String country) throws SQLException {
         return (1 == addressDAO.updateCountry(id, country));
-    }
+    }        */
     
     /**
      * {@inheritDoc} 
      *
      */
-    @Override
+/*    @Override
     public boolean updatePinCode(int id, String pinCode) throws SQLException {
         return (1 == addressDAO.updatePinCode(id, pinCode));
-    }
+    }           */
     
     /**
      * {@inheritDoc} 
      *
      */
-    @Override
+/*    @Override
     public boolean updateAllDetails(AddressDTO addressDTO) throws SQLException {
         return (1 == addressDAO.updateAllColumn(Mapper.toAddress(addressDTO)));
-    }
+    }    */
     
     /**
      * {@inheritDoc} 
      *
      */
-    @Override
+/*    @Override
     public boolean deleteAddress(int id) throws SQLException {
         return (1 == addressDAO.deleteRecord(id));
-    }
+    }   */
     
     /**
      * {@inheritDoc} 
      *
      */
-    @Override
+/*    @Override
     public boolean deleteAllAddress() throws SQLException {
         return (0 != addressDAO.deleteAllRecord());
-    } 
+    }   */ 
 }

@@ -12,7 +12,7 @@ import java.util.List;
  * This class is a data transfer object for employee details.
  *
  * @author  Sivanantham
- * @version 1.0
+ * @version 1.1
  */
 public class EmployeeDTO {
     private int id;
@@ -41,10 +41,11 @@ public class EmployeeDTO {
      * @param email the email address of the employee
      * @param salary the salary of the employee
      * @param dateOfJoining the employee's date of joining
+     * @param addresses the list of address of the employee
      */
     public EmployeeDTO(int id, String name, LocalDate dateOfBirth, 
             String gender, long mobileNumber, String email, float salary,
-            LocalDate dateOfJoining) {
+            LocalDate dateOfJoining, List<AddressDTO> addresses) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -53,6 +54,7 @@ public class EmployeeDTO {
         this.email = email;
         this.salary = salary;
         this.dateOfJoining = dateOfJoining;
+        this.addresses = addresses;
     }
     
     /**
@@ -64,11 +66,12 @@ public class EmployeeDTO {
      * @param mobileNumber the mobile number of the employee
      * @param email the email address of the employee
      * @param salary the salary of the employee
-     * @param dateOfJoining the employee's date of joining 
+     * @param dateOfJoining the employee's date of joining
+     * @param addresses the list of address of the employee
      */
     public EmployeeDTO(String name, LocalDate dateOfBirth, String gender,
             long mobileNumber, String email, float salary,
-            LocalDate dateOfJoining) {
+            LocalDate dateOfJoining, List<AddressDTO> addresses) {
         this.name = name;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
@@ -243,6 +246,30 @@ public class EmployeeDTO {
     }
     
     /**
+     * Assingns all fields with specified values.
+     *
+     * @param name the name of the employee
+     * @param gender the gender of the employee
+     * @param dateOfBirth the date of birth of the employee
+     * @param mobileNumber the mobile number of the employee
+     * @param email the email address of the employee
+     * @param salary the salary of the employee
+     * @param dateOfJoining the employee's date of joining
+     */
+    public void setAll(String name, LocalDate dateOfBirth, String gender,
+            long mobileNumber, String email, float salary,
+            LocalDate dateOfJoining) {
+        this.id = id;
+        this.name = name;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.mobileNumber = mobileNumber;
+        this.email = email;
+        this.salary = salary;
+        this.dateOfJoining = dateOfJoining;
+    }
+    
+    /**
      * Provides this object in human readable form.
      *
      * @return a string which is description of the object
@@ -250,7 +277,11 @@ public class EmployeeDTO {
     @Override 
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        StringBuilder addressTexts = new StringBuilder(150);
 
+        for (AddressDTO address : addresses) {
+            addressTexts.append(address.toString());
+        }
         return new StringBuilder(300).append("\n\t\t Employee Id     : ")
                                      .append(id)
                                      .append("\n\n\t\t Name            : ")
@@ -268,6 +299,7 @@ public class EmployeeDTO {
                                      .append("\n\n\t\t Date Of joining : ")
                                      .append(dateOfJoining.format(formatter))
                                      .append("\n")
+                                     .append(addressTexts)
                                      .toString();
     }      
 }

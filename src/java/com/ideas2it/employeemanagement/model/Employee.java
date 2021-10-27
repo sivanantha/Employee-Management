@@ -41,10 +41,11 @@ public class Employee {
      * @param email the email address of the employee
      * @param salary the salary of the employee
      * @param dateOfJoining the employee's date of joining
+     * @param addresses a list of address of the employee
      */
     public Employee(int id, String name, LocalDate dateOfBirth, String gender,
             long mobileNumber, String email, float salary,
-            LocalDate dateOfJoining) {
+            LocalDate dateOfJoining, List<Address> addresses) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -53,6 +54,7 @@ public class Employee {
         this.email = email;
         this.salary = salary;
         this.dateOfJoining = dateOfJoining;
+        this.addresses = addresses;
     }
     
     /**
@@ -64,11 +66,12 @@ public class Employee {
      * @param mobileNumber the mobile number of the employee
      * @param email the email address of the employee
      * @param salary the salary of the employee
-     * @param dateOfJoining the employee's date of joining 
+     * @param dateOfJoining the employee's date of joining
+     * @param addresses a list of address of the employee 
      */
     public Employee(String name, LocalDate dateOfBirth, String gender,
             long mobileNumber, String email, float salary,
-            LocalDate dateOfJoining) {
+            LocalDate dateOfJoining, List<Address> addresses) {
         this.name = name;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;

@@ -3,18 +3,26 @@
  */
 package com.ideas2it.employeemanagement.dao.impl;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ideas2it.employeemanagement.connection_utils.DatabaseConnection;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.ListJoin;
+import javax.persistence.criteria.Root;
+import javax.persistence.TypedQuery;
+import org.hibernate.HibernateException;
+import org.hibernate.jpa.QueryHints;
+import org.hibernate.query.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+
+import com.ideas2it.employeemanagement.connection_utils.HibernateUtil;
 import com.ideas2it.employeemanagement.dao.EmployeeDAO;
+import com.ideas2it.employeemanagement.model.Address;
 import com.ideas2it.employeemanagement.model.Employee;
 
 /**
@@ -23,175 +31,123 @@ import com.ideas2it.employeemanagement.model.Employee;
  * number, email already exist in the database.
  *
  * @author  Sivanantham
- * @version 1.1
+ * @version 1.3
  */
 public class EmployeeDAOImpl implements EmployeeDAO {
     
     /**
-     * Checks if the database is empty.
+     * Calcultes the employee count.
      *
-     * @return true if database is empty, otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @return the employee count.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public boolean isDatabaseEmpty() throws SQLException {
-        boolean isEmpty;
-        Connection connection = DatabaseConnection.getConnection();
-        Statement statement = connection.createStatement();
+    public long getEmployeeCount() throws HibernateException {
+        long count;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        CriteriaBuilder criteria = session.getCriteriaBuilder();
+        CriteriaQuery<Long> query = criteria.createQuery(Long.class);
         
-        ResultSet resultSet = statement.executeQuery("SELECT NOT EXISTS(SELECT"
-                                      + " 1 FROM employee)");
-        resultSet.next();
-        isEmpty = resultSet.getBoolean(1);
-        
-        resultSet.close();
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
-        return isEmpty;
+        query.select(criteria.count(query.from(Employee.class)));
+        count = session.createQuery(query).getSingleResult();
+        session.close();
+        return count;
     }
     
     /**
-     * Checks if the specified employee id is exist.
-     *
-     * @return true if found, otherwise false.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public boolean isEmployeeIdExist(int id) throws SQLException {
-        boolean isEmployeeFound;
-        ResultSet resultSet;
-        Connection connection = DatabaseConnection.getConnection();
-        PreparedStatement statement = connection.prepareStatement(
-                "SELECT EXISTS(SELECT 1 FROM employee WHERE id = ?)");
-        
-        statement.setInt(1, id);
-        resultSet = statement.executeQuery();
-        resultSet.next();
-        isEmployeeFound = resultSet.getBoolean(1);
-        
-        resultSet.close();
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
-        return isEmployeeFound;
-    }
-    
-    /**
-     * Checks if the specified mobile number already exist.
+     * Gets the employee having specified mobile number.
      *
      * @param mobileNumber the mobile number to be searched as a long.
-     * @return true if found, else false.
-     * @exception SQLException if a database access error occurs.
+     * @return a list containing the employee having specified mobileNumber if
+     *         found.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public boolean isMobileNumberExist(long mobileNumber) throws SQLException {
-        boolean isMobileNumberFound;
-        ResultSet resultSet;
-        Connection connection = DatabaseConnection.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT "
-                + "EXISTS (SELECT 1 FROM employee WHERE mobile_number = ?)");
+    public List<Employee> getByMobileNumber(long mobileNumber) throws 
+            HibernateException {
+        List<Employee> employees;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        CriteriaBuilder criteria = session.getCriteriaBuilder();
+        CriteriaQuery<Employee> query = criteria.createQuery(Employee.class);
+        Root<Employee> root = query.from(Employee.class);
         
-        statement.setLong(1, mobileNumber);
-        resultSet = statement.executeQuery();
-        resultSet.next();
-        isMobileNumberFound = resultSet.getBoolean(1);
-        
-        resultSet.close();
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
-        return isMobileNumberFound;
+        query.select(root).where(criteria.equal(root.get("mobileNumber"), 
+                                                mobileNumber)); 
+        employees = session.createQuery(query).getResultList();
+        session.close();
+        return employees;
     }
     
     /**
-     * Checks if the specified email already exist.
+     * Gets the employee having specified email.
      *
      * @param email the email address to be searched as a string.
-     * @return true if found, otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @return a list containing 
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public boolean isEmailExist(String email) throws SQLException {
-        boolean isEmailFound;
-        ResultSet resultSet;
-        Connection connection = DatabaseConnection.getConnection();
-        PreparedStatement statement = connection.prepareStatement("SELECT "
-                + "EXISTS (SELECT 1 FROM employee WHERE email = ?)");
+    public List<Employee> getByEmail(String email) throws HibernateException {
+        List<Employee> employees;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        CriteriaBuilder criteria = session.getCriteriaBuilder();
+        CriteriaQuery<Employee> query = criteria.createQuery(Employee.class);
+        Root<Employee> root = query.from(Employee.class);
         
-        statement.setString(1, email);
-        resultSet = statement.executeQuery();
-        resultSet.next();
-        isEmailFound = resultSet.getBoolean(1);
-        
-        resultSet.close();
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
-        return isEmailFound;
+        query.select(root).where(criteria.equal(root.get("email"), 
+                                                email)); 
+        employees = session.createQuery(query).getResultList();
+        session.close();
+        return employees;
     }
     
     /**
-     * Creates a employee record in the database.
+     * Creates a new employee record in the database.
      *
      * @param employee the employee to be inserted as a Employee object. 
      * @return the employee id as a int.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public int insertRecord(Employee employee) throws SQLException {
+    public int insertEmployee(Employee employee) throws HibernateException {
         int employeeId;
-        ResultSet resultSet;
-        Connection connection = DatabaseConnection.getConnection();
-        String sql = "INSERT INTO employee VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)";
-        PreparedStatement statement = connection.prepareStatement(sql, 
-                                              Statement.RETURN_GENERATED_KEYS);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
         
-        statement.setString(1, employee.getName());
-        statement.setDate(2, Date.valueOf(employee.getDateOfBirth()));
-        statement.setString(3, employee.getGender());
-        statement.setLong(4, employee.getMobileNumber());
-        statement.setString(5, employee.getEmail());
-        statement.setFloat(6, employee.getSalary());
-        statement.setDate(7, Date.valueOf(employee.getDateOfJoining()));
+        employeeId = (int) session.save(employee);
         
-        statement.executeUpdate();
-        resultSet = statement.getGeneratedKeys();
-        resultSet.next();
-        employeeId = resultSet.getInt(1);
-        
-        resultSet.close();
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
+        for (Address address : employee.getAddresses()) {
+            address.setEmployee(employee);
+            session.save(address);
+        }
+        transaction.commit();
+        session.close();
         return employeeId;
     }
     
     /**
-     * Retrieves data from the resultset and creates a employee object and 
-     * stores in a list.
+     * Inserts the given list of addresses in the database.
      *
-     * @param resultSet a ResultSet object containing employee details.
-     * @return a list containing employee details.
-     * @exception SQLException if a database access error occurs.
+     * @param employee the employee whose address to be inserted as a         
+     *        Employee object. 
+     * @return the count of inserted addresses.
+     * @throws HibernateException if a database access error occurs.
      */
-    private List<Employee> fillEmployeesList(ResultSet resultSet) 
-            throws SQLException {
-        Employee employee;
-        List<Employee> employees = new ArrayList<Employee>();
+    @Override
+    public int insertAddresses(Employee employee) throws HibernateException {
+        int count = 0;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Employee oldEmployee = session.get(Employee.class, employee.getId());
         
-        while (resultSet.next()) {
-            employee = new Employee(resultSet.getInt(1),
-                                    resultSet.getString(2),
-                                    resultSet.getDate(3).toLocalDate(),
-                                    resultSet.getString(4),
-                                    resultSet.getLong(5),
-                                    resultSet.getString(6),
-                                    resultSet.getFloat(7),
-                                    resultSet.getDate(8).toLocalDate());
-            employees.add(employee);
+        oldEmployee.getAddresses().addAll(employee.getAddresses());
+        
+        for (Address address : employee.getAddresses()) {
+            session.save(address);
+            count++;
         }
-        return employees;
+        transaction.commit();
+        session.close();
+        return count;
     }
     
     /** 
@@ -199,24 +155,21 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      *
      * @param id the employee's id as a integer to fetch the record. 
      * @return a List containing the specified employee.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public List<Employee> selectRecord(int id) throws SQLException {
+    public List<Employee> getById(int id) throws HibernateException {
         List<Employee> employees;
-        ResultSet resultSet;
-        Connection connection = DatabaseConnection.getConnection();
-        String query = "SELECT * FROM employee WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        CriteriaBuilder criteria = session.getCriteriaBuilder();
+        CriteriaQuery<Employee> query = criteria.createQuery(Employee.class);
+        Root<Employee> root = query.from(Employee.class);
+        ListJoin<Object, Object> addresses = (ListJoin<Object, Object>) 
+                root.fetch("addresses", JoinType.LEFT);
         
-        statement.setInt(1, id);
-        resultSet = statement.executeQuery();
-        employees = fillEmployeesList(resultSet);
-        
-        resultSet.close();
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
+        query.select(root).where(criteria.equal(root.get("id"), id)); 
+        employees = session.createQuery(query).getResultList();
+        session.close();
         return employees;
     }
     
@@ -224,271 +177,132 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * Fetches all employees record.
      * 
      * @return a List containing all employees.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public List<Employee> selectAllRecord() throws SQLException {
+    public List<Employee> getAllEmployees() throws HibernateException {
         List<Employee> employees;
-        ResultSet resultSet;
-        Connection connection = DatabaseConnection.getConnection();
-        Statement statement = connection.createStatement();
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        TypedQuery<Employee> query = session.createQuery("SELECT DISTINCT "
+                + "emp FROM Employee emp LEFT JOIN FETCH emp.addresses",
+                Employee.class);
         
-        resultSet = statement.executeQuery("SELECT * FROM employee");
-        employees = fillEmployeesList(resultSet);
-        
-        resultSet.close();
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
+        query.setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false );
+        employees = query.getResultList();
+        session.close();
         return employees;
-    }
-    
-    /**
-     * Updates specified employee's name.
-     * 
-     * @param id the employee's id as a integer.
-     * @param name the employee name as a string to update.
-     * @return the number of rows affected.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public int updateName(int id, String name) throws SQLException {
-        int rowsAffected;
-        Connection connection = DatabaseConnection.getConnection();
-        String query = "UPDATE employee SET name = ? WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        
-        statement.setString(1, name);
-        statement.setInt(2, id);
-        rowsAffected = statement.executeUpdate();
-        
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
-        return rowsAffected;
-    }
-    
-    /**
-     * Updates specified employee's date of birth.
-     * 
-     * @param id the employee's id as a integer.
-     * @param name the employee name as a LocalDate to update.
-     * @return the number of rows affected.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public int updateDateOfBirth(int id, LocalDate dateOfBirth) 
-            throws SQLException {
-        int rowsAffected;
-        Connection connection = DatabaseConnection.getConnection();
-        String query = "UPDATE employee SET date_of_birth = ? WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        
-        statement.setDate(1, Date.valueOf(dateOfBirth));
-        statement.setInt(2, id);
-        rowsAffected = statement.executeUpdate();
-        
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
-        return rowsAffected;
-    }
-    
-    /**
-     * Updates specified employee's gender.
-     * 
-     * @param id the employee's id as a integer.
-     * @param name the employee gender as a string to update.
-     * @return the number of rows affected.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public int updateGender(int id, String gender) throws SQLException {
-        int rowsAffected;
-        Connection connection = DatabaseConnection.getConnection();
-        String query = "UPDATE employee SET gender = ? WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        
-        statement.setString(1, gender);
-        statement.setInt(2, id);
-        rowsAffected = statement.executeUpdate();
-        
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
-        return rowsAffected;
-    }
-    
-    /**
-     * Updates specified employee's mobile number.
-     * 
-     * @param id the employee's id as a integer.
-     * @param name the employee mobile number as a long to update.
-     * @return the number of rows affected.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public int updateMobileNumber(int id, long mobileNumber) 
-            throws SQLException {
-        int rowsAffected;
-        Connection connection = DatabaseConnection.getConnection();
-        String query = "UPDATE employee SET mobile_number = ? WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        
-        statement.setLong(1, mobileNumber);
-        statement.setInt(2, id);
-        rowsAffected = statement.executeUpdate();
-        
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
-        return rowsAffected;
-    }
-    
-    /**
-     * Updates specified employee's email.
-     * 
-     * @param id the employee's id as a integer.
-     * @param name the employee email as a string to update.
-     * @return the number of rows affected.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public int updateEmail(int id, String email) throws SQLException {
-        int rowsAffected;
-        Connection connection = DatabaseConnection.getConnection();
-        String query = "UPDATE employee SET email = ? WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        
-        statement.setString(1, email);
-        statement.setInt(2, id);
-        rowsAffected = statement.executeUpdate();
-        
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
-        return rowsAffected;
-    }
-    
-    /**
-     * Updates specified employee's salary.
-     * 
-     * @param id the employee's id as a integer.
-     * @param name the employee salary as a float to update.
-     * @return the number of rows affected.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public int updateSalary(int id, float salary) throws SQLException {
-        int rowsAffected;
-        Connection connection = DatabaseConnection.getConnection();
-        String query = "UPDATE employee SET salary = ? WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        
-        statement.setFloat(1, salary);
-        statement.setInt(2, id);
-        rowsAffected = statement.executeUpdate();
-        
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
-        return rowsAffected;
-    }
-    
-    /**
-     * Updates specified employee's date of joining.
-     * 
-     * @param id the employee's id as a integer.
-     * @param name the employee date of joining as a LocalDate to update.
-     * @return the number of rows affected.
-     * @exception SQLException if a database access error occurs.
-     */
-    @Override
-    public int updateDateOfJoining(int id, LocalDate dateOfJoining) 
-            throws SQLException {
-        int rowsAffected;
-        Connection connection = DatabaseConnection.getConnection();
-        String query = "UPDATE employee SET date_of_joining = ? WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
-        
-        statement.setDate(1, Date.valueOf(dateOfJoining));
-        statement.setInt(2, id);
-        rowsAffected = statement.executeUpdate();
-        
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
-        return rowsAffected;
     }
     
     /**
      * Updates specified employee's all details.
      * 
      * @param employee the employee to be updated as a Employee object.
-     * @return the number of rows affected.
-     * @exception SQLException if a database access error occurs.
+     * @return the updated Employee.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public int updateAllColumn(Employee employee) throws SQLException {
-        int rowsAffected;
-        Connection connection = DatabaseConnection.getConnection();
-        String query = "UPDATE employee SET name = ?, date_of_birth = ?, "
-                       + "gender = ?, mobile_number = ?, email = ?, salary ="
-                       + "?, date_of_joining = ? WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+    public Employee updateEmployee(Employee employee) throws HibernateException
+            {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Employee oldEmployee = session.load(Employee.class, employee.getId());
+        Employee newEmployee = (Employee) session.merge(employee);
         
-        statement.setString(1, employee.getName());
-        statement.setDate(2, Date.valueOf(employee.getDateOfBirth()));
-        statement.setString(3, employee.getGender());
-        statement.setLong(4, employee.getMobileNumber());
-        statement.setString(5, employee.getEmail());
-        statement.setFloat(6, employee.getSalary());
-        statement.setDate(7, Date.valueOf(employee.getDateOfJoining()));
-        statement.setInt(8, employee.getId());
-        rowsAffected = statement.executeUpdate();
+        transaction.commit();
+        session.close();
+        return newEmployee;
+    }
+    
+    /**
+     * Updates specified employee's address.
+     * 
+     * @param address the address to be updated as a Address instance.
+     * @return the updated Address.
+     * @throws HibernateException if a database access error occurs.
+     */
+    @Override
+    public Address updateAddress(Address address) throws HibernateException {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Address oldAddress = session.load(Address.class, address.getId());
+        Address newAddress = (Address) session.merge(address);
         
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
-        return rowsAffected;
+        transaction.commit();
+        session.close();
+        return newAddress;
     }
     
     /** 
      * Deletes specified employee.
      *
      * @param the employee's id as a int to be deleted.
-     * @return the number of rows affected.
-     * @exception SQLException if a database access error occurs.
+     * @return true if specified employee deleted, otherwise false.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public int deleteRecord(int id) throws SQLException {
-        int rowsAffected;
-        Connection connection = DatabaseConnection.getConnection();
-        String query = "DELETE FROM employee WHERE id = ?";
-        PreparedStatement statement = connection.prepareStatement(query);
+    public boolean deleteEmployee(int id) throws HibernateException {
+        int entitiesAffected;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        CriteriaBuilder criteria = session.getCriteriaBuilder();
+        CriteriaDelete<Address> deleteAddress = criteria.createCriteriaDelete(
+                Address.class);
+        CriteriaDelete<Employee> deleteEmployee = criteria.createCriteriaDelete(
+                Employee.class);
+        Root<Address> AddressRoot = deleteAddress.from(Address.class);
+        Root<Employee> EmployeeRoot = deleteEmployee.from(Employee.class);
         
-        statement.setInt(1, id);
-        rowsAffected = statement.executeUpdate();
-        
-        statement.close();
-        DatabaseConnection.closeConnection();
-        
-        return rowsAffected;
+        deleteAddress.where(criteria.equal(AddressRoot.get("employee"), id));
+        deleteEmployee.where(criteria.equal(EmployeeRoot.get("id"), id));
+        session.createQuery(deleteAddress).executeUpdate();
+        entitiesAffected = session.createQuery(deleteEmployee).executeUpdate();
+        transaction.commit();
+        session.close();
+        return (0 != entitiesAffected);
     }
+    
+    /**
+     * Deletes specified address of an employee.
+     *
+     * @param addressId the id of the address to be deleted
+     * @return true if deleted successfully, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+     @Override
+     public boolean deleteAddress(int addressId) throws HibernateException {
+        int entitiesAffected;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        CriteriaBuilder criteria = session.getCriteriaBuilder();
+        CriteriaDelete<Address> delete = criteria.createCriteriaDelete(
+                Address.class);
+        Root<Address> root = delete.from(Address.class);
+        
+        delete.where(criteria.equal(root.get("id"), addressId));
+        entitiesAffected = session.createQuery(delete).executeUpdate();
+        transaction.commit();
+        session.close();
+        return (0 != entitiesAffected);
+     }
     
     /**
      * Deletes all employees in the database.
      * 
      * @return true if deleted successfully, otherwise false.
-     * @exception SQLException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
-    public boolean deleteAllRecord() throws SQLException {
-        Connection connection = DatabaseConnection.getConnection();
-        Statement statement = connection.createStatement();
+    public boolean deleteAllEmployees() throws HibernateException {
+        int entitiesAffected;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        Query deleteAllAddress = session.createQuery("DELETE FROM Address");
+        Query deleteAllEmployee = session.createQuery("DELETE FROM Employee");
         
-        statement.execute("DELETE FROM employee");
-        DatabaseConnection.closeConnection();
-        return isDatabaseEmpty();
-    }   
+        deleteAllAddress.executeUpdate();
+        entitiesAffected = deleteAllEmployee.executeUpdate();
+        transaction.commit();    
+        session.close();
+        return true;
+    }
 }

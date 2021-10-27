@@ -16,7 +16,7 @@ import com.ideas2it.employeemanagement.model.EmployeeDTO;
  * AddressDTO and vice versa.
  *
  * @author  Sivanantham
- * @version 1.0
+ * @version 1.1
  */
 public final class Mapper {
     
@@ -30,7 +30,8 @@ public final class Mapper {
         return new EmployeeDTO(employee.getId(), employee.getName(),
                 employee.getDateOfBirth(), employee.getGender(),
                 employee.getMobileNumber(), employee.getEmail(), 
-                employee.getSalary(), employee.getDateOfJoining());    
+                employee.getSalary(), employee.getDateOfJoining(),
+                toAddressDTO(employee.getAddresses()));    
     }
     
     /**
@@ -43,7 +44,8 @@ public final class Mapper {
        return new Employee(employeeDTO.getId(), employeeDTO.getName(),
                 employeeDTO.getDateOfBirth(), employeeDTO.getGender(),
                 employeeDTO.getMobileNumber(), employeeDTO.getEmail(), 
-                employeeDTO.getSalary(), employeeDTO.getDateOfJoining()); 
+                employeeDTO.getSalary(), employeeDTO.getDateOfJoining(),
+                toAddress(employeeDTO.getAddresses())); 
     }
     
     /**
@@ -55,8 +57,22 @@ public final class Mapper {
     public static AddressDTO  toAddressDTO(Address address) {
         return new AddressDTO(address.getId(), address.getDoorNumber(), 
                 address.getStreet(), address.getLocality(), address.getCity(),
-                address.getState(), address.getCountry(), address.getPinCode(),
-                address.getEmployeeId());
+                address.getState(), address.getCountry(), address.getPinCode());
+    }
+    
+    /**
+     * Maps a list of Address objects to a list of AddressDTO objects.
+     * 
+     * @param addresses a list of Address objects to be mapped.
+     * @return a list of mapped AddressDTO instances.
+     */
+    public static List<AddressDTO> toAddressDTO(List<Address> addresses) {
+        List<AddressDTO> addressesDTO = new ArrayList<>();
+        
+        for (Address address : addresses) {
+            addressesDTO.add(toAddressDTO(address));
+        }
+        return addressesDTO;
     }
     
     /**
@@ -69,8 +85,21 @@ public final class Mapper {
         return new Address(addressDTO.getId(), addressDTO.getDoorNumber(), 
                 addressDTO.getStreet(), addressDTO.getLocality(), 
                 addressDTO.getCity(), addressDTO.getState(),
-                addressDTO.getCountry(), addressDTO.getPinCode(),
-                addressDTO.getEmployeeId());
+                addressDTO.getCountry(), addressDTO.getPinCode());
+    }
+    
+    /**
+     * Maps a list of AddressDTO objects to list of Address objects.
+     * 
+     * @param addressesDTO a list containing AddressDTO objects to be mapped.
+     * @return a list containing the mapped Address instances.
+     */
+    public static List<Address> toAddress(List<AddressDTO> addressesDTO) {
+        List<Address> addresses = new ArrayList<>();
+        
+        for (AddressDTO addressDTO : addressesDTO) {
+            addresses.add(toAddress(addressDTO));
+        }
+        return addresses;
     }
 }
-

@@ -7,11 +7,10 @@ package com.ideas2it.employeemanagement.model;
  * The Address class is a container for address details.
  *
  * @author  Sivanantham
- * @version 1.0
+ * @version 1.1
  */
 public class Address {
     int id;
-    int employeeId;
     String city;
     String country;
     String doorNumber;
@@ -19,6 +18,7 @@ public class Address {
     String pinCode;
     String state;
     String street;
+    Employee employee;  
     
     /** No parameter constructor. */
     public Address() {
@@ -36,11 +36,11 @@ public class Address {
      * @param state the state name.
      * @param country the country name.
      * @param pinCode the postal code as a string.
-     * @param employeeId the corresponding employee's id.
+     * @param employee the corresponding Employee instance.
      */
     public Address(int id, String doorNumber, String street, String locality,
                    String city, String state, String country, String pinCode,
-                   int employeeId) {
+                   Employee employee) {
         this.id = id;
         this.doorNumber = doorNumber;
         this.street = street;
@@ -49,12 +49,13 @@ public class Address {
         this.state = state;
         this.country = country;
         this.pinCode = pinCode;
-        this.employeeId = employeeId;
+        this.employee = employee;
     }
     
     /**
      * Constructor for the address
      *
+     * @param id the address id.
      * @param doorNumber the door number as a string.
      * @param street the street name.
      * @param locality the locality/area/village name.
@@ -62,11 +63,10 @@ public class Address {
      * @param state the state name.
      * @param country the country name.
      * @param pinCode the postal code as a string.
-     * @param employeeId the corresponding employee's id.
      */
-    public Address(String doorNumber, String street, String locality,
-                   String city, String state, String country, String pinCode,
-                   int employeeId) {
+    public Address(int id, String doorNumber, String street, String locality,
+                   String city, String state, String country, String pinCode) {
+        this.id = id;
         this.doorNumber = doorNumber;
         this.street = street;
         this.locality = locality;
@@ -74,7 +74,17 @@ public class Address {
         this.state = state;
         this.country = country;
         this.pinCode = pinCode;
-        this.employeeId = employeeId;
+    }
+    
+    public Address(String doorNumber, String street, String locality,
+                   String city, String state, String country, String pinCode) {
+        this.doorNumber = doorNumber;
+        this.street = street;
+        this.locality = locality;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.pinCode = pinCode;
     }
     
     /**
@@ -96,21 +106,21 @@ public class Address {
     }
     
     /**
-     * Fetches the id of the corresponding employee.
+     * Fetches the corresponding employee.
      *
-     * @return the id of the corresponding employee as a int.
+     * @return the corresponding employee.
      */
-    public int getEmployeeId() {
-        return employeeId;
+    public Employee getEmployee() {
+        return employee;
     }
     
     /** 
-     * Assigns the specified employee id to the address.
+     * Assigns the specified employee to the address.
      *
-     * @param employeeId the id of corresponding employee as a int.
+     * @param employee the corresponding Employee instance.
      */
-    public void setEmployeeId(int employeeId) {
-        this.employeeId = employeeId;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
     
     /**
