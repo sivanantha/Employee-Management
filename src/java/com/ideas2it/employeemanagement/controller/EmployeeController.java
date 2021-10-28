@@ -29,7 +29,7 @@ public class EmployeeController {
      *
      * @param id the employee id to be searched.
      * @return true if specified employee found, else false.
-     * @exception HibernateException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     public boolean isEmployeeExist(int id) throws HibernateException {
         return employeeService.isEmployeeExist(id);
@@ -39,7 +39,7 @@ public class EmployeeController {
      * Checks if the employees database is empty.
      * 
      * @return true if database is empty, otherwise false.
-     * @exception HibernateException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     public boolean isEmployeesDatabaseEmpty() throws HibernateException {
         return employeeService.isEmployeesDatabaseEmpty();
@@ -100,7 +100,7 @@ public class EmployeeController {
      * 
      * @param mobileNumber the employee mobile number to be searched.
      * @return true if the mobile number found, else false.
-     * @exception HibernateException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */   
     public boolean isMobileNumberExist(long mobileNumber) throws HibernateException {
          return employeeService.isMobileNumberExist(mobileNumber);
@@ -121,7 +121,7 @@ public class EmployeeController {
      * 
      * @param email the employee email to be searched.
      * @return true if the email found, else false.
-     * @exception HibernateException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     public boolean isEmailExist(String email) throws HibernateException {
          return employeeService.isEmailExist(email);
@@ -193,7 +193,7 @@ public class EmployeeController {
      *
      * @param employeeDTO the EmployeeDTO instance with employee details.
      * @return the employee's id as a int.
-     * @exception HibernateException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     public int createEmployee (EmployeeDTO employeeDTO) throws
             HibernateException {
@@ -217,10 +217,10 @@ public class EmployeeController {
      * Retrieves the specified employee.
      * 
      * @param id the employee id to be retrieved as a int.
-     * @return a List containing the specified employee.
-     * @exception HibernateException if a database access error occurs.
+     * @return the specified employee if found, otherwise null.
+     * @throws HibernateException if a database access error occurs.
      */
-    public List<EmployeeDTO> getEmployee(int id) throws HibernateException {
+    public EmployeeDTO getEmployee(int id) throws HibernateException {
         return employeeService.getEmployee(id);
     }
     
@@ -228,7 +228,7 @@ public class EmployeeController {
      * Retrieves all employees.
      *
      * @return a List containing all employees.
-     * @exception HibernateException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     public List<EmployeeDTO> getAllEmployees() throws HibernateException {
         return employeeService.getAllEmployees();

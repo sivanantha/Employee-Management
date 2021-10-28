@@ -16,7 +16,7 @@ import com.ideas2it.employeemanagement.model.EmployeeDTO;
  * create, update, retrieve, delete operations for employee management system.
  *
  * @author  Sivanantham
- * @version 1.2
+ * @version 1.3
  */
 public interface EmployeeService {
     
@@ -26,7 +26,7 @@ public interface EmployeeService {
      * 
      * @param id  the id of the employee to be searched as a integer.
      * @return true if employee found, otherwise false.
-     * @exception HibernateException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     boolean isEmployeeExist(int id) throws HibernateException;
     
@@ -123,7 +123,7 @@ public interface EmployeeService {
      *
      * @param the mobile number to be searched as a long.
      * @return true if mobile number already exist, otherwise false.
-     * @exception HibernateException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     boolean isMobileNumberExist(long mobileNumber) throws HibernateException;
     
@@ -154,7 +154,7 @@ public interface EmployeeService {
      *
      * @param email employee's email to be searched as string value.
      * @return true if specified email is found, otherwise false.
-     * @exception HibernateException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */ 
     boolean isEmailExist(String email) throws HibernateException;
     
@@ -200,7 +200,7 @@ public interface EmployeeService {
      * Helper function for view, update and delete operations.
      *
      * @return true if employee database is empty else false.
-     * @exception HibernateException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     boolean isEmployeesDatabaseEmpty() throws HibernateException;
     
@@ -257,7 +257,7 @@ public interface EmployeeService {
      *
      * @param employee the EmployeeDTO instance with employee details.
      * @return the employee's id as a int.
-     * @exception HibernateException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     int createEmployee (EmployeeDTO employee) throws HibernateException;
     
@@ -275,16 +275,16 @@ public interface EmployeeService {
      * Retrieves the specified employee from the database.
      * 
      * @param id the employee id to be retrieved as a int.
-     * @return a List containing the specified employee.
-     * @exception HibernateException if a database access error occurs.
+     * @return the specified employee if found otherwise null.
+     * @throws HibernateException if a database access error occurs.
      */
-    List<EmployeeDTO> getEmployee(int id) throws HibernateException;
+     EmployeeDTO getEmployee(int id) throws HibernateException;
     
     /** 
      * Retrieves all employees from the database.
      *
      * @return a List containing all employees.
-     * @exception HibernateException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     List<EmployeeDTO> getAllEmployees() throws HibernateException;
    

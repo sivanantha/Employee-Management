@@ -54,8 +54,8 @@ public class EmployeeView {
      * manipulate employee details. Executes the selected option.
      */
     private void printAndGetCRUDChoice() {
-        StringBuilder options = new StringBuilder(80);
         String userChoice;
+        StringBuilder options = new StringBuilder(80);
         String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! "
                               + ">>>>>>\n";
         
@@ -97,8 +97,8 @@ public class EmployeeView {
      * @return employee id as integer, only if it is valid.
      */ 
     private int getIdInput() {
-        Integer id = null;
         String userInput;
+        Integer id = null;
         String message = "\n\t\t\t<<<<<< Please Enter A Valid Non Negative "
                          + "Integer Value And 0 Is Not Allowed! >>>>>>\n";
         
@@ -121,8 +121,8 @@ public class EmployeeView {
      * @return employee name as string if valid.
      */
     private String getNameInput() {
-        String name = null;
         String userInput;
+        String name = null;
         String messageForInput = "\n\t\t Enter Employee Name (Middle And Last"
                                  + " Names Are Optional) : ";
         String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Name! >>>>"
@@ -147,8 +147,8 @@ public class EmployeeView {
      * @return employee's date of birth as LocalDate.
      */
     private LocalDate getDateOfBirthInput() {
-        LocalDate date = null;
         String userInput;
+        LocalDate date = null;
         String message = "\n\t\t Enter Employee Date Of Birth (DD-MM-YYYY) "
                          + "(e.g) 06-09-1999 : ";
         String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Date! Employee"
@@ -173,12 +173,12 @@ public class EmployeeView {
      * @return employee's gender as string if valid.
      */
     private String getGenderInput() {
-        String gender = null;
         String userInput;
+        String gender = null;
         String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Gender!"
                               + " >>>>>>\n";
         String message = "\n\t\t Enter Employee Gender (Male/Female/Others) : ";             
-                                   
+   
         while (null == gender) {
             System.out.print(message);
             userInput = inputReader.nextLine();
@@ -198,8 +198,8 @@ public class EmployeeView {
      * @return employee's mobile number as long if it is valid.
      */
     private long getMobileNumberInput() {
-        Long mobileNumber = null;
         String userInput;
+        Long mobileNumber = null;
         String errorMessage = "\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>";
         String messageForInvalid = "\n\t\t\t<<<<<< Mobile Number Must Be 10  "
                 + "Digits! IST Codes Are Not Allowed. >>>>>>\n";
@@ -221,7 +221,6 @@ public class EmployeeView {
                 }
             } catch (HibernateException exception) {
                 System.out.println(errorMessage);
-                exception.printStackTrace();
                 mobileNumber = null;
             }
         } 
@@ -235,12 +234,12 @@ public class EmployeeView {
      * @return employee email as string if valid.
      */
     private String getEmailInput() {
-        StringBuilder messageForInvalid = new StringBuilder(50);
-        String email = null;
         String userInput;
+        String email = null;
         String errorMessage = "\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>";
         String messageForDuplicate = "\n\t\t\t<<<<<< Email Already Exist! "
                                      + ">>>>>>\n";
+        StringBuilder messageForInvalid = new StringBuilder(50);
         
         messageForInvalid.append("\n\t\t\t<<<<<< Please Enter Valid Email! '-'")
                          .append(", '_', '.' Are Only Allowed Special Characte")
@@ -275,8 +274,8 @@ public class EmployeeView {
      * @return employee salary as a float value if valid.
      */
     private float getSalaryInput() {
-        Float salary = null;
         String userInput;
+        Float salary = null;
         String message = "\n\t\t\t<<<<<< Salary Must Be Atleast 8,000 ! Comma " 
                          + "Separators Are Not Allowed, 1 Or 2 Decimal Points "
                          + "Are Allowed! >>>>>>\n";
@@ -488,6 +487,7 @@ public class EmployeeView {
      * @return true if user's input is 'y' or false if user input is 'n'.
      */
     private boolean askToAddAnotherAddress() {
+        boolean result = false;
         String userInput = null;
         String errorMessage = "\n\t\t\t<<<<<< Please Enter 'Y' To Add Another "
                               + "Address Or 'N' To Submit Details! >>>>>>\n";                
@@ -504,9 +504,9 @@ public class EmployeeView {
         }
         
         if ("y".equals(userInput)) {
-            return true;
+            result = true;
         }
-        return false;
+        return result;
     }
     
     /**
@@ -564,7 +564,6 @@ public class EmployeeView {
                 isEmpty = true;
             } 
         } catch (HibernateException exception) {
-            exception.printStackTrace();
             System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
             isEmpty = true;
         }
@@ -580,7 +579,7 @@ public class EmployeeView {
      */
     private boolean isEmployeeExist(int id) {
         boolean isEmployeeFound = true;
-       
+
         try {
             if (!employeeController.isEmployeeExist(id)) {
                 System.out.println("\n\n\t\t\t<<<<<< Employee Not Found! "
@@ -599,9 +598,9 @@ public class EmployeeView {
      * option and executes the selected option if database is not empty.
      */
     private void showAndGetViewChoice() {
-        StringBuilder options;
         String errorMessage;
         String userChoice;
+        StringBuilder options;
         
         if (isEmployeesDatabaseEmpty()) {
             return;
@@ -633,10 +632,27 @@ public class EmployeeView {
         } while (!"3".equals(userChoice)); 
     }
     
+    /**
+     * Fetches specified employee from the database.
+     *
+     * @param id the id of the employee to be fetched.
+     * @return the employee if found, otherwise null.
+     */
     private EmployeeDTO getEmployee(int id) {
-        List<EmployeeDTO> employees = employeeController.getEmployee(id);
+        EmployeeDTO employee;
         
-        return employees.isEmpty() ? null : employees.get(0);
+        try {
+            employee = employeeController.getEmployee(id);
+            
+            if (null == employee) {
+                System.out.println("\n\n\t\t\t<<<<<< Employee Not Found! "
+                                   + ">>>>>>\n");
+            }
+        } catch (HibernateException exception) {
+            employee = null;
+            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+        }
+        return employee;
     }
     
     /**
@@ -645,21 +661,11 @@ public class EmployeeView {
      */
     private void viewEmployee() {
         int id = getIdInput();
-        EmployeeDTO employee;
-        
-        try {
-            employee = getEmployee(id);
+        EmployeeDTO employee = getEmployee(id);
             
-            if (null != employee) {
-               System.out.println("\n\t\t\t\t ~~~~~~~EMPLOYEE DETAILS~~~~~~~"
-                                  + "\n" + employee);
-            } else {
-                System.out.println("\n\n\t\t\t<<<<<< Employee Not Found! "
-                                   + ">>>>>>\n");
-            }
-        } catch (HibernateException exception) {
-            exception.printStackTrace();
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>"); 
+        if (null != employee) {
+            System.out.println("\n\t\t\t\t ~~~~~~~~EMPLOYEE DETAILS~~~~~~~~\n"
+                               + employee);
         }
     }
    
@@ -688,9 +694,9 @@ public class EmployeeView {
      */
     private void showAndGetUpdateChoice() {
         int id;
-        StringBuilder options;
         String errorMessage;
         String userChoice;
+        StringBuilder options;
         EmployeeDTO employee;
         
         if (isEmployeesDatabaseEmpty()) {
@@ -698,9 +704,8 @@ public class EmployeeView {
         }
         id = getIdInput();
         employee = getEmployee(id);
+        
         if (null == employee) {
-            System.out.println("\n\n\t\t\t<<<<<< Employee Not Found! "
-                                   + ">>>>>>\n");
             return;
         }
         
@@ -741,10 +746,11 @@ public class EmployeeView {
      * @param employee the employee whose details to be updated.
      */
     private void updateSingleField(EmployeeDTO employee) {
-        StringBuilder options = new StringBuilder(80);
         String userChoice;
+        StringBuilder options = new StringBuilder(80);
         String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! "
                               + ">>>>>>\n";
+        
         options.append("\n\t\t\t\\ Single Detail Update Menu /\n\t\t\t ~~~~~~")
                .append("~~~~~~~~~~~~~~~~~~~~~\n\t\t1 => Name\t\t\t2 => Date Of")
                .append(" Birth\n\n\t\t3 => Gender\t\t\t4 => Mobile Number\n\n")
@@ -810,7 +816,6 @@ public class EmployeeView {
                 System.out.println(errorMessage);
             }
         } catch (HibernateException exception) {
-            exception.printStackTrace();
             System.out.println(errorMessage);
         }
     }
@@ -1113,7 +1118,6 @@ public class EmployeeView {
                 System.out.println(errorMessage);  
             }
         } catch (HibernateException exception) {
-            exception.printStackTrace();
             System.out.println(errorMessage);
         }
     }
@@ -1360,8 +1364,7 @@ public class EmployeeView {
         List<AddressDTO> addresses = getAddressesInput();
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
-        employee.getAddresses().clear();
-        employee.setAddresses(addresses);
+        employee.getAddresses().addAll(addresses);
         
         try {
             if (employeeController.createAddresses(employee)) {
@@ -1371,7 +1374,6 @@ public class EmployeeView {
                 System.out.println(errorMessage);
             }
         } catch (HibernateException exception) {
-            exception.printStackTrace();
             System.out.println(errorMessage);
         }
     }
@@ -1424,6 +1426,7 @@ public class EmployeeView {
      * @return true if user's input is yes or false if user input is no.
      */
     private boolean askConfirmationToDelete() {
+        boolean result =  false;
         String userInput = null;
         String errorMessage = "\n\t\t\t<<<<<< Please Enter 'Y' To Delete Or 'N'"
                               + " To Cancel And Return To Main Menu >>>>>>\n";
@@ -1441,10 +1444,10 @@ public class EmployeeView {
         }
         
         if ("y".equals(userInput)) {
-            return true;
+            result = true;
         }
         System.out.println(messageForAbort);
-        return false;
+        return result;
     }
     
     /**
@@ -1469,7 +1472,6 @@ public class EmployeeView {
                 }
             }
         } catch (HibernateException exception) {
-            exception.printStackTrace();
             System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
         }
     }
@@ -1484,8 +1486,6 @@ public class EmployeeView {
         EmployeeDTO employee = getEmployee(employeeId);
         
         if (null == employee) {
-            System.out.println("\n\n\t\t\t<<<<<< Employee Not Found! "
-                                   + ">>>>>>\n");
             return;
         }
         address = showAndGetAddress(employee);
@@ -1498,15 +1498,14 @@ public class EmployeeView {
             try {
                 if (employeeController.deleteAddress(address.getId())) {
                     System.out.println("\n\t\t\t<<<<<< Deleted Successfully"
-                                           + "! >>>>>>\n");
+                                       + "! >>>>>>\n");
                 } else {
                     System.out.println("\n\t\t\t<<<<<< Cannot Delete The "
-                                           + "Address! >>>>>>\n");
+                                       + "Address! >>>>>>\n");
                 }
             } catch (HibernateException exception) {
-                exception.printStackTrace();
                 System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
-                                       + ">>>>>>\n");
+                                   + ">>>>>>\n");
             }
         }
     }
@@ -1515,7 +1514,7 @@ public class EmployeeView {
      * Asks user for confirmation to delete all employee records and deletes all
      * employee records if database is not empty.
      */
-    public void deleteAllEmployees() {
+    private void deleteAllEmployees() {
         if (askConfirmationToDelete()) {
             try {
                 if (employeeController.deleteAllEmployees()) {
@@ -1526,7 +1525,6 @@ public class EmployeeView {
                                        + ">>>>>>\n");
                 }
             } catch (HibernateException exception) {
-                exception.printStackTrace();
                 System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
                                    + ">>>>>>\n");
             }          

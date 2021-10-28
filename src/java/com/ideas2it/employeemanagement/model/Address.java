@@ -10,15 +10,15 @@ package com.ideas2it.employeemanagement.model;
  * @version 1.1
  */
 public class Address {
-    int id;
-    String city;
-    String country;
-    String doorNumber;
-    String locality;
-    String pinCode;
-    String state;
-    String street;
-    Employee employee;  
+    private int id;
+    private String city;
+    private String country;
+    private String doorNumber;
+    private String locality;
+    private String pinCode;
+    private String state;
+    private String street;
+    private Employee employee;  
     
     /** No parameter constructor. */
     public Address() {

@@ -19,12 +19,13 @@ public class HibernateUtil {
      * per thread.
      *
      * @return a SessionFactory instance.
-     * @exception HibernateException if a database access error occurs.
+     * @throws HibernateException if a database access error occurs.
      */
     public static SessionFactory getSessionFactory() throws HibernateException {
-         String path = System.getProperty("user.dir");
+         Configuration configuration;
+         
          if (sessionFactory == null) {
-             Configuration configuration = new Configuration();
+             configuration = new Configuration();
              sessionFactory = configuration.configure(
                     "/resources/hibernate.cfg.xml").buildSessionFactory(); 
          }

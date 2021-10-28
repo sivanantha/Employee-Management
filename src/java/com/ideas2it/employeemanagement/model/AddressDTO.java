@@ -10,15 +10,15 @@ package com.ideas2it.employeemanagement.model;
  * @version 1.1
  */
 public class AddressDTO {
-    int id;
-    String city;
-    String country;
-    String doorNumber;
-    String locality;
-    String pinCode;
-    String state;
-    String street;
-    EmployeeDTO employeeDTO;
+    private int id;
+    private String city;
+    private String country;
+    private String doorNumber;
+    private String locality;
+    private String pinCode;
+    private String state;
+    private String street;
+    private EmployeeDTO employeeDTO;
     
     /** No parameter constructor. */
     public AddressDTO() {
@@ -261,7 +261,7 @@ public class AddressDTO {
     }
     
     /**
-     * Assingns all fields with specified values.
+     * Assigns all fields with specified values.
      *
      * @param doorNumber the door number as a string.
      * @param street the street name.

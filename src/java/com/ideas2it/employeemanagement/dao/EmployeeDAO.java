@@ -12,15 +12,15 @@ import com.ideas2it.employeemanagement.model.Employee;
 
 /**
  * This interface provides methods for create, update, view, delete employee  
- * database records in database.
+ * details in the database.
  *
  * @author  Sivanantham
- * @version 1.2
+ * @version 1.3
  */
 public interface EmployeeDAO {
     
     /**
-     * Calcultes the employee count.
+     * Calculates the employee count.
      *
      * @return the employee count.
      * @throws HibernateException if a database access error occurs.
@@ -31,24 +31,25 @@ public interface EmployeeDAO {
      * Gets the employee having specified mobile number.
      *
      * @param mobileNumber the mobile number to be searched as a long.
-     * @return a list containing the employee having specified mobileNumber if
-     *         found.
+     * @return the employee having specified mobileNumber if
+     *         found, otherwise null.
      * @throws HibernateException if a database access error occurs.
      */
-    List<Employee> getByMobileNumber(long mobileNumber) throws 
+    Employee getByMobileNumber(long mobileNumber) throws 
             HibernateException;
     
     /**
      * Gets the employee having specified email.
      *
      * @param email the email address to be searched as a string.
-     * @return a list containing 
+     * @return the employee having specified email if
+     *         found, otherwise null.
      * @throws HibernateException if a database access error occurs.
      */
-    List<Employee> getByEmail(String email) throws HibernateException;
+    Employee getByEmail(String email) throws HibernateException;
     
     /**
-     * Creates a employee record in the database.
+     * Creates a new employee record in the database.
      *
      * @param employee the employee to be inserted as a Employee object. 
      * @return the employee id as a int.
@@ -61,19 +62,19 @@ public interface EmployeeDAO {
      *
      * @param employee the employee whose address to be inserted as a         
      *        Employee object. 
-     * @return the count of inserted addresses.
+     * @return true if created successfully, otherwise false.
      * @throws HibernateException if a database access error occurs.
      */
-    int insertAddresses(Employee employee) throws HibernateException;
+    boolean insertAddresses(Employee employee) throws HibernateException;
     
     /** 
      * Fetches the specified employee's record.
      *
      * @param id the employee's id as a integer to fetch the record. 
-     * @return a List containing the specified employee.
+     * @return the specified employee if found, otherwise null.
      * @throws HibernateException if a database access error occurs.
      */
-    List<Employee> getById(int id) throws HibernateException;
+    Employee getById(int id) throws HibernateException;
     
     /** 
      * Fetches all employees record.
