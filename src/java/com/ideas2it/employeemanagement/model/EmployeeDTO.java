@@ -276,29 +276,29 @@ public class EmployeeDTO {
     @Override 
     public String toString() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        StringBuilder addressTexts = new StringBuilder(150);
-
+        StringBuilder description = new StringBuilder(300);
+        
+        description.append("\n\t\t Employee Id     : ")
+                   .append(id)
+                   .append("\n\n\t\t Name            : ")
+                   .append(name)
+                   .append("\n\n\t\t Date of birth   : ")
+                   .append(dateOfBirth.format(formatter))
+                   .append("\n\n\t\t Gender          : ")
+                   .append(gender)
+                   .append("\n\n\t\t Mobile Number   : ")
+                   .append(mobileNumber)
+                   .append("\n\n\t\t Email           : ")
+                   .append(email)
+                   .append("\n\n\t\t Salary          : ")
+                   .append(String.format("%.2f", salary))
+                   .append("\n\n\t\t Date Of joining : ")
+                   .append(dateOfJoining.format(formatter))
+                   .append("\n");
+        
         for (AddressDTO address : addresses) {
-            addressTexts.append(address.toString());
+            description.append(address.toString());
         }
-        return new StringBuilder(300).append("\n\t\t Employee Id     : ")
-                                     .append(id)
-                                     .append("\n\n\t\t Name            : ")
-                                     .append(name)
-                                     .append("\n\n\t\t Date of birth   : ")
-                                     .append(dateOfBirth.format(formatter))
-                                     .append("\n\n\t\t Gender          : ")
-                                     .append(gender)
-                                     .append("\n\n\t\t Mobile Number   : ")
-                                     .append(mobileNumber)
-                                     .append("\n\n\t\t Email           : ")
-                                     .append(email)
-                                     .append("\n\n\t\t Salary          : ")
-                                     .append(String.format("%.2f", salary))
-                                     .append("\n\n\t\t Date Of joining : ")
-                                     .append(dateOfJoining.format(formatter))
-                                     .append("\n")
-                                     .append(addressTexts)
-                                     .toString();
+        return description.toString();
     }      
 }
