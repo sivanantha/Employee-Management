@@ -5,7 +5,6 @@ package com.ideas2it.employeemanagement.model;
 
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
  
 /**
