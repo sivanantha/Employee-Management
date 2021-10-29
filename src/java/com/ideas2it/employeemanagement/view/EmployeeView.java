@@ -517,6 +517,8 @@ public class EmployeeView {
     private List<AddressDTO> getAddressesInput() {
         List<AddressDTO> addresses = new ArrayList<>();
         
+        System.out.prinltln("\n\t\t\t ~~~~~~~~Address Details~~~~~~~~\n");
+        
         do {
             addresses.add(new AddressDTO(getDoorNumberInput(), getStreetInput(),
                     getLocalityInput(), getCityInput(), getStateInput(),
