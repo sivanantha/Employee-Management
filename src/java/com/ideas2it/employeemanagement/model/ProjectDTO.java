@@ -189,6 +189,6 @@ import java.util.Set;
        for (EmployeeDTO employeeDTO : employees) {
             description.append(employeeDTO.getName()).append("\n\n\t\t\t\t\t ");
        }
-       description.append("\n").toString();
+       return description.append("\n").toString();
     }
 }
