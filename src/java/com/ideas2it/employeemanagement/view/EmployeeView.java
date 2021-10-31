@@ -58,7 +58,7 @@ public class EmployeeView {
         String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! "
                               + ">>>>>>\n";
         
-        options.append("\n\t\t\t\t\\ Main Menu /\n\t\t\t\t ~~~~~~~~~~~\n")
+        options.append("\n\t\t\t\t\\ Employees Menu /\n\t\t\t\t ~~~~~~~~~~~\n")
                .append("\n\t\t1 => Create Employee\t\t2 => Go To View Menu\n\n")
                .append("\t\t3 => Go To Update Menu\t\t4 => Go To Delete Menu\n")
                .append("\n\t\t5 => Exit\n\n\t\tEnter The Option : ");
@@ -85,7 +85,7 @@ public class EmployeeView {
                 default:  
                     System.out.println(errorMessage); 
                     break;
-            }
+           }
         } while (!"5".equals(userChoice));
     }
     
@@ -516,7 +516,7 @@ public class EmployeeView {
     private List<AddressDTO> getAddressesInput() {
         List<AddressDTO> addresses = new ArrayList<>();
         
-        System.out.prinltln("\n\t\t\t ~~~~~~~~Address Details~~~~~~~~\n");
+        System.out.println("\n\t\t\t ~~~~~~~~Address Details~~~~~~~~\n");
         
         do {
             addresses.add(new AddressDTO(getDoorNumberInput(), getStreetInput(),

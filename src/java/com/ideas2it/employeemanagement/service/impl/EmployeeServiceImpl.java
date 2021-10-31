@@ -20,6 +20,7 @@ import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.service.EmployeeService;
 import com.ideas2it.employeemanagement.utils.Mapper;
+import com.ideas2it.employeemanagement.utils.ValidationUtil;
 
 /**
  * The EmployeeServiceImpl class contains validations and implementations for 
@@ -47,22 +48,12 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
-    public boolean isValidId(String id) { 
-        return Pattern.matches("(^\\s*[1-9][0-9]*\\s*)$", id);
-    }
-    
-    /**
-     * 
-     * {@inheriDoc}
-     * 
-     */
-    @Override
     public Integer validateId(String id) {
         Integer parsedId = null;
         
-        if (isValidId(id)) {  
+        if (ValidationUtil.isValidId(id)) {
             try {
-                parsedId = Integer.parseInt(id.strip());            
+                parsedId = Integer.parseInt(id.strip());          
             } catch (NumberFormatException exception) {
                 parsedId = null;     
             }
@@ -76,20 +67,9 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
-    public boolean isValidName(String name) {
-        return Pattern.matches("^(\\s*[a-zA-Z]{3,20}\\s*)$|^((\\s*[a-zA-Z]"
-                + "{3,20}) ([a-zA-Z]{2,20})\\s*)$|^((\\s*[a-zA-Z]{3,20}) "
-                + "([a-zA-Z]{2,20}) ([a-zA-Z]){2,20}\\s*)$", name);
-    }
-    
-    /**
-     * 
-     * {@inheriDoc}
-     * 
-     */
-    @Override
     public String validateName(String name) {
-        return isValidName(name) ? name.strip().toLowerCase() : null;
+        return ValidationUtil.isValidName(name) ? name.strip().toLowerCase() 
+                                                : null;
     }
     
     /**

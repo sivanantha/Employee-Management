@@ -31,18 +31,11 @@ public interface EmployeeService {
     boolean isEmployeeExist(int id) throws HibernateException;
     
     /**
-     * Checks if the specified employee id is a non negative integer
-     * (0 excluded). Allows leading and trailing spaces. Leading zeros are not  
+     * Validates and parses given employee id.Checks if the specified employee 
+     * id is a non negative integer (0 excluded).
+     * Allows leading and trailing spaces. Leading zeros are not  
      * allowed (e.g) 001. Signed integers are not considered valid (e.g) +1, -9. 
      * It does not check for id duplication.
-     *
-     * @param the employee id to be validated as a string.
-     * @return true if specified employee id is valid, otherwise false. 
-     */
-    boolean isValidId(String id);
-    
-    /**
-     * Validates and parses given employee id.
      * 
      * @param id the employee id to be validated.
      * @return employee id as a Integer if it is valid else null.
@@ -50,17 +43,10 @@ public interface EmployeeService {
     Integer validateId(String id);
     
     /**
-     * Checks if the specified name is valid. Middle name and last name are 
-     * optional. First name can have 3 to 20 letters, middle and last name
-     * can have 2 to 20 letters. Leading and trailing spaces are allowed. 
-     *
-     * @param name name of the employee to be validated as a string.
-     * @return true if specified name is valid, otherwise false.
-     */
-    boolean isValidName(String name);
-    
-    /**
      * Validates the specified employee name and converts it to lowercase.
+     * Middle name and last name are optional. First name can have 3 to 20 letters, 
+     * middle and last name can have 2 to 20 letters. Leading and trailing 
+     * spaces are allowed.
      * 
      * @param name the employee name to be validated.
      * @return employee name as a string if it is valid else null.

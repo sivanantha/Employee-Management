@@ -1,15 +1,19 @@
 /*
  * Copyright (c) 2021 Ideas2IT Technologies. All rights reserved.
  */
-package  com.ideas2it.employeemanagement.utils;
+package com.ideas2it.employeemanagement.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.ideas2it.employeemanagement.model.Address;
 import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
+import com.ideas2it.employeemanagement.model.Project;
+import com.ideas2it.employeemanagement.model.ProjectDTO;
 
 /**
  * This mapper class maps employee model to employee DTO, Address to 
@@ -101,5 +105,40 @@ public final class Mapper {
             addresses.add(toAddress(addressDTO));
         }
         return addresses;
+    }
+    
+    /**
+     * Maps Project object to ProjectDTO object.
+     * 
+     * @param project the Project object to be mapped.
+     * @return the mapped ProjectDTO instance.
+     */
+    public static ProjectDTO toProjectDTO(Project project) {
+        Set<EmployeeDTO> employeesDTO = new HashSet<>();
+        
+        for (Employee employee : project.getEmployees()) {
+            employeesDTO.add(toEmployeeDTO(employee));
+        }
+        return new ProjectDTO(project.getId(), project.getName(),
+                project.getDescription(), project.getManager(), 
+                project.getStatus(), employeesDTO);
+    }
+    
+    /**
+     * Maps ProjectDTO object to Project object.
+     * 
+     * @param ProjectDTO the ProjectDTO object to be mapped.
+     * @return the mapped Project instance.
+     */
+    public static Project toProject(ProjectDTO projectDTO) {
+        Set<Employee> employees = new HashSet<>();
+        
+        for (EmployeeDTO employeeDTO : projectDTO.getEmployees()) {
+            employees.add(toEmployee(employeeDTO));
+        }
+        
+        return new Project(projectDTO.getId(), projectDTO.getName(),
+                projectDTO.getDescription(), projectDTO.getManager(), 
+                projectDTO.getStatus(), employees);
     }
 }

@@ -103,7 +103,7 @@ import java.util.Set;
      *
      * @return the project description.
      */
-    public String getDescription(String description) {
+    public String getDescription() {
         return description;
     }
     
@@ -112,7 +112,7 @@ import java.util.Set;
      *
      * @param description the project description.
      */
-    public void setDescription() {
+    public void setDescription(String description) {
         this.description = description;
     }
     
@@ -189,6 +189,6 @@ import java.util.Set;
        for (EmployeeDTO employeeDTO : employees) {
             description.append(employeeDTO.getName()).append("\n\n\t\t\t\t\t ");
        }
-       description.append("\n").toString();
+       return description.append("\n").toString();
     }
 }
