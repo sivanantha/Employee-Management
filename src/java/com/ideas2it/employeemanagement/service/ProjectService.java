@@ -128,4 +128,30 @@ public interface ProjectService {
      * @throws HibernateException if a database access error occurs.
      */
     List<ProjectDTO> getAllProjects() throws HibernateException;
+    
+    /**
+     * Updates the specified project.
+     *
+     * @param projectDTO the ProjectDTO instance with updated details.
+     * @return true if updated successfully, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    boolean updateProject(ProjectDTO projectDTO) throws HibernateException;
+    
+    /**
+     * Deletes the specified project.
+     *
+     * @param id the project's id to be deleted.
+     * @return true if deleted successfully, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    boolean deleteProject(int id) throws HibernateException;
+    
+    /**
+     * Deletes all the projects.
+     *
+     * @return true if deleted successfully, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    boolean deleteAllProjects() throws HibernateException;
 }

@@ -137,4 +137,36 @@ public class ProjectController {
     public List<ProjectDTO> getAllProjects() throws HibernateException {
         return projectService.getAllProjects();
     }
+    
+    /**
+     * Updates the specified project.
+     *
+     * @param project the ProjectDTO instance with updated details.
+     * @return true if updated successfully, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    public boolean updateProject(ProjectDTO project) throws HibernateException {
+        return projectService.updateProject(project);
+    }
+    
+    /**
+     * Deletes the specified project.
+     *
+     * @param id the project's id to be deleted.
+     * @return true if deleted successfully, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    public boolean deleteProject(int id) throws HibernateException {
+        return projectService.deleteProject(id);
+    }
+    
+    /**
+     * Deletes all the projects.
+     *
+     * @return true if deleted successfully, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    public boolean deleteAllProjects() throws HibernateException {
+        return projectService.deleteAllProjects();
+    }
 }

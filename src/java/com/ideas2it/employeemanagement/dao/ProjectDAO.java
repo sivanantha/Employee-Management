@@ -53,5 +53,31 @@ public interface ProjectDAO {
      * @throws HibernateException if a database access error occurs.
      */
     List<Project> getAllProjects() throws HibernateException;
+    
+    /**
+     * Updates the specified project.
+     *
+     * @param project the project with updated details.
+     * @return true if updated successfully, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    boolean updateProject(Project project) throws HibernateException;
+    
+    /**
+     * Deletes the specified project.
+     *
+     * @param id the project's id to be deleted.
+     * @return true if deleted successfully, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    boolean deleteById(int id) throws HibernateException;
+    
+    /**
+     * Deletes all the projects.
+     *
+     * @return true if deleted successfully, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    boolean deleteAllProjects() throws HibernateException;
 }
 

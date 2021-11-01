@@ -171,6 +171,22 @@ import java.util.Set;
     }
     
     /**
+     * Assigns the instance with specified values.
+     *
+     * @param name the project name.
+     * @param description the project description.
+     * @param manager the project manager name.
+     * @param status the status of the project(DEVELOPMENT/TESTING/LIVE).
+     */
+    public void setAll(String name, String description, String manager,
+                       Status status) {
+        this.name = name;
+        this.description = description;
+        this.manager = manager;
+        this.status = status;
+    }
+    
+    /**
      * Provides this object in human readable form.
      *
      * @return a string which is description of the object

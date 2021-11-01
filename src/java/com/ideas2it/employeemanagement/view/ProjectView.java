@@ -54,10 +54,10 @@ public class ProjectView {
                     showAndGetViewChoice();
                     break;
                 case "3":
-                //    showAndGetUpdateChoice();
+                    showAndGetUpdateChoice();
                     break;
                 case "4":
-                //    showAndGetDeleteChoice();
+                    showAndGetDeleteChoice();
                     break;
                 case "5":
                     break;
@@ -71,7 +71,7 @@ public class ProjectView {
     /**
      * Gets the project id from the user and validates the user input.
      *
-     * @retrun the project id.
+     * @return the project id.
      */
     private int getIdInput() {
         String userInput;
@@ -201,7 +201,7 @@ public class ProjectView {
         }
         
         while (selectedEmployees.isEmpty() && (!employees.isEmpty())) {
-            System.out.print("\n\t\tEnter Employees Numbers To Assign(seperated"
+            System.out.print("\n\t\tEnter Employees Numbers To Assign(separated"
                          + " by comma) (e.g) 1, 2, 3 : ");
             userInput = inputReader.nextLine();
             selectedIds = userInput.split(",");
@@ -404,4 +404,375 @@ public class ProjectView {
         }
     }
     
+    /** 
+     * Prints available choices for update operation. gets the choice 
+     * from the user and executes the selected if database is not empty.
+     */
+    private void showAndGetUpdateChoice() {
+        int id;
+        String errorMessage;
+        String userChoice;
+        StringBuilder options;
+        ProjectDTO project;
+        
+        if (isProjectDatabaseEmpty()) {
+            return;
+        }
+        id = getIdInput();
+        project = getProject(id);
+        
+        if (null == project) {
+            return;
+        }
+        
+        errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! >>>>>>\n";
+        options = new StringBuilder(80);
+        options.append("\n\t\t\t\t\\ Update Menu /\n\t\t\t\t ~~~~~~~~~~~~~\n")
+               .append("\n\t\t1 => Update Single Detail\t\t2 => Update All ")
+               .append("Details\n\n\t\t3 => Assign Employees\t\t\t4 => ")
+               .append("Unassign Employees\n\n\t\t5 => Return to Main Menu\n\n")
+               .append("\t\tEnter The Option : ");
+        
+        do {
+            System.out.print(options);
+            userChoice = inputReader.nextLine().strip();
+            
+            switch (userChoice) {
+                case "1":
+                    updateSingleField(project);
+                    break;
+                case "2": 
+                    updateAllDetails(project);
+                    break;
+                case "3":
+                    assignEmployees(project);
+                    break;
+                case "4":
+                    unAssignEmployees(project);
+                    break;
+                default:  
+                    System.out.println(errorMessage);
+                    break;
+            }
+        } while (!"5".equals(userChoice)); 
+    }
+    
+    /**
+     * Prints choices available for update a project's single detail and gets 
+     * the choice from the user. Executes the selected choice.
+     *
+     * @param project the project whose details to be updated.
+     */
+    private void updateSingleField(ProjectDTO project) {
+        String userChoice;
+        StringBuilder options = new StringBuilder(80);
+        String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! "
+                              + ">>>>>>\n";
+        
+        options.append("\n\t\t\t\\ Single Detail Update Menu /\n\t\t\t ~~~~~~")
+               .append("~~~~~~~~~~~~~~~~~~~~~\n\t\t1 => Name\t\t\t2 => ")
+               .append("Description\n\n\t\t3 => Manager\t\t\t4 => Status\n\n")
+               .append("\t\t5 => Return To Previous Menu\n\n\t\t")
+               .append("Enter The Option : ");
+        
+        do {
+            System.out.print(options);
+            userChoice = inputReader.nextLine().strip();
+            
+            switch (userChoice) {
+                case "1": 
+                    updateName(project);
+                    break;
+                case "2": 
+                    updateDescription(project);
+                    break;
+                case "3": 
+                    updateManager(project);
+                    break;
+                case "4":
+                    updateStatus(project);
+                    break;
+                case "5":
+                    break;
+                default:  
+                    System.out.println(errorMessage);
+                    break;
+            }
+        } while (!"5".equals(userChoice));
+    }
+    
+    /**
+     * Gets project name from the user, validates and updates the project
+     * name.
+     *
+     * @param project the project whose name to be updated.
+     */
+    private void updateName(ProjectDTO project) {
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            project.setName(getNameInput());
+            
+            if (projectController.updateProject(project)) {
+                System.out.println("\n\t\t\t<<<<<< Name updated successfully! "
+                                   + ">>>>>>\n");
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (HibernateException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Gets project description from the user, validates and updates the project
+     * description.
+     *
+     * @param project the project whose description to be updated.
+     */
+    private void updateDescription(ProjectDTO project) {
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            project.setDescription(getDescriptionInput());
+            
+            if (projectController.updateProject(project)) {
+                System.out.println("\n\t\t\t<<<<<< Description updated "
+                                   + "successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (HibernateException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Gets project manager name from the user, validates and updates the
+     * project manager name.
+     *
+     * @param project the project whose manager name to be updated.
+     */
+    private void updateManager(ProjectDTO project) {
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            project.setManager(getManagerInput());
+            
+            if (projectController.updateProject(project)) {
+                System.out.println("\n\t\t\t<<<<<< Manager updated "
+                                   + "successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (HibernateException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Gets project status from the user, validates and updates the
+     * project status.
+     *
+     * @param project the project whose status to be updated.
+     */
+    private void updateStatus(ProjectDTO project) {
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            project.setStatus(getStatusInput());
+            
+            if (projectController.updateProject(project)) {
+                System.out.println("\n\t\t\t<<<<<< Status updated "
+                                   + "successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (HibernateException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Gets employees from the user to assign them to the specified project.
+     *
+     * @param project the project to assign employees.
+     */
+    private void assignEmployees(ProjectDTO project) {
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            project.setEmployees(getEmployeesInput());
+            
+            if (projectController.updateProject(project)) {
+                System.out.println("\n\t\t\t<<<<<< Manager updated "
+                                   + "successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (HibernateException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Gets employees from the user to unassign them from the specified project.
+     *
+     * @param project the project to unassign employees.
+     */
+    private void unAssignEmployees(ProjectDTO project) {
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        try {
+            project.setEmployees(getEmployeesInput());
+            
+            if (projectController.updateProject(project)) {
+                System.out.println("\n\t\t\t<<<<<< Manager updated "
+                                   + "successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (HibernateException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Gets all details of the project from the user validates 
+     * and updates all details.
+     *
+     * @param project the project to be updated.
+     */
+    private void updateAllDetails(ProjectDTO project) {
+        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        
+        project.setAll(getNameInput(), getDescriptionInput(), getManagerInput(), 
+                getStatusInput());
+        
+        try {
+            if (projectController.updateProject(project)) {
+                System.out.println("\n\t\t\t<<<<<< Project Details Updated "
+                                   + "Successfully! >>>>>>\n");
+            } else {
+                System.out.println(errorMessage);
+            }
+        } catch (HibernateException exception) {
+            System.out.println(errorMessage);
+        }
+    }
+    
+    /**
+     * Prints available choices for delete operation and asks the user to select
+     * a choice if database is not empty.
+     */
+    private void showAndGetDeleteChoice() {
+        StringBuilder options = new StringBuilder(80);
+        String userChoice;
+        String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! "
+                              + ">>>>>>\n";
+        
+        options.append("\n\t\t\t\t\\ Delete Menu /\n\t\t\t\t ~~~~~~~~~~~~~\n")
+               .append("\n\t\t1 => Delete Single Project\t\t2 => Delete All")
+               .append(" Projects\n\n\t\t3 => Return To Main Menu\n\n\t\t")
+               .append("Enter The Option : ");
+        
+        do {
+            if (isProjectDatabaseEmpty()) {
+                return;
+            }
+            System.out.print(options);
+            userChoice = inputReader.nextLine().strip();
+            
+            switch (userChoice) {
+                case "1": 
+                    deleteProject();
+                    break;
+                case "2": 
+                    deleteAllProjects();
+                    break;
+                case "3": 
+                    break;
+                default:  
+                    System.out.println(errorMessage);
+                    break;
+            }
+        } while (!"3".equals(userChoice)); 
+    }
+    
+    /**
+     * Asks user for confirmation to delete.
+     * 
+     * @return true if user's input is yes or false if user input is no.
+     */
+    private boolean askConfirmationToDelete() {
+        boolean result =  false;
+        String userInput = null;
+        String errorMessage = "\n\t\t\t<<<<<< Please Enter 'Y' To Delete Or 'N'"
+                              + " To Cancel And Return To Main Menu >>>>>>\n";
+        String messageForAbort = "\n\t\t\t<<<<<< Aborted! Returning To Main"
+                                 + " Menu... >>>>>>\n";                
+        
+        while (null == userInput) {
+            System.out.print("\n\t\t Do You Want To Delete ? (Y/N) : ");
+            userInput = inputReader.nextLine().strip().toLowerCase();
+            
+            if (!("y".equals(userInput) || "n".equals(userInput))) {
+                userInput = null;
+                System.out.println(errorMessage);
+            }
+        }
+        
+        if ("y".equals(userInput)) {
+            result = true;
+        }
+        System.out.println(messageForAbort);
+        return result;
+    }
+    
+    /**
+     * Gets project id from the user, validates id. Asks user for confirmation 
+     * and deletes the project if confirmed.
+     */
+    public void deleteProject() {
+        int id = getIdInput();
+        
+        if (!isProjectExist(id)) {
+            return;
+        }
+        
+        try {
+            if (askConfirmationToDelete()) {
+                if (projectController.deleteProject(id)) {
+                    System.out.println("\n\t\t\t<<<<<< Deleted Successfully! "
+                                       + ">>>>>>\n");
+                } else {
+                    System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
+                                       + ">>>>>>\n");
+                }
+            }
+        } catch (HibernateException exception) {
+            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
+        }
+    }
+    
+    /** 
+     * Asks user for confirmation to delete all employee records and deletes all
+     * employee records if confirmed.
+     */
+    private void deleteAllProjects() {
+        if (askConfirmationToDelete()) {
+            try {
+                if (projectController.deleteAllProjects()) {
+                    System.out.println("\n\t\t\t<<<<<< Deleted Successfully! "
+                                       + ">>>>>>\n");
+                } else {
+                    System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
+                                       + ">>>>>>\n");
+                }
+            } catch (HibernateException exception) {
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
+                                   + ">>>>>>\n");
+            }          
+        }
+    }
 }

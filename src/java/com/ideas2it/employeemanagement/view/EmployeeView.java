@@ -1158,7 +1158,7 @@ public class EmployeeView {
         try {
             address.setLocality(getLocalityInput());
             
-            if (employeeController.updateAddress(address)) {      
+            if (employeeController.updateAddress(address)) {     
                 System.out.println("\n\t\t\t<<<<<< Locality Updated "
                                    + "Successfully! >>>>>>\n");
             } else {

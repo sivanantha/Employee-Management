@@ -180,4 +180,32 @@ public class ProjectServiceImpl implements ProjectService {
         
         return toProjectDTO(projects);
     }
+    
+    /**
+     * {@inheritDoc}
+     *
+     */
+    @Override
+    public boolean updateProject(ProjectDTO projectDTO) throws 
+            HibernateException {
+        return projectDAO.updateProject(Mapper.toProject(projectDTO));
+    }
+    
+    /**
+     * {@inheritDoc}
+     *
+     */
+    @Override
+    public boolean deleteProject(int id) throws HibernateException {
+        return projectDAO.deleteById(id);
+    }
+    
+    /**
+     * {@inheritDoc}
+     *
+     */
+    @Override
+    public boolean deleteAllProjects() throws HibernateException {
+        return projectDAO.deleteAllProjects();
+    }
 }

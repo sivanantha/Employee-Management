@@ -104,4 +104,59 @@ public class ProjectDAOImpl implements ProjectDAO {
         session.close();
         return projects;
     }
+    
+    /**
+     * {@inheritDoc}
+     *
+     */
+    @Override
+    public boolean updateProject(Project project) throws HibernateException {
+        boolean isUpdated = false;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        
+        if (null != session.merge(project)) {
+            isUpdated = true;
+        }
+        session.close();
+        return isUpdated; 
+    }
+    
+    /**
+     * {@inheritDoc}
+     *
+     */
+    @Override
+    public boolean deleteById(int id) throws HibernateException {
+        int entitiesAffected;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        CriteriaBuilder criteria = session.getCriteriaBuilder();
+        CriteriaDelete<Project> delete = criteria.createCriteriaDelete(
+                Project.class);
+        Root<Project> root = delete.from(Project.class);
+        
+        delete.where(criteria.equal(root.get("id"), id));
+        entitiesAffected = session.createQuery(delete).executeUpdate();
+        transaction.commit();
+        session.close();
+        return (0 != entitiesAffected);
+    }
+    
+    /**
+     * {@inheritDoc}
+     *
+     */
+    @Override
+    public boolean deleteAllProjects() throws HibernateException {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
+        
+        Query query = session.createQuery("DELETE FROM Project");
+        
+        query.executeUpdate();
+        transaction.commit();
+        session.close();
+        return true;
+    }
 }
