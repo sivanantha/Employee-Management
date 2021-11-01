@@ -20,7 +20,6 @@ import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.service.EmployeeService;
 import com.ideas2it.employeemanagement.utils.Mapper;
-import com.ideas2it.employeemanagement.utils.ValidationUtil;
 
 /**
  * The EmployeeServiceImpl class contains validations and implementations for 
@@ -33,7 +32,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeDAO employeeDAO = new EmployeeDAOImpl();
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -42,16 +42,27 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
+     * 
+     */
+    @Override
+    public boolean isValidId(String id) { 
+        return Pattern.matches("(^\\s*[1-9][0-9]*\\s*)$", id);
+    }
+    
+    /**
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
     public Integer validateId(String id) {
         Integer parsedId = null;
         
-        if (ValidationUtil.isValidId(id)) {
+        if (isValidId(id)) {  
             try {
-                parsedId = Integer.parseInt(id.strip());          
+                parsedId = Integer.parseInt(id.strip());            
             } catch (NumberFormatException exception) {
                 parsedId = null;     
             }
@@ -60,17 +71,30 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
+     * 
+     */
+    @Override
+    public boolean isValidName(String name) {
+        return Pattern.matches("^(\\s*[a-zA-Z]{3,20}\\s*)$|^((\\s*[a-zA-Z]"
+                + "{3,20}) ([a-zA-Z]{2,20})\\s*)$|^((\\s*[a-zA-Z]{3,20}) "
+                + "([a-zA-Z]{2,20}) ([a-zA-Z]){2,20}\\s*)$", name);
+    }
+    
+    /**
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
     public String validateName(String name) {
-        return ValidationUtil.isValidName(name) ? name.strip().toLowerCase() 
-                                                : null;
+        return isValidName(name) ? name.strip().toLowerCase() : null;
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -81,7 +105,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -94,7 +119,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override 
@@ -104,7 +130,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -114,7 +141,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -123,7 +151,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -141,7 +170,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -153,7 +183,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -166,7 +197,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -175,7 +207,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override 
@@ -184,7 +217,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -194,7 +228,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -212,7 +247,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     private LocalDate parseDate(String date) {
@@ -228,7 +264,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -240,7 +277,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -263,6 +301,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
+     * 
      * {@inheritDoc}
      * 
      */
@@ -277,6 +316,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
+     * 
      * {@inheritDoc}
      * 
      */
@@ -287,6 +327,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
+     * 
      * {@inheritDoc}
      * 
      */
@@ -297,6 +338,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
    
     /**
+     * 
      * {@inheritDoc}
      * 
      */
@@ -306,7 +348,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -315,7 +358,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -325,7 +369,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -350,7 +395,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -360,9 +406,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         return (null == employee) ? null : Mapper.toEmployeeDTO(employee);
     }
     
-    /**
-     * {@inheritDoc}
-     * 
+    /** 
+     * Retrieves all employees from the database.
+     *
+     * @return a List containing all employees.
+     * @throws HibernateException if a database access error occurs.
      */
     @Override
     public List<EmployeeDTO> getAllEmployees() throws HibernateException {
@@ -372,7 +420,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
    
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
      @Override
@@ -383,7 +432,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
      @Override
@@ -394,7 +444,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
             
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -403,7 +454,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override
@@ -412,7 +464,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
    
     /**
-     * {@inheritDoc}
+     * 
+     * {@inheriDoc}
      * 
      */
     @Override

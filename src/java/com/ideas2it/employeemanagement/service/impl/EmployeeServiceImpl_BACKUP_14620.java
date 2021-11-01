@@ -46,6 +46,18 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
+<<<<<<< HEAD
+=======
+    public boolean isValidId(String id) { 
+        return Pattern.matches("(^\\s*[1-9][0-9]*\\s*)$", id);
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+>>>>>>> 9ce2acb2ae120c4afddc0e0f9eaee686093e0a41
     public Integer validateId(String id) {
         Integer parsedId = null;
         
@@ -64,6 +76,20 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
+<<<<<<< HEAD
+=======
+    public boolean isValidName(String name) {
+        return Pattern.matches("^(\\s*[a-zA-Z]{3,20}\\s*)$|^((\\s*[a-zA-Z]"
+                + "{3,20}) ([a-zA-Z]{2,20})\\s*)$|^((\\s*[a-zA-Z]{3,20}) "
+                + "([a-zA-Z]{2,20}) ([a-zA-Z]){2,20}\\s*)$", name);
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+>>>>>>> 9ce2acb2ae120c4afddc0e0f9eaee686093e0a41
     public String validateName(String name) {
         return ValidationUtil.isValidName(name) ? name.strip().toLowerCase() 
                                                 : null;
