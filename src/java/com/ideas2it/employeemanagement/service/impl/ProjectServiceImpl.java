@@ -3,12 +3,15 @@
  */
 package com.ideas2it.employeemanagement.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import org.hibernate.HibernateException;
 
 import com.ideas2it.employeemanagement.dao.ProjectDAO;
 import com.ideas2it.employeemanagement.dao.impl.ProjectDAOImpl;
+import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.Project;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
 import com.ideas2it.employeemanagement.model.Status;
@@ -111,7 +114,70 @@ public class ProjectServiceImpl implements ProjectService {
      * 
      */
     @Override
+    public boolean isProjectExist(int id) throws HibernateException {
+        return (null == projectDAO.getById(id)) ? false : true;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+    public boolean isProjectDatabaseEmpty() throws HibernateException {
+        return (0 == projectDAO.getProjectCount());
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     */
+    public List<EmployeeDTO> getAllEmployees() throws HibernateException {
+        return new EmployeeServiceImpl().getAllEmployees();
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     */
+    @Override
     public int createProject(ProjectDTO projectDTO) throws HibernateException {
         return projectDAO.insertProject(Mapper.toProject(projectDTO));
+    }
+    
+    /** 
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+    public ProjectDTO getProject(int id) throws HibernateException {
+        Project project = projectDAO.getById(id);
+        
+        return (null == project) ? null : Mapper.toProjectDTO(project);
+    }
+    
+    /**
+     * Maps list of Project instances to ProjectDTO instances.
+     *
+     * @param projects a List containing projects.
+     * @return a List containing mapped ProjectDTO instances.
+     */
+    private List<ProjectDTO> toProjectDTO(List<Project> projects) {
+        List<ProjectDTO> projectsDTO = new ArrayList<>(projects.size());
+        
+        for (Project project : projects) {
+            projectsDTO.add(Mapper.toProjectDTO(project));
+        }
+        return projectsDTO;
+    }
+    
+    /** 
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+    public List<ProjectDTO> getAllProjects() throws HibernateException {
+        List<Project> projects = projectDAO.getAllProjects();
+        
+        return toProjectDTO(projects);
     }
 }

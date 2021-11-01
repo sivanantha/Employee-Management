@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.hibernate.HibernateException;
 
+import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
 import com.ideas2it.employeemanagement.model.Status;
 import com.ideas2it.employeemanagement.service.ProjectService;
@@ -74,6 +75,38 @@ public class ProjectController {
     }
     
     /**
+     * Checks if the specified project exist.
+     *
+     * @param id the project id to be searched.
+     * @return true if specified project found, else false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    public boolean isProjectExist(int id) throws HibernateException {
+        return projectService.isProjectExist(id);
+    }
+    
+    /**
+     * Checks if the project database is empty.
+     * 
+     * @return true if database is empty, otherwise false.
+     * @throws HibernateException if a database access error occurs.
+     */
+    public boolean isProjectDatabaseEmpty() throws HibernateException {
+        return projectService.isProjectDatabaseEmpty();
+    }
+    
+    /**
+     * Fetches all employees from the database.
+     *
+     * @return a list containing all employees if database is not empty, 
+               otherwise an empty list.
+     * @throws HibernateException if a database access error occurs.
+     */
+    public List<EmployeeDTO> getAllEmployees() throws HibernateException {
+        return projectService.getAllEmployees();
+    }
+    
+    /**
      * Creates a new project record in the database.
      *
      * @param project the project to be inserted.
@@ -82,5 +115,26 @@ public class ProjectController {
      */
     public int createProject(ProjectDTO projectDTO) throws HibernateException {
         return projectService.createProject(projectDTO);
+    }
+    
+    /**
+     * Retrieves the specified project.
+     * 
+     * @param id the project id to be retrieved as a int.
+     * @return the specified project if found, otherwise null.
+     * @throws HibernateException if a database access error occurs.
+     */
+    public ProjectDTO getProject(int id) throws HibernateException {
+        return projectService.getProject(id);
+    }
+    
+    /** 
+     * Retrieves all projects.
+     *
+     * @return a List containing all projects.
+     * @throws HibernateException if a database access error occurs.
+     */
+    public List<ProjectDTO> getAllProjects() throws HibernateException {
+        return projectService.getAllProjects();
     }
 }

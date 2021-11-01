@@ -3,14 +3,16 @@
  */
 package com.ideas2it.employeemanagement.dao.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.ListJoin;
+import javax.persistence.criteria.SetJoin;
 import javax.persistence.criteria.Root;
 import javax.persistence.TypedQuery;
 import org.hibernate.HibernateException;
@@ -23,7 +25,6 @@ import org.hibernate.Transaction;
 import com.ideas2it.employeemanagement.connection_utils.HibernateUtil;
 import com.ideas2it.employeemanagement.dao.ProjectDAO;
 import com.ideas2it.employeemanagement.model.Project;
-import com.ideas2it.employeemanagement.model.Employee;
 
 /**
  * This class provides methods for create, update, view, delete, assign 
@@ -35,10 +36,26 @@ import com.ideas2it.employeemanagement.model.Employee;
  */
 public class ProjectDAOImpl implements ProjectDAO {
     
-    /**
-     * {@inheriDoc}
+    /** 
+     * {@inheritDoc}
      * 
      */
+    @Override
+    public long getProjectCount() throws HibernateException {
+        long count;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+
+        count = session.createQuery("SELECT COUNT(p) FROM Project p", 
+                                    Long.class).getSingleResult();
+        session.close();
+        return count;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     */
+    @Override
     public int insertProject(Project project) throws HibernateException {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = session.beginTransaction();
@@ -47,5 +64,44 @@ public class ProjectDAOImpl implements ProjectDAO {
         transaction.commit();
         session.close();
         return id;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+    public Project getById(int id) throws HibernateException {
+        Project project;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        
+        CriteriaBuilder criteria = session.getCriteriaBuilder();
+        CriteriaQuery<Project> query = criteria.createQuery(Project.class);
+        Root<Project> root = query.from(Project.class);
+        SetJoin<Object, Object> employees = (SetJoin<Object, Object>) 
+                root.fetch("employees", JoinType.LEFT);
+        
+        query.select(root).where(criteria.equal(root.get("id"), id)); 
+        project = session.createQuery(query).uniqueResult();
+        session.close();
+        return project;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+    public List<Project> getAllProjects() throws HibernateException {
+        List<Project> projects;
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        TypedQuery<Project> query = session.createQuery("SELECT DISTINCT "
+                + "p FROM Project p LEFT JOIN FETCH p.employees",
+                Project.class);
+        
+        query.setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false );
+        projects = query.getResultList();
+        session.close();
+        return projects;
     }
 }
