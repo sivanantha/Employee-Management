@@ -32,8 +32,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeDAO employeeDAO = new EmployeeDAOImpl();
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -42,8 +41,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -52,8 +50,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -71,8 +68,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -83,8 +79,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -93,8 +88,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -105,8 +99,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -119,8 +112,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override 
@@ -130,8 +122,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -141,8 +132,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -151,8 +141,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -170,8 +159,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -183,8 +171,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -197,8 +184,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -207,8 +193,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override 
@@ -217,8 +202,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -228,8 +212,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -247,8 +230,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     private LocalDate parseDate(String date) {
@@ -264,8 +246,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -277,8 +258,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -301,7 +281,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
      * {@inheritDoc}
      * 
      */
@@ -316,7 +295,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
      * {@inheritDoc}
      * 
      */
@@ -327,7 +305,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
      * {@inheritDoc}
      * 
      */
@@ -338,7 +315,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
    
     /**
-     * 
      * {@inheritDoc}
      * 
      */
@@ -348,8 +324,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -358,8 +333,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -369,8 +343,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -395,8 +368,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -406,11 +378,9 @@ public class EmployeeServiceImpl implements EmployeeService {
         return (null == employee) ? null : Mapper.toEmployeeDTO(employee);
     }
     
-    /** 
-     * Retrieves all employees from the database.
-     *
-     * @return a List containing all employees.
-     * @throws HibernateException if a database access error occurs.
+    /**
+     * {@inheritDoc}
+     * 
      */
     @Override
     public List<EmployeeDTO> getAllEmployees() throws HibernateException {
@@ -420,8 +390,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
    
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
      @Override
@@ -432,8 +401,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
      @Override
@@ -444,8 +412,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
             
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -454,8 +421,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -464,8 +430,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
    
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override

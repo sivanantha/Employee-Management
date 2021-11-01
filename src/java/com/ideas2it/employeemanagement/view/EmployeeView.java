@@ -516,7 +516,7 @@ public class EmployeeView {
     private List<AddressDTO> getAddressesInput() {
         List<AddressDTO> addresses = new ArrayList<>();
         
-        System.out.prinltln("\n\t\t\t ~~~~~~~~Address Details~~~~~~~~\n");
+        System.out.println("\n\t\t\t ~~~~~~~~Address Details~~~~~~~~\n");
         
         do {
             addresses.add(new AddressDTO(getDoorNumberInput(), getStreetInput(),
@@ -622,7 +622,7 @@ public class EmployeeView {
                     viewEmployee();
                     break;
                 case "2": 
-                    viewAllEmployee();
+                    viewAllEmployees();
                     break;
                 case "3":  
                     break;
@@ -674,7 +674,7 @@ public class EmployeeView {
      * Checks if database is empty and prints all employee's details if 
      * database is not empty.
      */
-   private void viewAllEmployee() {
+   private void viewAllEmployees() {
         try {
             List<EmployeeDTO> employees = employeeController.getAllEmployees();
             

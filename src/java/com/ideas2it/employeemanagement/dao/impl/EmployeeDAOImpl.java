@@ -36,8 +36,7 @@ import com.ideas2it.employeemanagement.model.Employee;
 public class EmployeeDAOImpl implements EmployeeDAO {
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -55,8 +54,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -77,8 +75,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -98,8 +95,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -115,8 +111,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -131,8 +126,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -153,8 +147,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -172,8 +165,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -189,8 +181,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -205,8 +196,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
@@ -228,8 +218,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
      @Override
@@ -251,8 +240,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      }
     
     /**
-     * 
-     * {@inheriDoc}
+     * {@inheritDoc}
      * 
      */
     @Override
