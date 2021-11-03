@@ -3,9 +3,12 @@
  */
 package com.ideas2it.employeemanagement.model;
 
+import javax.persistence.AttributeConverter;
+
 /**
- * This enum contains status definition for project. The project can have 3 status. 
- * They are DEVELOPMENT, TESTING, LIVE.
+ * This enum contains status definition for project. The project can have 3 
+ * status. They are DEVELOPMENT, TESTING, LIVE.
+ * 
  *
  * @author  Sivanantham
  * @version 1.0
@@ -37,5 +40,25 @@ public enum Status {
             default:
                 throw new IllegalArgumentException("Invalid Status");
         }
+    }
+}
+
+/**
+ * Converter for Status enumeration. It converts entity enum value to database
+ * column value and vice versa.
+ *
+ * @author  Sivanantham
+ * @version 1.0
+ */
+class StatusConverter implements AttributeConverter<Status, String> {
+    
+    @Override
+    public String convertToDatabaseColumn(Status status) {
+        return status.getStatus();
+    }
+    
+    @Override
+    public Status convertToEntityAttribute(String status) {
+        return Status.fromStatus(status);
     }
 }

@@ -18,6 +18,7 @@ import com.ideas2it.employeemanagement.dao.impl.EmployeeDAOImpl;
 import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
+import com.ideas2it.employeemanagement.model.ProjectDTO;
 import com.ideas2it.employeemanagement.service.EmployeeService;
 import com.ideas2it.employeemanagement.utils.Mapper;
 import com.ideas2it.employeemanagement.utils.ValidationUtil;
@@ -376,8 +377,8 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
      @Override
-     public boolean updateEmployee(EmployeeDTO employeeDTO)
-            throws HibernateException {
+     public boolean updateEmployee(EmployeeDTO employeeDTO) throws 
+            HibernateException {
          return (null != employeeDAO.updateEmployee(Mapper.toEmployee(
                             employeeDTO)));
     }
@@ -387,10 +388,19 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
      @Override
-     public boolean updateAddress(AddressDTO addressDTO)
-            throws HibernateException {
+     public boolean updateAddress(AddressDTO addressDTO) throws 
+            HibernateException {
          return (null != employeeDAO.updateAddress(Mapper.toAddress(
                             addressDTO)));
+    }
+    
+    /**
+     * {@inheriDoc}
+     *
+     */
+    @Override
+    public List<ProjectDTO> getAllProjects() throws HibernateException {
+        return new ProjectServiceImpl().getAllProjects();
     }
             
     /**

@@ -27,10 +27,9 @@ import com.ideas2it.employeemanagement.dao.ProjectDAO;
 import com.ideas2it.employeemanagement.model.Project;
 
 /**
- * This class provides methods for create, update, view, delete, assign 
- * employees for project in database.
+ * This class provides methods for create, update, view, delete, assign,
+ * unassign employees for project in database.
  * 
- *
  * @author  Sivanantham
  * @version 1.0
  */
@@ -113,10 +112,12 @@ public class ProjectDAOImpl implements ProjectDAO {
     public boolean updateProject(Project project) throws HibernateException {
         boolean isUpdated = false;
         Session session = HibernateUtil.getSessionFactory().openSession();
+        Transaction transaction = session.beginTransaction();
         
         if (null != session.merge(project)) {
             isUpdated = true;
         }
+        transaction.commit();
         session.close();
         return isUpdated; 
     }

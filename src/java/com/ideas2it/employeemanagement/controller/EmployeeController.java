@@ -10,6 +10,7 @@ import org.hibernate.HibernateException;
 
 import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
+import com.ideas2it.employeemanagement.model.ProjectDTO;
 import com.ideas2it.employeemanagement.service.EmployeeService;
 import com.ideas2it.employeemanagement.service.impl.EmployeeServiceImpl;
 
@@ -102,7 +103,8 @@ public class EmployeeController {
      * @return true if the mobile number found, else false.
      * @throws HibernateException if a database access error occurs.
      */   
-    public boolean isMobileNumberExist(long mobileNumber) throws HibernateException {
+    public boolean isMobileNumberExist(long mobileNumber) throws 
+            HibernateException {
          return employeeService.isMobileNumberExist(mobileNumber);
     }
     
@@ -171,7 +173,7 @@ public class EmployeeController {
      * Validates the specified locality/city/state/country name.
      *
      * @param locality the name of the locality/city/state/country to be 
-     *        validated.
+     *                 validated.
      * @return true if valid, otherwise false.
      */
     public boolean isValidPlaceName(String name) {
@@ -253,9 +255,19 @@ public class EmployeeController {
       * @return true if address updated successfully otherwise false.
       * @throws HibernateException if a database access error occurs.
       */
-     public boolean updateAddress(AddressDTO addressDTO)
-            throws HibernateException {
+     public boolean updateAddress(AddressDTO addressDTO) throws 
+            HibernateException {
          return employeeService.updateAddress(addressDTO);
+    }
+    
+    /**
+     * Fetches all available projects.
+     *
+     * @return a List containing all available projects.
+     * @throws HibernateException if a database  access error occurs.
+     */
+    public List<ProjectDTO> getAllProjects() throws HibernateException {
+        return employeeService.getAllProjects();
     }
     
    /**

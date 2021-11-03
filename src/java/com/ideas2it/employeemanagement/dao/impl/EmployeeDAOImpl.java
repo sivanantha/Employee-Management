@@ -133,15 +133,28 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     public Employee getById(int id) throws HibernateException {
         Employee employee;
         Session session = HibernateUtil.getSessionFactory().openSession();
-        
         CriteriaBuilder criteria = session.getCriteriaBuilder();
-        CriteriaQuery<Employee> query = criteria.createQuery(Employee.class);
-        Root<Employee> root = query.from(Employee.class);
-        ListJoin<Object, Object> addresses = (ListJoin<Object, Object>) 
-                root.fetch("addresses", JoinType.LEFT);
         
-        query.select(root).where(criteria.equal(root.get("id"), id)); 
-        employee = session.createQuery(query).uniqueResult();
+        /* Here the query is split into two parts to avoid cartesian join 
+         * which degrade performance.                                    
+         */
+        CriteriaQuery<Employee> firstQuery = criteria.createQuery(
+                Employee.class);
+        Root<Employee> firstRoot = firstQuery.from(Employee.class);
+        ListJoin<Object, Object> addresses = (ListJoin<Object, Object>) 
+                firstRoot.fetch("addresses", JoinType.LEFT);
+        
+        CriteriaQuery<Employee> secondQuery = criteria.createQuery(
+                Employee.class);
+        Root<Employee> secondRoot = secondQuery.from(Employee.class);
+
+        secondRoot.fetch("projects", JoinType.LEFT);
+        firstQuery.select(firstRoot).where(criteria.equal(firstRoot.get("id"), 
+                                                          id));
+        secondQuery.select(secondRoot).where(criteria.equal(
+                secondRoot.get("id"), id)); 
+        employee = session.createQuery(firstQuery).uniqueResult();
+        session.createQuery(secondQuery).uniqueResult();
         session.close();
         return employee;
     }
@@ -154,12 +167,22 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     public List<Employee> getAllEmployees() throws HibernateException {
         List<Employee> employees;
         Session session = HibernateUtil.getSessionFactory().openSession();
-        TypedQuery<Employee> query = session.createQuery("SELECT DISTINCT "
-                + "emp FROM Employee emp LEFT JOIN FETCH emp.addresses",
+        
+        /* Here the query is split into two parts to avoid cartesian join 
+         * which degrade performance.                                    
+         */
+        TypedQuery<Employee> firstQuery = session.createQuery("SELECT DISTINCT"
+                + " emp FROM Employee emp LEFT JOIN FETCH emp.addresses",
                 Employee.class);
         
-        query.setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false );
-        employees = query.getResultList();
+        TypedQuery<Employee> secondQuery = session.createQuery("SELECT DISTINCT"
+                + " emp FROM Employee emp LEFT JOIN FETCH emp.projects",
+                Employee.class);
+        
+        firstQuery.setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false );
+        secondQuery.setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false );
+        employees = firstQuery.getResultList();
+        employees = secondQuery.getResultList();
         session.close();
         return employees;
     }

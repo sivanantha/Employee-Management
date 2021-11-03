@@ -71,7 +71,8 @@ public class ProjectServiceImpl implements ProjectService {
      *
      */
     public boolean isValidDescription(String description) {
-        return Pattern.matches("^(.{0,145}[A-Za-z]{10}.{0,145})$", description);
+        return Pattern.matches("^(.{0,145}([A-Za-z] ?){10}.{0,145})$",
+                               description);
     }
     
     /**
@@ -102,7 +103,7 @@ public class ProjectServiceImpl implements ProjectService {
         Status enumeratedStatus;
         
         try {
-            enumeratedStatus = Status.fromStatus(status);
+            enumeratedStatus = Status.fromStatus(status.toUpperCase());
         } catch (IllegalArgumentException exception) {
             enumeratedStatus = null;
         }

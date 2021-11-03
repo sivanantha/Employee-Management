@@ -32,15 +32,15 @@ public class ProjectView {
      * Displays the available choices for project management and gets the choice
      * from the user. Executes the selected choice.
      */
-    public void showAndGetProjectChoice() {
+    public void showAndGetCRUDChoice() {
         String userChoice;
         String errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! "
                               + ">>>>>>\n";
         StringBuilder choices = new StringBuilder(200).append("\n\t\t\t\t\\ ")
-                .append("Projects Menu /\n\t\t\t\t ~~~~~~~~~~~\n\n\t\t1 => ")
-                .append("Create Project\t\t2 => Go To View Menu\n\n\t\t3 => ")
+                .append("Projects Menu /\n\t\t\t\t ~~~~~~~~~~~~~~~\n\n\t\t1 =>")
+                .append(" Create Project\t\t2 => Go To View Menu\n\n\t\t3 => ")
                 .append("Go To Update Menu\t\t4 => Go To Delete Menu\n\n\t\t")
-                .append("5 => Exit\n\n\t\tEnter The Choice : ");
+                .append("5 => Return To Main Menu\n\n\t\tEnter The Choice : ");
         
         do {
             System.out.print(choices);
@@ -151,7 +151,7 @@ public class ProjectView {
         while (null == manager) {
             System.out.print("\n\t\t Enter Project Manager Name : ");
             userInput = inputReader.nextLine();
-            manager = projectController.validateManager(manager);
+            manager = projectController.validateManager(userInput);
             
             if (null == manager) {
                 System.out.println(errorMessage);
@@ -172,75 +172,15 @@ public class ProjectView {
                               + ">\n";
         
         while (null == status) {
-            System.out.println("\n\t\t Enter Project Status : ");
+            System.out.print("\n\t\t Enter Project Status : ");
             userInput = inputReader.nextLine();
+            status = projectController.validateStatus(userInput);
             
             if (null == status) {
                 System.out.println(errorMessage);
             }
         }
         return status;
-    }
-    
-    /**
-     * Shows all employees and asks user to select employees to assign them to 
-     * the project.
-     *
-     * @return a set containing selected employees or if there is no employees
-     *         in the database then an empty set.
-     */ 
-    private Set<EmployeeDTO> getEmployeesInput() {
-        String[] selectedIds;
-        String userInput;
-        int count = 1;
-        List<EmployeeDTO> employees = projectController.getAllEmployees();
-        Set<EmployeeDTO> selectedEmployees = new HashSet<>();
-        
-        for (EmployeeDTO employee : employees) {
-            System.out.println("\n\t\t" + count + " => " + employee.getName());
-        }
-        
-        while (selectedEmployees.isEmpty() && (!employees.isEmpty())) {
-            System.out.print("\n\t\tEnter Employees Numbers To Assign(separated"
-                         + " by comma) (e.g) 1, 2, 3 : ");
-            userInput = inputReader.nextLine();
-            selectedIds = userInput.split(",");
-            
-            try {
-                for (String id : selectedIds) {
-                    selectedEmployees.add(employees.get(Integer.parseInt(
-                            id.strip())));
-                }
-            } catch (NumberFormatException | IndexOutOfBoundsException 
-                     exception) {
-                System.out.println("\n\t\t<<<<<< Invalid Selection! >>>>>>>\n");
-                selectedEmployees.clear();
-            }
-        }
-        return selectedEmployees;
-    }
-    
-    /**
-     * Fetches all employees from the database.
-     *
-     * @return a list containing all employees if database is not empty, 
-               otherwise an empty list.
-     */
-    private List<EmployeeDTO> getAllEmployees() {
-        List<EmployeeDTO> employees;
-        
-        try {
-            employees = projectController.getAllEmployees();
-            
-            if (employees.isEmpty()) {
-                System.out.println("\n\n\t\t\t<<<<<< No Employees Found To "
-                                   + "Assign! >>>>>>\n");
-            }
-        } catch (HibernateException exception) {
-            employees = new ArrayList<>();
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
-        }
-        return employees;
     }
     
     /**
@@ -254,14 +194,14 @@ public class ProjectView {
         try {
             id = projectController.createProject(new ProjectDTO(name,
                             getDescriptionInput(), getManagerInput(),
-                            getStatusInput(), getEmployeesInput()));
+                            getStatusInput()));
             
             System.out.println("\n\t\t\t<<<<<< Project Created Successfully! "
                                + ">>>>>>\n\n\t\t\t ****** The Project Id Of < "
                                + name + " > Is --> " + id + " ******");
-       } catch (HibernateException exception) {
+        } catch (HibernateException exception) {
             System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
-       } 
+        }
     }
     
     /**
@@ -280,7 +220,8 @@ public class ProjectView {
                 isEmpty = true;
             } 
         } catch (HibernateException exception) {
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
+            System.out.println(exception);
             isEmpty = true;
         }
         return isEmpty;
@@ -323,9 +264,9 @@ public class ProjectView {
         }
         errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! >>>>>>\n";
         options = new StringBuilder(70);
-        options.append("\n\t\t\t\t\\ View Menu /\n\t\t\t\t ~~~~~~~~~~~~\n")
+        options.append("\n\t\t\t\t\\ View Menu /\n\t\t\t\t ~~~~~~~~~~~\n")
                .append("\n\t\t1 => View Single Project\t\t2 => View All ")
-               .append("Projects\n\n\t\t3 => Return to Main Menu\n\n\t\t")
+               .append("Projects\n\n\t\t3 => Return to Projects Menu\n\n\t\t")
                .append("Enter The Option : ");
         
         do {
@@ -367,6 +308,7 @@ public class ProjectView {
         } catch (HibernateException exception) {
             project = null;
             System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+            System.out.println(exception);
         }
         return project;
     }
@@ -390,9 +332,10 @@ public class ProjectView {
      * database is not empty.
      */
    private void viewAllProjects() {
+        List<ProjectDTO> projects;
+        
         try {
-            List<ProjectDTO> projects = projectController.getAllProjects();
-            
+            projects = projectController.getAllProjects();
             System.out.println("\n\t\t\t\t ~~~~~~ALL PROJECT DETAILS~~~~~~\n");
             
             for (ProjectDTO projectDTO : projects) {
@@ -424,14 +367,13 @@ public class ProjectView {
         if (null == project) {
             return;
         }
-        
         errorMessage = "\n\t\t\t<<<<<< Please Enter Valid Option! >>>>>>\n";
         options = new StringBuilder(80);
         options.append("\n\t\t\t\t\\ Update Menu /\n\t\t\t\t ~~~~~~~~~~~~~\n")
                .append("\n\t\t1 => Update Single Detail\t\t2 => Update All ")
                .append("Details\n\n\t\t3 => Assign Employees\t\t\t4 => ")
-               .append("Unassign Employees\n\n\t\t5 => Return to Main Menu\n\n")
-               .append("\t\tEnter The Option : ");
+               .append("Unassign Employees\n\n\t\t5 => Return to Projects Menu")
+               .append("\n\n\t\tEnter The Option : ");
         
         do {
             System.out.print(options);
@@ -449,6 +391,8 @@ public class ProjectView {
                     break;
                 case "4":
                     unAssignEmployees(project);
+                    break;
+                case "5":
                     break;
                 default:  
                     System.out.println(errorMessage);
@@ -494,7 +438,7 @@ public class ProjectView {
                     break;
                 case "5":
                     break;
-                default:  
+                default:
                     System.out.println(errorMessage);
                     break;
             }
@@ -514,7 +458,7 @@ public class ProjectView {
             project.setName(getNameInput());
             
             if (projectController.updateProject(project)) {
-                System.out.println("\n\t\t\t<<<<<< Name updated successfully! "
+                System.out.println("\n\t\t\t<<<<<< Name Updated Successfully! "
                                    + ">>>>>>\n");
             } else {
                 System.out.println(errorMessage);
@@ -537,8 +481,8 @@ public class ProjectView {
             project.setDescription(getDescriptionInput());
             
             if (projectController.updateProject(project)) {
-                System.out.println("\n\t\t\t<<<<<< Description updated "
-                                   + "successfully! >>>>>>\n");
+                System.out.println("\n\t\t\t<<<<<< Description Updated "
+                                   + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);
             }
@@ -560,8 +504,8 @@ public class ProjectView {
             project.setManager(getManagerInput());
             
             if (projectController.updateProject(project)) {
-                System.out.println("\n\t\t\t<<<<<< Manager updated "
-                                   + "successfully! >>>>>>\n");
+                System.out.println("\n\t\t\t<<<<<< Manager Updated "
+                                   + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);
             }
@@ -583,8 +527,8 @@ public class ProjectView {
             project.setStatus(getStatusInput());
             
             if (projectController.updateProject(project)) {
-                System.out.println("\n\t\t\t<<<<<< Status updated "
-                                   + "successfully! >>>>>>\n");
+                System.out.println("\n\t\t\t<<<<<< Status Updated "
+                                   + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);
             }
@@ -594,25 +538,138 @@ public class ProjectView {
     }
     
     /**
-     * Gets employees from the user to assign them to the specified project.
+     * Shows all employees and asks user to select employees to assign them to 
+     * the project.
+     *
+     * @return a set containing selected employees or if there is no employees
+     *         in the database then an empty set.
+     */ 
+    private Set<EmployeeDTO> getEmployeesToAssign() {
+        String[] selectedIds;
+        String userInput;
+        int count = 1;
+        List<EmployeeDTO> employees = getAllEmployees();
+        Set<EmployeeDTO> selectedEmployees = new HashSet<>();
+        
+        for (EmployeeDTO employee : employees) {
+            System.out.println("\n\t\t" + count + " => " + employee.getName());
+            count++;
+        }
+        
+        while (selectedEmployees.isEmpty() && (!employees.isEmpty())) {
+            System.out.print("\n\t\tEnter Employees Numbers To Assign(separated"
+                         + " by comma) (e.g) 1, 2, 3 : ");
+            userInput = inputReader.nextLine();
+            selectedIds = userInput.split(",");
+            
+            try {
+                for (String id : selectedIds) {
+                    selectedEmployees.add(employees.get(Integer.parseInt(
+                            id.strip()) - 1));
+                }
+            } catch (NumberFormatException | IndexOutOfBoundsException 
+                     exception) {
+                System.out.println("\n\t\t<<<<<< Invalid Selection! >>>>>>>\n");
+                selectedEmployees.clear();
+            }
+        }
+        return selectedEmployees;
+    }
+    
+    /**
+     * Fetches all employees from the database.
+     *
+     * @return a list containing all employees or an empty list in the following
+     *         scenario: HibernateException occurs or employee database is 
+     *         empty.
+     */
+    private List<EmployeeDTO> getAllEmployees() {
+        List<EmployeeDTO> employees;
+        
+        try {
+            employees = projectController.getAllEmployees();
+            
+            if (employees.isEmpty()) {
+                System.out.println("\n\n\t\t\t<<<<<< No Employees Found To "
+                                   + "Assign! >>>>>>\n");
+            }
+        } catch (HibernateException exception) {
+            employees = new ArrayList<>();
+            System.out.println(exception);
+            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+        }
+        return employees;
+    }
+    
+    /**
+     * Gets employees from the user and assign them to the specified project.
      *
      * @param project the project to assign employees.
      */
     private void assignEmployees(ProjectDTO project) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        Set<EmployeeDTO> employees = getEmployeesToAssign();
         
+        if (employees.isEmpty()) {
+            System.out.println("\n\t\t\t<<<<<< No Employees Found To "
+                               + "Assign! >>>>>>\n");
+            return;
+        }
+            
         try {
-            project.setEmployees(getEmployeesInput());
+            project.getEmployees().addAll(employees);
             
             if (projectController.updateProject(project)) {
-                System.out.println("\n\t\t\t<<<<<< Manager updated "
-                                   + "successfully! >>>>>>\n");
+                System.out.println("\n\t\t\t<<<<<< Employees Assigned "
+                                   + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);
             }
         } catch (HibernateException exception) {
             System.out.println(errorMessage);
         }
+    }
+    
+    /**
+     * Shows all employees and asks user to select employees to unassign them to 
+     * the project.
+     *
+     * @param project the project from unassign employees.
+     * @return a set containing selected employees or if there is no employees
+     *         assigned then an empty set.
+     */ 
+    private Set<EmployeeDTO> getEmployeesToUnAssign(ProjectDTO project) {
+        String[] selectedIds;
+        String userInput;
+        int count = 1;
+        List<EmployeeDTO> employees = new ArrayList<>();
+        Set<EmployeeDTO> selectedEmployees = new HashSet<>();
+        
+        employees.addAll(project.getEmployees());
+        
+        for (EmployeeDTO employee : employees) {
+            System.out.println("\n\t\t" + count + " => " + employee.getName());
+            count++;
+        }
+        
+        while (selectedEmployees.isEmpty() && (!employees.isEmpty())) {
+            System.out.print("\n\t\tEnter Employees Numbers To UnAssign"
+                         + "(separated by comma) (e.g) 1, 2, 3 : ");
+            userInput = inputReader.nextLine();
+            selectedIds = userInput.split(",");
+            
+            try {
+                for (String id : selectedIds) {
+                    selectedEmployees.add(employees.get(Integer.parseInt(
+                            id.strip()) - 1));
+                }
+            } catch (NumberFormatException | IndexOutOfBoundsException 
+                     exception) {
+                System.out.println("\n\t\t<<<<<< Invalid Selection! >>>>>>>\n");
+                selectedEmployees.clear();
+            }
+        }
+        return selectedEmployees;
     }
     
     /**
@@ -622,13 +679,20 @@ public class ProjectView {
      */
     private void unAssignEmployees(ProjectDTO project) {
         String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
+        Set<EmployeeDTO> employees = getEmployeesToUnAssign(project);
         
+        if (employees.isEmpty()) {
+            System.out.println("\n\t\t\t<<<<<< No Employees Found To Unassign!"
+                               + " >>>>>>\n");
+            return;
+        }
+
         try {
-            project.setEmployees(getEmployeesInput());
+            project.getEmployees().removeAll(employees);
             
             if (projectController.updateProject(project)) {
-                System.out.println("\n\t\t\t<<<<<< Manager updated "
-                                   + "successfully! >>>>>>\n");
+                System.out.println("\n\t\t\t<<<<<< Employees UnAssigned "
+                                   + "Successfully! >>>>>>\n");
             } else {
                 System.out.println(errorMessage);
             }
@@ -673,7 +737,7 @@ public class ProjectView {
         
         options.append("\n\t\t\t\t\\ Delete Menu /\n\t\t\t\t ~~~~~~~~~~~~~\n")
                .append("\n\t\t1 => Delete Single Project\t\t2 => Delete All")
-               .append(" Projects\n\n\t\t3 => Return To Main Menu\n\n\t\t")
+               .append(" Projects\n\n\t\t3 => Return To Projects Menu\n\n\t\t")
                .append("Enter The Option : ");
         
         do {

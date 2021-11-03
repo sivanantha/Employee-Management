@@ -6,6 +6,7 @@ package com.ideas2it.employeemanagement.model;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
  
 /**
  * The Employee class is a container for employee details.
@@ -23,6 +24,7 @@ public class Employee {
     private String gender;
     private String name;
     private List<Address> addresses;
+    private Set<Project> projects;
     
     /** Initializes all fields to default values. */
     public Employee() {
@@ -41,10 +43,12 @@ public class Employee {
      * @param salary the salary of the employee
      * @param dateOfJoining the employee's date of joining
      * @param addresses a list of address of the employee
+     * @param projects a Set containing the projects assigned to the employee
      */
     public Employee(int id, String name, LocalDate dateOfBirth, String gender,
             long mobileNumber, String email, float salary,
-            LocalDate dateOfJoining, List<Address> addresses) {
+            LocalDate dateOfJoining, List<Address> addresses,
+            Set<Project> projects) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -54,6 +58,7 @@ public class Employee {
         this.salary = salary;
         this.dateOfJoining = dateOfJoining;
         this.addresses = addresses;
+        this.projects = projects;
     }
     
     /**
@@ -227,7 +232,7 @@ public class Employee {
     }
     
     /**
-     * Gets the employee date of joining.
+     * Gets the employee addresses.
      *
      * @return a List containing addresses of employee
      */
@@ -236,11 +241,44 @@ public class Employee {
     }
     
     /** 
-     * Assigns the specified date to the dateOfJoining field.
+     * Assigns the specified addresses to the employee.
      *
      * @param addresses the List of addresses of the employee
      */
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
-    }     
+    }
+    
+    /**
+     * Gets the projects assigned to the employee.
+     *
+     * @return a Set containing projects of an employee.
+     */
+    public Set<Project> getProjects() {
+        return projects;
+    }
+    
+    /** 
+     * Assigns the specified projects to the employee.
+     *
+     * @param projects a Set of projects to assign the employee.
+     */
+    public void setProjects(Set<Project> projects) {
+        this.projects = projects;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        Employee employee;
+        
+        if (this == o) {
+            return true;
+        }
+        
+        if (!(o instanceof Employee)) {
+            return false;
+        }
+        employee = (Employee) o;
+        return this.id == employee.getId();
+    }   
 }

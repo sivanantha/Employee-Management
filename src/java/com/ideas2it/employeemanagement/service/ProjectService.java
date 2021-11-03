@@ -46,7 +46,7 @@ public interface ProjectService {
     
     /**
      * Checks if the specified description is valid. description must have 
-     * atleast 10 letters. maximum of 300 characters are allowed. all special
+     * at least 10 letters. maximum of 300 characters are allowed. all special
      * characters are considered as valid.
      *
      * @return true if description is valid, otherwise false.
@@ -95,11 +95,8 @@ public interface ProjectService {
     boolean isProjectExist(int id) throws HibernateException;
     
     /**
-     * Fetches all employees from the database.
+     * @see EmployeeService#getAllEmployees()
      *
-     * @return a list containing all employees if database is not empty, 
-               otherwise an empty list.
-     * @throws HibernateException if a database access error occurs.
      */
     List<EmployeeDTO> getAllEmployees() throws HibernateException;
     

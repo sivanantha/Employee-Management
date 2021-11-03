@@ -11,7 +11,7 @@ import java.util.Set;
  * @author  Sivanantham
  * @version 1.0
  */
- public class Project {
+public class Project {
     private int id;
     private Status status;
     private String name;
@@ -51,15 +51,13 @@ import java.util.Set;
      * @param description the project description.
      * @param manager the project manager name.
      * @param status the status of the project(DEVELOPMENT/TESTING/LIVE).
-     * @param employees a Set of employees working in the specified project.
      */ 
     public Project(String name, String description, String manager,
-                   Status status, Set<Employee> employees) {
+                   Status status) {
         this.name = name;
         this.description = description;
         this.manager = manager;
         this.status = status;
-        this.employees = employees;
     }
     
     /**
@@ -168,5 +166,20 @@ import java.util.Set;
      */
     public void setEmployees(Set<Employee> employees) {
         this.employees = employees;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        Project project;
+        
+        if (this == o) {
+            return true;
+        }
+        
+        if (!(o instanceof Project)) {
+            return false;
+        }
+        project = (Project) o;
+        return this.id == project.getId();
     }
 }

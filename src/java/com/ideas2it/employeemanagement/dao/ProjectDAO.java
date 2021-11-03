@@ -14,7 +14,6 @@ import com.ideas2it.employeemanagement.model.Project;
  * This interface provides methods for create, update, view, delete, assign 
  * employees for project in database.
  * 
- *
  * @author  Sivanantham
  * @version 1.0
  */
@@ -80,4 +79,3 @@ public interface ProjectDAO {
      */
     boolean deleteAllProjects() throws HibernateException;
 }
-

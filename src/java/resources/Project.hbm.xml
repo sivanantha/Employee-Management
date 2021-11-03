@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.ideas2it.employeemanagement.model">
+    
+    <class name="Project" table="project">
+        
+        <id name="id" type="int" column="id">
+            <generator class="native">
+            </generator>
+        </id>
+        
+        <property name="name" column="name" type="string" lazy="true" 
+                  length="60" not-null="true"/>
+        
+        <property name="description" column="description" type="string" 
+                  lazy="true" length = "400" not-null="true"/>
+        
+        <property name="manager" column="manager" type="string"
+                  lazy="true" not-null="true"/>
+        
+        <property name="status" column="status" length = "1" lazy="true"
+                  not-null="true">
+            
+            <type name="converted::com.ideas2it.employeemanagement.model.StatusConverter">
+                <param name="enumClass">Status</param>
+                
+                <param name="useNamed">true</param>
+            </type>
+        
+        </property>
+        
+        <set name="employees" table="project_employee" lazy="true">
+            
+            <key column="project_id" not-null="true"/>
+            
+            <many-to-many column="employee_id" class="Employee"/>
+        
+        </set>
+        
+    </class>
+
+</hibernate-mapping>

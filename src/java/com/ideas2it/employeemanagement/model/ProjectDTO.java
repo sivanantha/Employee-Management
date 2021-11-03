@@ -11,7 +11,7 @@ import java.util.Set;
  * @author  Sivanantham
  * @version 1.0
  */
- public class ProjectDTO {
+public class ProjectDTO {
     private int id;
     private Status status;
     private String name;
@@ -51,15 +51,13 @@ import java.util.Set;
      * @param description the project description.
      * @param manager the project manager name.
      * @param status the status of the project(DEVELOPMENT/TESTING/LIVE).
-     * @param employees a Set of employees working in the specified project.
      */ 
     public ProjectDTO(String name, String description, String manager,
-                      Status status, Set<EmployeeDTO> employees) {
+                      Status status) {
         this.name = name;
         this.description = description;
         this.manager = manager;
         this.status = status;
-        this.employees = employees;
     }
     
     /**
@@ -193,18 +191,33 @@ import java.util.Set;
      */
     @Override
     public String toString() {
-        StringBuilder description = new StringBuilder(300);
+        StringBuilder projectText = new StringBuilder(300);
         
-        description.append("\n\t\t Project Id    : ").append(id)
-                   .append("\n\t\t\t Project Name : ").append(name)
+        projectText.append("\n\t\t Project Id   : ").append(id)
+                   .append("\n\n\t\t Project Name : ").append(name)
                    .append("\n\n\t\t Description  : ").append(description)
                    .append("\n\n\t\t Manager      : ").append(manager)
                    .append("\n\n\t\t Status       : ").append(status)
                    .append("\n\n\t\t Employees    : ");
        
        for (EmployeeDTO employeeDTO : employees) {
-            description.append(employeeDTO.getName()).append("\n\n\t\t\t\t\t ");
+            projectText.append(employeeDTO.getName()).append("\n\n\t\t\t\t");
        }
-       return description.append("\n").toString();
+       return projectText.append("\n").toString();
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        ProjectDTO projectDTO;
+        
+        if (this == o) {
+            return true;
+        }
+        
+        if (!(o instanceof ProjectDTO)) {
+            return false;
+        }
+        projectDTO = (ProjectDTO) o;
+        return this.id == projectDTO.getId();
     }
 }

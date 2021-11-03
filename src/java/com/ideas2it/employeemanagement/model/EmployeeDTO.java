@@ -6,6 +6,7 @@ package com.ideas2it.employeemanagement.model;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This class is a data transfer object for employee details.
@@ -23,6 +24,7 @@ public class EmployeeDTO {
     private String gender;
     private String name;
     private List<AddressDTO> addresses;
+    private Set<ProjectDTO> projects;
     
     /** Initializes all fields to default values. */
     public EmployeeDTO() {
@@ -41,10 +43,12 @@ public class EmployeeDTO {
      * @param salary the salary of the employee
      * @param dateOfJoining the employee's date of joining
      * @param addresses the list of address of the employee
+     * @param projects a Set containing the projects assigned to the employee
      */
     public EmployeeDTO(int id, String name, LocalDate dateOfBirth, 
             String gender, long mobileNumber, String email, float salary,
-            LocalDate dateOfJoining, List<AddressDTO> addresses) {
+            LocalDate dateOfJoining, List<AddressDTO> addresses,
+            Set<ProjectDTO> projects) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -54,6 +58,7 @@ public class EmployeeDTO {
         this.salary = salary;
         this.dateOfJoining = dateOfJoining;
         this.addresses = addresses;
+        this.projects = projects;
     }
     
     /**
@@ -227,7 +232,7 @@ public class EmployeeDTO {
     }
     
     /**
-     * Gets the employee date of joining.
+     * Gets the employee addresses.
      *
      * @return a List containing addresses of employee
      */
@@ -236,12 +241,30 @@ public class EmployeeDTO {
     }
     
     /** 
-     * Assigns the specified date to the dateOfJoining field.
+     * Assigns the specified addresses to the employee.
      *
      * @param addresses the List of addresses of the employee
      */
     public void setAddresses(List<AddressDTO> addresses) {
         this.addresses = addresses;
+    }
+    
+    /**
+     * Gets the projects assigned to the employee.
+     *
+     * @return a Set containing projects of an employee.
+     */
+    public Set<ProjectDTO> getProjects() {
+        return projects;
+    }
+    
+    /** 
+     * Assigns the specified projects to the employee.
+     *
+     * @param projects a Set of projects to assign the employee.
+     */
+    public void setProjects(Set<ProjectDTO> projects) {
+        this.projects = projects;
     }
     
     /**
@@ -299,6 +322,26 @@ public class EmployeeDTO {
         for (AddressDTO address : addresses) {
             description.append(address.toString());
         }
+        description.append("\n\n\t\t Projects        : ");
+        
+        for (ProjectDTO project : projects) {
+            description.append(project.getName()).append("\n\n\t\t\t\t   ");
+        }
         return description.toString();
-    }      
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        EmployeeDTO employee;
+        
+        if (this == o) {
+            return true;
+        }
+        
+        if (!(o instanceof EmployeeDTO)) {
+            return false;
+        }
+        employee = (EmployeeDTO) o;
+        return this.id == employee.getId();
+    }     
 }

@@ -10,6 +10,7 @@ import org.hibernate.HibernateException;
 
 import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
+import com.ideas2it.employeemanagement.model.ProjectDTO;
 
 /**
  * The EmployeeService interface provides methods for validations and
@@ -291,6 +292,12 @@ public interface EmployeeService {
      * @throws HibernateException if a database access error occurs.
      */
      boolean updateAddress(AddressDTO addressDTO) throws HibernateException;
+     
+     /**
+      * @see ProjectService#getAllProjects()
+      *
+      */
+     List<ProjectDTO> getAllProjects() throws HibernateException;
             
     /**
      * Deletes the specified employee.

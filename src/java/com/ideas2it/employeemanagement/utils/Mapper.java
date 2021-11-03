@@ -20,7 +20,7 @@ import com.ideas2it.employeemanagement.model.ProjectDTO;
  * AddressDTO and vice versa.
  *
  * @author  Sivanantham
- * @version 1.1
+ * @version 1.2
  */
 public final class Mapper {
     
@@ -31,11 +31,23 @@ public final class Mapper {
      * @return the mapped EmployeeDTO instance.
      */
     public static EmployeeDTO toEmployeeDTO(Employee employee) {
+        ProjectDTO projectDTO;
+        Set<ProjectDTO> projectsDTO = new HashSet<>();
+        Set<Project> projects = employee.getProjects();
+        
+        if (null != projects) { 
+            for (Project project : projects) {
+                projectDTO = new ProjectDTO();
+                projectDTO.setId(project.getId());
+                projectDTO.setName(project.getName());
+                projectsDTO.add(projectDTO);
+            }
+        }
         return new EmployeeDTO(employee.getId(), employee.getName(),
                 employee.getDateOfBirth(), employee.getGender(),
                 employee.getMobileNumber(), employee.getEmail(), 
                 employee.getSalary(), employee.getDateOfJoining(),
-                toAddressDTO(employee.getAddresses()));    
+                toAddressDTO(employee.getAddresses()), projectsDTO);  
     }
     
     /**
@@ -45,11 +57,23 @@ public final class Mapper {
      * @return the mapped Employee instance.
      */
     public static Employee toEmployee(EmployeeDTO employeeDTO) {
+        Project project;
+        Set<Project> projects = new HashSet<>();
+        Set<ProjectDTO> projectsDTO = employeeDTO.getProjects();
+        
+        if (null != projectsDTO) { 
+            for (ProjectDTO projectDTO : projectsDTO) {
+                project = new Project();
+                project.setId(projectDTO.getId());
+                project.setName(projectDTO.getName());
+                projects.add(project);
+            }
+        }
        return new Employee(employeeDTO.getId(), employeeDTO.getName(),
                 employeeDTO.getDateOfBirth(), employeeDTO.getGender(),
                 employeeDTO.getMobileNumber(), employeeDTO.getEmail(), 
                 employeeDTO.getSalary(), employeeDTO.getDateOfJoining(),
-                toAddress(employeeDTO.getAddresses())); 
+                toAddress(employeeDTO.getAddresses()), projects); 
     }
     
     /**
@@ -73,8 +97,10 @@ public final class Mapper {
     public static List<AddressDTO> toAddressDTO(List<Address> addresses) {
         List<AddressDTO> addressesDTO = new ArrayList<>();
         
-        for (Address address : addresses) {
-            addressesDTO.add(toAddressDTO(address));
+        if (null != addresses) {
+            for (Address address : addresses) {
+                addressesDTO.add(toAddressDTO(address));
+            }
         }
         return addressesDTO;
     }
@@ -101,8 +127,10 @@ public final class Mapper {
     public static List<Address> toAddress(List<AddressDTO> addressesDTO) {
         List<Address> addresses = new ArrayList<>();
         
-        for (AddressDTO addressDTO : addressesDTO) {
-            addresses.add(toAddress(addressDTO));
+        if (null != addressesDTO) {
+            for (AddressDTO addressDTO : addressesDTO) {
+                addresses.add(toAddress(addressDTO));
+            }
         }
         return addresses;
     }
@@ -114,10 +142,17 @@ public final class Mapper {
      * @return the mapped ProjectDTO instance.
      */
     public static ProjectDTO toProjectDTO(Project project) {
+        EmployeeDTO employeeDTO;
         Set<EmployeeDTO> employeesDTO = new HashSet<>();
+        Set<Employee> employees = project.getEmployees();
         
-        for (Employee employee : project.getEmployees()) {
-            employeesDTO.add(toEmployeeDTO(employee));
+        if (null != employees) {
+            for (Employee employee : employees) {
+                employeeDTO = new EmployeeDTO();
+                employeeDTO.setId(employee.getId());
+                employeeDTO.setName(employee.getName());
+                employeesDTO.add(employeeDTO);
+            }
         }
         return new ProjectDTO(project.getId(), project.getName(),
                 project.getDescription(), project.getManager(), 
@@ -131,12 +166,18 @@ public final class Mapper {
      * @return the mapped Project instance.
      */
     public static Project toProject(ProjectDTO projectDTO) {
+        Employee employee;
         Set<Employee> employees = new HashSet<>();
+        Set<EmployeeDTO> employeesDTO = projectDTO.getEmployees();
         
-        for (EmployeeDTO employeeDTO : projectDTO.getEmployees()) {
-            employees.add(toEmployee(employeeDTO));
+        if (null != employeesDTO) {
+            for (EmployeeDTO employeeDTO : employeesDTO) {
+                employee = new Employee();
+                employee.setId(employeeDTO.getId());
+                employee.setName(employeeDTO.getName());
+                employees.add(employee);
+            }
         }
-        
         return new Project(projectDTO.getId(), projectDTO.getName(),
                 projectDTO.getDescription(), projectDTO.getManager(), 
                 projectDTO.getStatus(), employees);

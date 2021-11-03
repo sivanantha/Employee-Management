@@ -99,7 +99,7 @@ public class ProjectController {
      * Fetches all employees from the database.
      *
      * @return a list containing all employees if database is not empty, 
-               otherwise an empty list.
+     *         otherwise an empty list.
      * @throws HibernateException if a database access error occurs.
      */
     public List<EmployeeDTO> getAllEmployees() throws HibernateException {
