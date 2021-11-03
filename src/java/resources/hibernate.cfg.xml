@@ -23,7 +23,7 @@
         </property>
         
         <property name="connection.url">
-                  jdbc:mysql://localhost:3306/dummy
+                  jdbc:mysql://localhost:3306/employee_management
         </property>
         
         <property name="connection.username">employee_service</property>
