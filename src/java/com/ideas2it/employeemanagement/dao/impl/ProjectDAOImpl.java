@@ -12,9 +12,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.SetJoin;
 import javax.persistence.criteria.Root;
-import javax.persistence.TypedQuery;
 import org.hibernate.HibernateException;
 import org.hibernate.jpa.QueryHints;
 import org.hibernate.query.Query;
@@ -24,14 +22,16 @@ import org.hibernate.Transaction;
 
 import com.ideas2it.employeemanagement.connection_utils.HibernateUtil;
 import com.ideas2it.employeemanagement.dao.ProjectDAO;
+import com.ideas2it.employeemanagement.exceptions.EMSException;
 import com.ideas2it.employeemanagement.model.Project;
+import com.ideas2it.employeemanagement.utils.Constants;
 
 /**
  * This class provides methods for create, update, view, delete, assign,
  * unassign employees for project in database.
  * 
  * @author  Sivanantham
- * @version 1.0
+ * @version 1.1
  */
 public class ProjectDAOImpl implements ProjectDAO {
     
@@ -40,13 +40,16 @@ public class ProjectDAOImpl implements ProjectDAO {
      * 
      */
     @Override
-    public long getProjectCount() throws HibernateException {
+    public long getProjectCount() throws EMSException {
         long count;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-
-        count = session.createQuery("SELECT COUNT(p) FROM Project p", 
-                                    Long.class).getSingleResult();
-        session.close();
+        
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) 
+                {
+            count = session.createQuery("SELECT COUNT(p) FROM Project p", 
+                                        Long.class).getSingleResult();
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_012);
+        }
         return count;
     }
     
@@ -55,13 +58,18 @@ public class ProjectDAOImpl implements ProjectDAO {
      * 
      */
     @Override
-    public int insertProject(Project project) throws HibernateException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        int id = (int) session.save(project);
+    public int insertProject(Project project) throws EMSException {
+        int id;
+        Transaction transaction;
         
-        transaction.commit();
-        session.close();
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            transaction = session.beginTransaction();
+            id = (int) session.save(project);
+            transaction.commit();
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_013);
+        }
         return id;
     }
     
@@ -70,19 +78,24 @@ public class ProjectDAOImpl implements ProjectDAO {
      * 
      */
     @Override
-    public Project getById(int id) throws HibernateException {
+    public Project getById(int id) throws EMSException {
+        CriteriaBuilder criteria;
+        CriteriaQuery<Project> query;
+        Root<Project> root;
         Project project;
-        Session session = HibernateUtil.getSessionFactory().openSession();
         
-        CriteriaBuilder criteria = session.getCriteriaBuilder();
-        CriteriaQuery<Project> query = criteria.createQuery(Project.class);
-        Root<Project> root = query.from(Project.class);
-        SetJoin<Object, Object> employees = (SetJoin<Object, Object>) 
-                root.fetch("employees", JoinType.LEFT);
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            criteria = session.getCriteriaBuilder();
+            query = criteria.createQuery(Project.class);
+            root = query.from(Project.class);
+            root.fetch("employees", JoinType.LEFT);
         
-        query.select(root).where(criteria.equal(root.get("id"), id)); 
-        project = session.createQuery(query).uniqueResult();
-        session.close();
+            query.select(root).where(criteria.equal(root.get("id"), id)); 
+            project = session.createQuery(query).uniqueResult();
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_014);
+        }
         return project;
     }
     
@@ -91,16 +104,19 @@ public class ProjectDAOImpl implements ProjectDAO {
      * 
      */
     @Override
-    public List<Project> getAllProjects() throws HibernateException {
+    public List<Project> getAllProjects() throws EMSException {
         List<Project> projects;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        TypedQuery<Project> query = session.createQuery("SELECT DISTINCT "
-                + "p FROM Project p LEFT JOIN FETCH p.employees",
-                Project.class);
+        Query<Project> query;
         
-        query.setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false );
-        projects = query.getResultList();
-        session.close();
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            query = session.createQuery("SELECT DISTINCT p FROM Project p LEFT"
+                    + " JOIN FETCH p.employees", Project.class);
+            query.setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false );
+            projects = query.getResultList();
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_012);
+        }
         return projects;
     }
     
@@ -109,16 +125,19 @@ public class ProjectDAOImpl implements ProjectDAO {
      *
      */
     @Override
-    public boolean updateProject(Project project) throws HibernateException {
+    public boolean updateProject(Project project) throws EMSException {
         boolean isUpdated = false;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
+        Transaction transaction;
         
-        if (null != session.merge(project)) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            transaction = session.beginTransaction();
+            session.merge(project);
+            transaction.commit();
             isUpdated = true;
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_015);
         }
-        transaction.commit();
-        session.close();
         return isUpdated; 
     }
     
@@ -127,21 +146,28 @@ public class ProjectDAOImpl implements ProjectDAO {
      *
      */
     @Override
-    public boolean deleteById(int id) throws HibernateException {
-        int entitiesAffected;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
+    public boolean deleteById(int id) throws EMSException {
+        boolean isDeleted = false;
+        CriteriaBuilder criteria;
+        CriteriaDelete<Project> delete;
+        Root<Project> root;
+        Transaction transaction;
         
-        CriteriaBuilder criteria = session.getCriteriaBuilder();
-        CriteriaDelete<Project> delete = criteria.createCriteriaDelete(
-                Project.class);
-        Root<Project> root = delete.from(Project.class);
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            transaction = session.beginTransaction();
+            criteria = session.getCriteriaBuilder();
+            delete = criteria.createCriteriaDelete(Project.class);
+            root = delete.from(Project.class);
         
-        delete.where(criteria.equal(root.get("id"), id));
-        entitiesAffected = session.createQuery(delete).executeUpdate();
-        transaction.commit();
-        session.close();
-        return (0 != entitiesAffected);
+            delete.where(criteria.equal(root.get("id"), id));
+            session.createQuery(delete).executeUpdate();
+            transaction.commit();
+            isDeleted = true;
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_016);
+        }
+        return isDeleted;
     }
     
     /**
@@ -149,15 +175,21 @@ public class ProjectDAOImpl implements ProjectDAO {
      *
      */
     @Override
-    public boolean deleteAllProjects() throws HibernateException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
+    public boolean deleteAllProjects() throws EMSException {
+        boolean isDeleted = false;
+        Query query;
+        Transaction transaction;
         
-        Query query = session.createQuery("DELETE FROM Project");
-        
-        query.executeUpdate();
-        transaction.commit();
-        session.close();
-        return true;
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            transaction = session.beginTransaction();
+            query = session.createQuery("DELETE FROM Project");
+            query.executeUpdate();
+            transaction.commit();
+            isDeleted = true;
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_017);
+        }
+        return isDeleted;
     }
 }

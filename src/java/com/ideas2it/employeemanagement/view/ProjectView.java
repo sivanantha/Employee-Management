@@ -9,9 +9,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-import org.hibernate.HibernateException;
-
 import com.ideas2it.employeemanagement.controller.ProjectController;
+import com.ideas2it.employeemanagement.exceptions.EMSException;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
 import com.ideas2it.employeemanagement.model.Status;
@@ -22,7 +21,7 @@ import com.ideas2it.employeemanagement.model.Status;
  * methods for project details.
  *
  * @author  Sivanantham
- * @version 1.0
+ * @version 1.1
  */
 public class ProjectView {
     private Scanner inputReader = new Scanner(System.in);
@@ -199,15 +198,15 @@ public class ProjectView {
             System.out.println("\n\t\t\t<<<<<< Project Created Successfully! "
                                + ">>>>>>\n\n\t\t\t ****** The Project Id Of < "
                                + name + " > Is --> " + id + " ******");
-        } catch (HibernateException exception) {
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
     /**
      * Checks if the project database is empty.
      *
-     * @return true when database is empty or HibernateException occurs, 
+     * @return true when database is empty or EMSException occurs, 
      *         otherwise false.
      */
     private boolean isProjectDatabaseEmpty() {
@@ -219,9 +218,8 @@ public class ProjectView {
                                    + ">>>>>>\n");
                 isEmpty = true;
             } 
-        } catch (HibernateException exception) {
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
-            System.out.println(exception);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
             isEmpty = true;
         }
         return isEmpty;
@@ -231,7 +229,7 @@ public class ProjectView {
      * Checks if the specified project exist.
      *
      * @param id the project id to be searched.
-     * @return false when project not found or HibernateException occurs,
+     * @return false when project not found or EMSException occurs,
      *         otherwise true.
      */
     private boolean isProjectExist(int id) {
@@ -243,8 +241,8 @@ public class ProjectView {
                                    + ">>>>>>\n");
                 isProjectFound = false;
             }
-        } catch (HibernateException exception) {
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
             isProjectFound = false;
         }
         return isProjectFound;
@@ -305,10 +303,9 @@ public class ProjectView {
                 System.out.println("\n\n\t\t\t<<<<<< Project Not Found! "
                                    + ">>>>>>\n");
             }
-        } catch (HibernateException exception) {
+        } catch (EMSException exception) {
             project = null;
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
-            System.out.println(exception);
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
         return project;
     }
@@ -342,8 +339,8 @@ public class ProjectView {
                 System.out.println(projectDTO);
                 System.out.println("\n\n\t\t\t-------------------------------");
             }
-        } catch (HibernateException exception) {
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -452,8 +449,6 @@ public class ProjectView {
      * @param project the project whose name to be updated.
      */
     private void updateName(ProjectDTO project) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             project.setName(getNameInput());
             
@@ -461,10 +456,10 @@ public class ProjectView {
                 System.out.println("\n\t\t\t<<<<<< Name Updated Successfully! "
                                    + ">>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -475,8 +470,6 @@ public class ProjectView {
      * @param project the project whose description to be updated.
      */
     private void updateDescription(ProjectDTO project) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             project.setDescription(getDescriptionInput());
             
@@ -484,10 +477,10 @@ public class ProjectView {
                 System.out.println("\n\t\t\t<<<<<< Description Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -498,8 +491,6 @@ public class ProjectView {
      * @param project the project whose manager name to be updated.
      */
     private void updateManager(ProjectDTO project) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             project.setManager(getManagerInput());
             
@@ -507,10 +498,10 @@ public class ProjectView {
                 System.out.println("\n\t\t\t<<<<<< Manager Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -521,8 +512,6 @@ public class ProjectView {
      * @param project the project whose status to be updated.
      */
     private void updateStatus(ProjectDTO project) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             project.setStatus(getStatusInput());
             
@@ -530,10 +519,10 @@ public class ProjectView {
                 System.out.println("\n\t\t\t<<<<<< Status Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -580,7 +569,7 @@ public class ProjectView {
      * Fetches all employees from the database.
      *
      * @return a list containing all employees or an empty list in the following
-     *         scenario: HibernateException occurs or employee database is 
+     *         scenario: EMSException occurs or employee database is 
      *         empty.
      */
     private List<EmployeeDTO> getAllEmployees() {
@@ -593,10 +582,9 @@ public class ProjectView {
                 System.out.println("\n\n\t\t\t<<<<<< No Employees Found To "
                                    + "Assign! >>>>>>\n");
             }
-        } catch (HibernateException exception) {
+        } catch (EMSException exception) {
             employees = new ArrayList<>();
-            System.out.println(exception);
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
         return employees;
     }
@@ -607,7 +595,6 @@ public class ProjectView {
      * @param project the project to assign employees.
      */
     private void assignEmployees(ProjectDTO project) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         Set<EmployeeDTO> employees = getEmployeesToAssign();
         
         if (employees.isEmpty()) {
@@ -623,10 +610,10 @@ public class ProjectView {
                 System.out.println("\n\t\t\t<<<<<< Employees Assigned "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -678,7 +665,6 @@ public class ProjectView {
      * @param project the project to unassign employees.
      */
     private void unAssignEmployees(ProjectDTO project) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         Set<EmployeeDTO> employees = getEmployeesToUnAssign(project);
         
         if (employees.isEmpty()) {
@@ -694,10 +680,10 @@ public class ProjectView {
                 System.out.println("\n\t\t\t<<<<<< Employees UnAssigned "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -708,8 +694,6 @@ public class ProjectView {
      * @param project the project to be updated.
      */
     private void updateAllDetails(ProjectDTO project) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         project.setAll(getNameInput(), getDescriptionInput(), getManagerInput(), 
                 getStatusInput());
         
@@ -718,10 +702,10 @@ public class ProjectView {
                 System.out.println("\n\t\t\t<<<<<< Project Details Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -788,8 +772,9 @@ public class ProjectView {
         
         if ("y".equals(userInput)) {
             result = true;
+        } else {
+            System.out.println(messageForAbort);
         }
-        System.out.println(messageForAbort);
         return result;
     }
     
@@ -814,8 +799,8 @@ public class ProjectView {
                                        + ">>>>>>\n");
                 }
             }
-        } catch (HibernateException exception) {
-            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -833,10 +818,9 @@ public class ProjectView {
                     System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
                                        + ">>>>>>\n");
                 }
-            } catch (HibernateException exception) {
-                System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
-                                   + ">>>>>>\n");
-            }          
+            } catch (EMSException exception) {
+                System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
+            }
         }
     }
 }

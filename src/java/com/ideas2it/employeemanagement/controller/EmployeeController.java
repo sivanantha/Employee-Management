@@ -6,8 +6,7 @@ package com.ideas2it.employeemanagement.controller;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.hibernate.HibernateException;
-
+import com.ideas2it.employeemanagement.exceptions.EMSException;
 import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
@@ -20,7 +19,7 @@ import com.ideas2it.employeemanagement.service.impl.EmployeeServiceImpl;
  * delete and validate employee details.
  *
  * @author  Sivanantham
- * @version 1.6
+ * @version 1.7
  */
 public class EmployeeController {
     private EmployeeService employeeService = new EmployeeServiceImpl();
@@ -30,9 +29,9 @@ public class EmployeeController {
      *
      * @param id the employee id to be searched.
      * @return true if specified employee found, else false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    public boolean isEmployeeExist(int id) throws HibernateException {
+    public boolean isEmployeeExist(int id) throws EMSException {
         return employeeService.isEmployeeExist(id);
     }
     
@@ -40,9 +39,9 @@ public class EmployeeController {
      * Checks if the employees database is empty.
      * 
      * @return true if database is empty, otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    public boolean isEmployeesDatabaseEmpty() throws HibernateException {
+    public boolean isEmployeesDatabaseEmpty() throws EMSException {
         return employeeService.isEmployeesDatabaseEmpty();
     }
     
@@ -101,10 +100,9 @@ public class EmployeeController {
      * 
      * @param mobileNumber the employee mobile number to be searched.
      * @return true if the mobile number found, else false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */   
-    public boolean isMobileNumberExist(long mobileNumber) throws 
-            HibernateException {
+    public boolean isMobileNumberExist(long mobileNumber) throws EMSException {
          return employeeService.isMobileNumberExist(mobileNumber);
     }
     
@@ -123,9 +121,9 @@ public class EmployeeController {
      * 
      * @param email the employee email to be searched.
      * @return true if the email found, else false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    public boolean isEmailExist(String email) throws HibernateException {
+    public boolean isEmailExist(String email) throws EMSException {
          return employeeService.isEmailExist(email);
     }
     
@@ -195,10 +193,9 @@ public class EmployeeController {
      *
      * @param employeeDTO the EmployeeDTO instance with employee details.
      * @return the employee's id as a int.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    public int createEmployee (EmployeeDTO employeeDTO) throws
-            HibernateException {
+    public int createEmployee (EmployeeDTO employeeDTO) throws EMSException {
         return employeeService.createEmployee(employeeDTO);
     }
     
@@ -208,10 +205,10 @@ public class EmployeeController {
      *
      * @param employeeDTO the EmployeeDTO instance with address details.
      * @return true if addresses created successfully, otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
     public boolean createAddresses(EmployeeDTO employeeDTO) throws 
-            HibernateException {
+            EMSException {
         return employeeService.createAddresses(employeeDTO);
     }
     
@@ -220,9 +217,9 @@ public class EmployeeController {
      * 
      * @param id the employee id to be retrieved as a int.
      * @return the specified employee if found, otherwise null.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    public EmployeeDTO getEmployee(int id) throws HibernateException {
+    public EmployeeDTO getEmployee(int id) throws EMSException {
         return employeeService.getEmployee(id);
     }
     
@@ -230,9 +227,9 @@ public class EmployeeController {
      * Retrieves all employees.
      *
      * @return a List containing all employees.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    public List<EmployeeDTO> getAllEmployees() throws HibernateException {
+    public List<EmployeeDTO> getAllEmployees() throws EMSException {
         return employeeService.getAllEmployees();
     }
        
@@ -241,10 +238,10 @@ public class EmployeeController {
      *
      * @param employeeDTO the EmployeeDTO instance with employee details.
      * @return true if employee updated successfully otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */    
      public boolean updateEmployee(EmployeeDTO employeeDTO)
-             throws HibernateException {
+             throws EMSException {
          return employeeService.updateEmployee(employeeDTO);
      }
      
@@ -253,10 +250,9 @@ public class EmployeeController {
       *
       * @param addressDTO the addressDTO instance with address details.
       * @return true if address updated successfully otherwise false.
-      * @throws HibernateException if a database access error occurs.
+      * @throws EMSException if a database access error occurs.
       */
-     public boolean updateAddress(AddressDTO addressDTO) throws 
-            HibernateException {
+     public boolean updateAddress(AddressDTO addressDTO) throws EMSException {
          return employeeService.updateAddress(addressDTO);
     }
     
@@ -264,9 +260,9 @@ public class EmployeeController {
      * Fetches all available projects.
      *
      * @return a List containing all available projects.
-     * @throws HibernateException if a database  access error occurs.
+     * @throws EMSException if a database  access error occurs.
      */
-    public List<ProjectDTO> getAllProjects() throws HibernateException {
+    public List<ProjectDTO> getAllProjects() throws EMSException {
         return employeeService.getAllProjects();
     }
     
@@ -275,9 +271,9 @@ public class EmployeeController {
     *
     * @param id employee id to be deleted.
     * @return true if employee deleted successfully else false.
-    * @throws HibernateException if a database access error occurs.
+    * @throws EMSException if a database access error occurs.
     */    
-    public boolean deleteEmployee(int id) throws HibernateException {
+    public boolean deleteEmployee(int id) throws EMSException {
         return employeeService.deleteEmployee(id);
     }
     
@@ -286,9 +282,9 @@ public class EmployeeController {
      *
      * @param addressId id of the address to be deleted.
      * @return true if address deleted successfully else false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    public boolean deleteAddress(int addressId) throws HibernateException {
+    public boolean deleteAddress(int addressId) throws EMSException {
          return employeeService.deleteAddress(addressId);
     }
     
@@ -296,9 +292,9 @@ public class EmployeeController {
      * Deletes all employees from the database. 
      *
      * @return true if deleted successfully, otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    public boolean deleteAllEmployees() throws HibernateException {
+    public boolean deleteAllEmployees() throws EMSException {
         return employeeService.deleteAllEmployees();
     }
 }

@@ -10,7 +10,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.ListJoin;
 import javax.persistence.criteria.Root;
 import javax.persistence.TypedQuery;
 import org.hibernate.HibernateException;
@@ -22,8 +21,10 @@ import org.hibernate.Transaction;
 
 import com.ideas2it.employeemanagement.connection_utils.HibernateUtil;
 import com.ideas2it.employeemanagement.dao.EmployeeDAO;
+import com.ideas2it.employeemanagement.exceptions.EMSException;
 import com.ideas2it.employeemanagement.model.Address;
 import com.ideas2it.employeemanagement.model.Employee;
+import com.ideas2it.employeemanagement.utils.Constants;
 
 /**
  * This class provides methods for create, update, view, delete employee  
@@ -31,7 +32,7 @@ import com.ideas2it.employeemanagement.model.Employee;
  * number, email already exist in the database.
  *
  * @author  Sivanantham
- * @version 1.3
+ * @version 1.4
  */
 public class EmployeeDAOImpl implements EmployeeDAO {
     
@@ -40,73 +41,40 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * 
      */
     @Override
-    public long getEmployeeCount() throws HibernateException {
+    public long getEmployeeCount() throws EMSException {
         long count;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        CriteriaBuilder criteria;
+        CriteriaQuery<Long> query;
         
-        CriteriaBuilder criteria = session.getCriteriaBuilder();
-        CriteriaQuery<Long> query = criteria.createQuery(Long.class);
-        
-        query.select(criteria.count(query.from(Employee.class)));
-        count = session.createQuery(query).getSingleResult();
-        session.close();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) 
+                {
+            criteria = session.getCriteriaBuilder();
+            query = criteria.createQuery(Long.class);
+            query.select(criteria.count(query.from(Employee.class)));
+            count = session.createQuery(query).getSingleResult();
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_006);
+        }
         return count;
     }
-    
+            
     /**
      * {@inheritDoc}
      * 
      */
     @Override
-    public Employee getByMobileNumber(long mobileNumber) throws 
-            HibernateException {
-        Employee employee;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        
-        CriteriaBuilder criteria = session.getCriteriaBuilder();
-        CriteriaQuery<Employee> query = criteria.createQuery(Employee.class);
-        Root<Employee> root = query.from(Employee.class);
-        
-        query.select(root).where(criteria.equal(root.get("mobileNumber"), 
-                                                mobileNumber)); 
-        employee = session.createQuery(query).uniqueResult();
-        session.close();
-        return employee;
-    }
-    
-    /**
-     * {@inheritDoc}
-     * 
-     */
-    @Override
-    public Employee getByEmail(String email) throws HibernateException {
-        Employee employee;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        
-        CriteriaBuilder criteria = session.getCriteriaBuilder();
-        CriteriaQuery<Employee> query = criteria.createQuery(Employee.class);
-        Root<Employee> root = query.from(Employee.class);
-        
-        query.select(root).where(criteria.equal(root.get("email"), 
-                                                email)); 
-        employee = session.createQuery(query).uniqueResult();
-        session.close();
-        return employee;
-    }
-    
-    /**
-     * {@inheritDoc}
-     * 
-     */
-    @Override
-    public int insertEmployee(Employee employee) throws HibernateException {
+    public int insertEmployee(Employee employee) throws EMSException {
         int employeeId;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        
-        employeeId = (int) session.save(employee);
-        transaction.commit();
-        session.close();
+        Transaction transaction;
+
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            transaction = session.beginTransaction();
+            employeeId = (int) session.save(employee);
+            transaction.commit();
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_003);
+        }
         return employeeId;
     }
     
@@ -115,14 +83,20 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * 
      */
     @Override
-    public boolean insertAddresses(Employee employee) throws HibernateException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
+    public boolean insertAddresses(Employee employee) throws EMSException {
+        boolean isInserted = false;
+        Transaction transaction;
         
-        Employee newEmployee = (Employee) session.merge(employee);
-        transaction.commit();
-        session.close();
-        return (null != newEmployee);
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            transaction = session.beginTransaction();
+            session.merge(employee);
+            transaction.commit();
+            isInserted = true;
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_004);
+        }
+        return isInserted;
     }
     
     /**
@@ -130,32 +104,38 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * 
      */
     @Override
-    public Employee getById(int id) throws HibernateException {
+    public Employee getById(int id) throws EMSException {
+        CriteriaBuilder criteria;
+        CriteriaQuery<Employee> firstQuery;
+        CriteriaQuery<Employee> secondQuery;
+        Root<Employee> firstRoot;
+        Root<Employee> secondRoot;
         Employee employee;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        CriteriaBuilder criteria = session.getCriteriaBuilder();
         
-        /* Here the query is split into two parts to avoid cartesian join 
-         * which degrade performance.                                    
-         */
-        CriteriaQuery<Employee> firstQuery = criteria.createQuery(
-                Employee.class);
-        Root<Employee> firstRoot = firstQuery.from(Employee.class);
-        ListJoin<Object, Object> addresses = (ListJoin<Object, Object>) 
-                firstRoot.fetch("addresses", JoinType.LEFT);
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            criteria = session.getCriteriaBuilder();
         
-        CriteriaQuery<Employee> secondQuery = criteria.createQuery(
-                Employee.class);
-        Root<Employee> secondRoot = secondQuery.from(Employee.class);
-
-        secondRoot.fetch("projects", JoinType.LEFT);
-        firstQuery.select(firstRoot).where(criteria.equal(firstRoot.get("id"), 
-                                                          id));
-        secondQuery.select(secondRoot).where(criteria.equal(
-                secondRoot.get("id"), id)); 
-        employee = session.createQuery(firstQuery).uniqueResult();
-        session.createQuery(secondQuery).uniqueResult();
-        session.close();
+            /* Here the query is split into two parts to avoid cartesian join 
+             * which degrades performance.                                    
+             */
+            firstQuery = criteria.createQuery(Employee.class);
+            firstRoot = firstQuery.from(Employee.class);
+            firstRoot.fetch("addresses", JoinType.LEFT);
+            firstQuery.select(firstRoot).where(criteria.equal(
+                    firstRoot.get("id"), id));
+                    
+            secondQuery = criteria.createQuery(Employee.class);
+            secondRoot = secondQuery.from(Employee.class);
+            secondRoot.fetch("projects", JoinType.LEFT);
+            secondQuery.select(secondRoot).where(criteria.equal(
+                    secondRoot.get("id"), id)); 
+            
+            employee = session.createQuery(firstQuery).uniqueResult();
+            session.createQuery(secondQuery).uniqueResult();
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_005);
+        }
         return employee;
     }
     
@@ -164,26 +144,80 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * 
      */
     @Override
-    public List<Employee> getAllEmployees() throws HibernateException {
+    public Employee getByMobileNumber(long mobileNumber) throws 
+            EMSException {
+        CriteriaBuilder criteria;
+        CriteriaQuery<Employee> query;
+        Root<Employee> root;
+        Employee employee;
+        
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) 
+                {
+            criteria = session.getCriteriaBuilder();
+            query = criteria.createQuery(Employee.class);
+            root = query.from(Employee.class);
+            query.select(root).where(criteria.equal(root.get("mobileNumber"), 
+                                                    mobileNumber)); 
+            employee = session.createQuery(query).uniqueResult();
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_001);
+        }
+        return employee;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+    public Employee getByEmail(String email) throws EMSException {
+        CriteriaBuilder criteria;
+        CriteriaQuery<Employee> query;
+        Root<Employee> root;
+        Employee employee;
+        
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            criteria = session.getCriteriaBuilder();
+            query = criteria.createQuery(Employee.class);
+            root = query.from(Employee.class);
+            query.select(root).where(criteria.equal(root.get("email"), 
+                                                    email)); 
+            employee = session.createQuery(query).uniqueResult();
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_002);
+        }
+        return employee;
+    }
+    
+    /**
+     * {@inheritDoc}
+     * 
+     */
+    @Override
+    public List<Employee> getAllEmployees() throws EMSException {
         List<Employee> employees;
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        TypedQuery<Employee> firstQuery;
+        TypedQuery<Employee> secondQuery;
         
-        /* Here the query is split into two parts to avoid cartesian join 
-         * which degrade performance.                                    
-         */
-        TypedQuery<Employee> firstQuery = session.createQuery("SELECT DISTINCT"
-                + " emp FROM Employee emp LEFT JOIN FETCH emp.addresses",
-                Employee.class);
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
         
-        TypedQuery<Employee> secondQuery = session.createQuery("SELECT DISTINCT"
-                + " emp FROM Employee emp LEFT JOIN FETCH emp.projects",
-                Employee.class);
+            /* Here the query is split into two parts to avoid cartesian join 
+             * which degrade performance.                                    
+             */
+            firstQuery = session.createQuery("SELECT DISTINCT emp FROM Employee"
+                    + " emp LEFT JOIN FETCH emp.addresses", Employee.class);
+            secondQuery = session.createQuery("SELECT DISTINCT em FROM Employee"
+                    + " em LEFT JOIN FETCH em.projects", Employee.class);
         
-        firstQuery.setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false );
-        secondQuery.setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false );
-        employees = firstQuery.getResultList();
-        employees = secondQuery.getResultList();
-        session.close();
+            firstQuery.setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false );
+            secondQuery.setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false );
+            employees = firstQuery.getResultList();
+            employees = secondQuery.getResultList();
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_006);
+        }
         return employees;
     }
     
@@ -192,15 +226,21 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * 
      */
     @Override
-    public Employee updateEmployee(Employee employee) throws HibernateException
+    public boolean updateEmployee(Employee employee) throws EMSException
             {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        Employee newEmployee = (Employee) session.merge(employee);
+        boolean isUpdated = false;
+        Transaction transaction;
         
-        transaction.commit();
-        session.close();
-        return newEmployee;
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            transaction = session.beginTransaction();
+            session.merge(employee);
+            transaction.commit();
+            isUpdated = true;
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_007);
+        }
+        return isUpdated;
     }
     
     /**
@@ -208,14 +248,20 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * 
      */
     @Override
-    public Address updateAddress(Address address) throws HibernateException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        Address newAddress = (Address) session.merge(address);
+    public boolean updateAddress(Address address) throws EMSException {
+        boolean isUpdated = false;
+        Transaction transaction;
         
-        transaction.commit();
-        session.close();
-        return newAddress;
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            transaction = session.beginTransaction();
+            session.merge(address);
+            transaction.commit();
+            isUpdated = true;
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_008);
+        }
+        return isUpdated;
     }
     
     /**
@@ -223,21 +269,28 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * 
      */
     @Override
-    public boolean deleteEmployee(int id) throws HibernateException {
-        int entitiesAffected;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
+    public boolean deleteEmployee(int id) throws EMSException {
+        boolean isDeleted = false;
+        CriteriaBuilder criteria;
+        CriteriaDelete<Employee> delete;
+        Root<Employee> root;
+        Transaction transaction;
         
-        CriteriaBuilder criteria = session.getCriteriaBuilder();
-        CriteriaDelete<Employee> delete = criteria.createCriteriaDelete(
-                Employee.class);
-        Root<Employee> root = delete.from(Employee.class);
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            transaction = session.beginTransaction();
+            criteria = session.getCriteriaBuilder();
+            delete = criteria.createCriteriaDelete(Employee.class);
+            root = delete.from(Employee.class);
         
-        delete.where(criteria.equal(root.get("id"), id));
-        entitiesAffected = session.createQuery(delete).executeUpdate();
-        transaction.commit();
-        session.close();
-        return (0 != entitiesAffected);
+            delete.where(criteria.equal(root.get("id"), id));
+            session.createQuery(delete).executeUpdate();
+            transaction.commit();
+            isDeleted = true;
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_009);
+        }
+        return isDeleted;
     }
     
     /**
@@ -245,21 +298,28 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * 
      */
      @Override
-     public boolean deleteAddress(int addressId) throws HibernateException {
-        int entitiesAffected;
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
+     public boolean deleteAddress(int addressId) throws EMSException {
+        boolean isDeleted = false;
+        CriteriaBuilder criteria;
+        CriteriaDelete<Address> delete;
+        Root<Address> root;
+        Transaction transaction;
         
-        CriteriaBuilder criteria = session.getCriteriaBuilder();
-        CriteriaDelete<Address> delete = criteria.createCriteriaDelete(
-                Address.class);
-        Root<Address> root = delete.from(Address.class);
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            transaction = session.beginTransaction();
+            criteria = session.getCriteriaBuilder();
+            delete = criteria.createCriteriaDelete(Address.class);
+            root = delete.from(Address.class);
         
-        delete.where(criteria.equal(root.get("id"), addressId));
-        entitiesAffected = session.createQuery(delete).executeUpdate();
-        transaction.commit();
-        session.close();
-        return (0 != entitiesAffected);
+            delete.where(criteria.equal(root.get("id"), addressId));
+            session.createQuery(delete).executeUpdate();
+            transaction.commit();
+            isDeleted = true;
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_010);
+        }
+        return isDeleted;
      }
     
     /**
@@ -267,14 +327,21 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * 
      */
     @Override
-    public boolean deleteAllEmployees() throws HibernateException {
-        Session session = HibernateUtil.getSessionFactory().openSession();
-        Transaction transaction = session.beginTransaction();
-        Query deleteAll = session.createQuery("DELETE FROM Employee");
+    public boolean deleteAllEmployees() throws EMSException {
+        boolean isDeleted = false;
+        Transaction transaction;
+        Query deleteAll;
         
-        deleteAll.executeUpdate();
-        transaction.commit();    
-        session.close();
-        return true;
+        try (Session session = HibernateUtil.getSessionFactory().openSession())
+                {
+            transaction = session.beginTransaction();
+            deleteAll = session.createQuery("DELETE FROM Employee");
+            deleteAll.executeUpdate();
+            transaction.commit();
+            isDeleted = true;    
+        } catch (HibernateException exception) {
+            throw new EMSException(Constants.ERROR_011);
+        }
+        return isDeleted;
     }
 }

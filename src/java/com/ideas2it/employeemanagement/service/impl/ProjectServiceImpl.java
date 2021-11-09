@@ -7,10 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.hibernate.HibernateException;
-
 import com.ideas2it.employeemanagement.dao.ProjectDAO;
 import com.ideas2it.employeemanagement.dao.impl.ProjectDAOImpl;
+import com.ideas2it.employeemanagement.exceptions.EMSException;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.Project;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
@@ -24,7 +23,7 @@ import com.ideas2it.employeemanagement.utils.ValidationUtil;
  * create, update, retrieve, delete operations for project management system.
  *
  * @author  Sivanantham
- * @version 1.0
+ * @version 1.1
  */
 public class ProjectServiceImpl implements ProjectService {
     private ProjectDAO projectDAO = new ProjectDAOImpl();
@@ -115,7 +114,7 @@ public class ProjectServiceImpl implements ProjectService {
      * 
      */
     @Override
-    public boolean isProjectExist(int id) throws HibernateException {
+    public boolean isProjectExist(int id) throws EMSException {
         return (null == projectDAO.getById(id)) ? false : true;
     }
     
@@ -124,7 +123,7 @@ public class ProjectServiceImpl implements ProjectService {
      * 
      */
     @Override
-    public boolean isProjectDatabaseEmpty() throws HibernateException {
+    public boolean isProjectDatabaseEmpty() throws EMSException {
         return (0 == projectDAO.getProjectCount());
     }
     
@@ -132,7 +131,7 @@ public class ProjectServiceImpl implements ProjectService {
      * {@inheritDoc}
      * 
      */
-    public List<EmployeeDTO> getAllEmployees() throws HibernateException {
+    public List<EmployeeDTO> getAllEmployees() throws EMSException {
         return new EmployeeServiceImpl().getAllEmployees();
     }
     
@@ -141,7 +140,7 @@ public class ProjectServiceImpl implements ProjectService {
      * 
      */
     @Override
-    public int createProject(ProjectDTO projectDTO) throws HibernateException {
+    public int createProject(ProjectDTO projectDTO) throws EMSException {
         return projectDAO.insertProject(Mapper.toProject(projectDTO));
     }
     
@@ -150,7 +149,7 @@ public class ProjectServiceImpl implements ProjectService {
      * 
      */
     @Override
-    public ProjectDTO getProject(int id) throws HibernateException {
+    public ProjectDTO getProject(int id) throws EMSException {
         Project project = projectDAO.getById(id);
         
         return (null == project) ? null : Mapper.toProjectDTO(project);
@@ -176,7 +175,7 @@ public class ProjectServiceImpl implements ProjectService {
      * 
      */
     @Override
-    public List<ProjectDTO> getAllProjects() throws HibernateException {
+    public List<ProjectDTO> getAllProjects() throws EMSException {
         List<Project> projects = projectDAO.getAllProjects();
         
         return toProjectDTO(projects);
@@ -187,8 +186,7 @@ public class ProjectServiceImpl implements ProjectService {
      *
      */
     @Override
-    public boolean updateProject(ProjectDTO projectDTO) throws 
-            HibernateException {
+    public boolean updateProject(ProjectDTO projectDTO) throws EMSException {
         return projectDAO.updateProject(Mapper.toProject(projectDTO));
     }
     
@@ -197,7 +195,7 @@ public class ProjectServiceImpl implements ProjectService {
      *
      */
     @Override
-    public boolean deleteProject(int id) throws HibernateException {
+    public boolean deleteProject(int id) throws EMSException {
         return projectDAO.deleteById(id);
     }
     
@@ -206,7 +204,7 @@ public class ProjectServiceImpl implements ProjectService {
      *
      */
     @Override
-    public boolean deleteAllProjects() throws HibernateException {
+    public boolean deleteAllProjects() throws EMSException {
         return projectDAO.deleteAllProjects();
     }
 }

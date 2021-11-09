@@ -11,10 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.hibernate.HibernateException;
-
 import com.ideas2it.employeemanagement.dao.EmployeeDAO;
 import com.ideas2it.employeemanagement.dao.impl.EmployeeDAOImpl;
+import com.ideas2it.employeemanagement.exceptions.EMSException;
 import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
@@ -28,7 +27,7 @@ import com.ideas2it.employeemanagement.utils.ValidationUtil;
  * create, update, retrieve, delete operations for employee management system.
  *
  * @author  Sivanantham
- * @version 1.6
+ * @version 1.7
  */
 public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeDAO employeeDAO = new EmployeeDAOImpl();
@@ -38,7 +37,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
-    public boolean isEmployeeExist(int id) throws HibernateException {
+    public boolean isEmployeeExist(int id) throws EMSException {
         return (null == employeeDAO.getById(id)) ? false : true;
     }
     
@@ -146,8 +145,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
-    public boolean isMobileNumberExist(long mobileNumber) throws 
-            HibernateException {
+    public boolean isMobileNumberExist(long mobileNumber) throws EMSException {
         return (null == employeeDAO.getByMobileNumber(mobileNumber)) ? false 
                                                                      : true;
     }
@@ -180,7 +178,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override 
-    public boolean isEmailExist(String email) throws HibernateException {
+    public boolean isEmailExist(String email) throws EMSException {
         return (null == employeeDAO.getByEmail(email)) ? false : true;
     }
     
@@ -311,7 +309,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
-    public boolean isEmployeesDatabaseEmpty() throws HibernateException {
+    public boolean isEmployeesDatabaseEmpty() throws EMSException {
         return (0 == employeeDAO.getEmployeeCount());
     }
     
@@ -320,8 +318,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
-    public int createEmployee (EmployeeDTO employeeDTO) throws
-            HibernateException {
+    public int createEmployee (EmployeeDTO employeeDTO) throws EMSException {
         return employeeDAO.insertEmployee(Mapper.toEmployee(employeeDTO));
     }
     
@@ -331,7 +328,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public boolean createAddresses(EmployeeDTO employeeDTO) throws 
-            HibernateException {
+            EMSException {
         return employeeDAO.insertAddresses(Mapper.toEmployee(employeeDTO));
     }
     
@@ -355,7 +352,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
-    public EmployeeDTO getEmployee(int id) throws HibernateException {
+    public EmployeeDTO getEmployee(int id) throws EMSException {
         Employee employee = employeeDAO.getById(id);
         
         return (null == employee) ? null : Mapper.toEmployeeDTO(employee);
@@ -366,7 +363,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
-    public List<EmployeeDTO> getAllEmployees() throws HibernateException {
+    public List<EmployeeDTO> getAllEmployees() throws EMSException {
         List<Employee> employees = employeeDAO.getAllEmployees();
         
         return toEmployeeDTO(employees);
@@ -378,9 +375,8 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
      @Override
      public boolean updateEmployee(EmployeeDTO employeeDTO) throws 
-            HibernateException {
-         return (null != employeeDAO.updateEmployee(Mapper.toEmployee(
-                            employeeDTO)));
+            EMSException {
+         return employeeDAO.updateEmployee(Mapper.toEmployee(employeeDTO));
     }
     
     /**
@@ -388,10 +384,8 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
      @Override
-     public boolean updateAddress(AddressDTO addressDTO) throws 
-            HibernateException {
-         return (null != employeeDAO.updateAddress(Mapper.toAddress(
-                            addressDTO)));
+     public boolean updateAddress(AddressDTO addressDTO) throws EMSException {
+         return employeeDAO.updateAddress(Mapper.toAddress(addressDTO));
     }
     
     /**
@@ -399,7 +393,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      *
      */
     @Override
-    public List<ProjectDTO> getAllProjects() throws HibernateException {
+    public List<ProjectDTO> getAllProjects() throws EMSException {
         return new ProjectServiceImpl().getAllProjects();
     }
             
@@ -408,7 +402,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
-    public boolean deleteEmployee(int id) throws HibernateException {
+    public boolean deleteEmployee(int id) throws EMSException {
          return employeeDAO.deleteEmployee(id);
     }
     
@@ -417,7 +411,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
-    public boolean deleteAddress(int addressId) throws HibernateException {
+    public boolean deleteAddress(int addressId) throws EMSException {
          return employeeDAO.deleteAddress(addressId);
     }
    
@@ -426,7 +420,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
-    public boolean deleteAllEmployees() throws HibernateException {
+    public boolean deleteAllEmployees() throws EMSException {
          return employeeDAO.deleteAllEmployees();  
     }
 }

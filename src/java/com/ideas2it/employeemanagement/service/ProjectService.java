@@ -5,8 +5,7 @@ package com.ideas2it.employeemanagement.service;
 
 import java.util.List;
 
-import org.hibernate.HibernateException;
-
+import com.ideas2it.employeemanagement.exceptions.EMSException;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
 import com.ideas2it.employeemanagement.model.Status;
@@ -16,7 +15,7 @@ import com.ideas2it.employeemanagement.model.Status;
  * create, update, retrieve, delete operations for project management system.
  *
  * @author  Sivanantham
- * @version 1.0
+ * @version 1.1
  */
 public interface ProjectService {
     
@@ -81,74 +80,74 @@ public interface ProjectService {
      * Checks if the project database is empty.
      *
      * @return true if project database is empty else false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    boolean isProjectDatabaseEmpty() throws HibernateException;
+    boolean isProjectDatabaseEmpty() throws EMSException;
     
     /**
      * Searches for the specified project id.
      * 
      * @param id the id of the project to be searched as a integer.
      * @return true if project found, otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    boolean isProjectExist(int id) throws HibernateException;
+    boolean isProjectExist(int id) throws EMSException;
     
     /**
      * @see EmployeeService#getAllEmployees()
      *
      */
-    List<EmployeeDTO> getAllEmployees() throws HibernateException;
+    List<EmployeeDTO> getAllEmployees() throws EMSException;
     
     /**
      * Creates a new project record in the database.
      *
      * @param project the project to be inserted.
      * @return the project id.
-     * @throws HibernateException if database access error occurs.
+     * @throws EMSException if database access error occurs.
      */
-    int createProject(ProjectDTO projectDTO) throws HibernateException;
+    int createProject(ProjectDTO projectDTO) throws EMSException;
     
     /**
      * Retrieves the specified project from the database.
      * 
      * @param id the project id to be retrieved as a int.
      * @return the specified project if found otherwise null.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-     ProjectDTO getProject(int id) throws HibernateException;
+     ProjectDTO getProject(int id) throws EMSException;
     
     /** 
      * Retrieves all projects from the database.
      *
      * @return a List containing all projects.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    List<ProjectDTO> getAllProjects() throws HibernateException;
+    List<ProjectDTO> getAllProjects() throws EMSException;
     
     /**
      * Updates the specified project.
      *
      * @param projectDTO the ProjectDTO instance with updated details.
      * @return true if updated successfully, otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    boolean updateProject(ProjectDTO projectDTO) throws HibernateException;
+    boolean updateProject(ProjectDTO projectDTO) throws EMSException;
     
     /**
      * Deletes the specified project.
      *
      * @param id the project's id to be deleted.
      * @return true if deleted successfully, otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    boolean deleteProject(int id) throws HibernateException;
+    boolean deleteProject(int id) throws EMSException;
     
     /**
      * Deletes all the projects.
      *
      * @return true if deleted successfully, otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    boolean deleteAllProjects() throws HibernateException;
+    boolean deleteAllProjects() throws EMSException;
 }

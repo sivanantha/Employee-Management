@@ -10,9 +10,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Scanner;
 
-import org.hibernate.HibernateException;
-
 import com.ideas2it.employeemanagement.controller.EmployeeController;
+import com.ideas2it.employeemanagement.exceptions.EMSException;
 import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
@@ -23,7 +22,7 @@ import com.ideas2it.employeemanagement.model.ProjectDTO;
  * methods for employee details.
  *
  * @author  Sivanantham
- * @version 1.6
+ * @version 1.7
  */
 public class EmployeeView {
     private Scanner inputReader = new Scanner(System.in);
@@ -181,7 +180,6 @@ public class EmployeeView {
     private long getMobileNumberInput() {
         String userInput;
         Long mobileNumber = null;
-        String errorMessage = "\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>";
         String messageForInvalid = "\n\t\t\t<<<<<< Mobile Number Must Be 10  "
                 + "Digits! IST Codes Are Not Allowed. >>>>>>\n";
         String messageForDuplicate = "\n\t\t\t<<<<<< Mobile Number Already "
@@ -200,11 +198,11 @@ public class EmployeeView {
                     System.out.println(messageForDuplicate);
                     mobileNumber = null;
                 }
-            } catch (HibernateException exception) {
-                System.out.println(errorMessage);
+            } catch (EMSException exception) {
+                System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
                 mobileNumber = null;
             }
-        } 
+        }
         return mobileNumber;
     }
     
@@ -217,7 +215,6 @@ public class EmployeeView {
     private String getEmailInput() {
         String userInput;
         String email = null;
-        String errorMessage = "\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>";
         String messageForDuplicate = "\n\t\t\t<<<<<< Email Already Exist! "
                                      + ">>>>>>\n";
         StringBuilder messageForInvalid = new StringBuilder(50);
@@ -240,8 +237,8 @@ public class EmployeeView {
                         email = null;
                         System.out.println(messageForDuplicate);    
                 }
-            } catch (HibernateException exception) {
-                System.out.println(errorMessage);
+            } catch (EMSException exception) {
+                System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
                 email = null;
             }   
         }
@@ -526,15 +523,15 @@ public class EmployeeView {
             System.out.println("\n\t\t\t<<<<<< Employee Created Successfully! "
                                + ">>>>>>\n\n\t\t\t ****** The Employee Id Of < "
                                + name + " > Is --> " + id + " ******");
-        } catch (HibernateException exception) {
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
     /**
      * Checks if the employee database is empty.
      *
-     * @return true when database is empty or HibernateException occurs, 
+     * @return true when database is empty or EMSException occurs, 
      *         otherwise false.
      */ 
     private boolean isEmployeesDatabaseEmpty() {
@@ -546,8 +543,8 @@ public class EmployeeView {
                                    + ">>>>>>\n");
                 isEmpty = true;
             } 
-        } catch (HibernateException exception) {
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
             isEmpty = true;
         }
         return isEmpty;
@@ -557,7 +554,7 @@ public class EmployeeView {
      * Checks if the specified employee exist.
      *
      * @param id the employee's id to be searched.
-     * @return false when employee not found or HibernateException occurs,
+     * @return false when employee not found or EMSException occurs,
      *         otherwise true.
      */
     private boolean isEmployeeExist(int id) {
@@ -569,8 +566,8 @@ public class EmployeeView {
                                    + ">>>>>>\n");
                 isEmployeeFound = false;
             }
-        } catch (HibernateException exception) {
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
             isEmployeeFound = false;
         }
         return isEmployeeFound;
@@ -631,9 +628,9 @@ public class EmployeeView {
                 System.out.println("\n\n\t\t\t<<<<<< Employee Not Found! "
                                    + ">>>>>>\n");
             }
-        } catch (HibernateException exception) {
+        } catch (EMSException exception) {
             employee = null;
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
         return employee;
     }
@@ -667,8 +664,8 @@ public class EmployeeView {
                 System.out.println(employeeDTO);
                 System.out.println("\n\n\t\t\t-------------------------------");
             }
-        } catch (HibernateException exception) {
-            System.out.println("\n\n\t\t\t<<<<<< An Error Occurred! >>>>>>");
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -698,8 +695,8 @@ public class EmployeeView {
         options.append("\n\t\t\t\t\\ Update Menu /\n\t\t\t\t ~~~~~~~~~~~~~\n")
                .append("\n\t\t1 => Update Single Detail\t\t2 => Update All ")
                .append("Details\n\n\t\t3 => Add New Address\t\t\t4 => Assign ")
-               .append("Projects\n\n\t\t5 => UnAssign Projects\t\t6 => Return")
-               .append(" to Employees Menu\n\n\t\tEnter The Option : ");
+               .append("Projects\n\n\t\t5 => UnAssign Projects\t\t\t6 => ")
+               .append("Return to Employees Menu\n\n\t\tEnter The Option : ");
         
         do {
             System.out.print(options);
@@ -795,8 +792,6 @@ public class EmployeeView {
      * @param employee the employee whose details to be updated.
      */
     private void updateName(EmployeeDTO employee) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             employee.setName(getNameInput());
             
@@ -804,10 +799,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Name updated successfully! "
                                    + ">>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -818,8 +813,6 @@ public class EmployeeView {
      * @param employee the employee whose details to be updated.
      */
     private void updateDateOfBirth(EmployeeDTO employee) {     
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             employee.setDateOfBirth(getDateOfBirthInput());
             
@@ -827,10 +820,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Date Of Birth Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);    
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -841,8 +834,6 @@ public class EmployeeView {
      * @param employee the employee whose details to be updated.
      */
     private void updateGender(EmployeeDTO employee) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             employee.setGender(getGenderInput());
             
@@ -850,10 +841,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Gender Updated Successfully!"
                                    + " >>>>>>\n");
             } else {
-                System.out.println(errorMessage);    
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -864,8 +855,6 @@ public class EmployeeView {
      * @param employee the employee whose details to be updated.
      */
     private void updateMobileNumber(EmployeeDTO employee) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             employee.setMobileNumber(getMobileNumberInput());
             
@@ -873,10 +862,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Mobile Number Updated "
                                    + "Successfully! >>>>>>\n");
             } else { 
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -887,8 +876,6 @@ public class EmployeeView {
      * @param employee the employee whose details to be updated.
      */
     private void updateEmail(EmployeeDTO employee) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             employee.setEmail(getEmailInput());
             
@@ -896,10 +883,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Email Updated Successfully! "
                                    + ">>>>>>\n");
             } else {
-                System.out.println(errorMessage);         
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -910,8 +897,6 @@ public class EmployeeView {
      * @param employee the employee whose details to be updated.
      */
     private void updateSalary(EmployeeDTO employee) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             employee.setSalary(getSalaryInput());
             
@@ -919,10 +904,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<< Salary Updated Successfully! "
                                    + ">>>>>>\n");    
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -933,8 +918,6 @@ public class EmployeeView {
      * @param employee the employee whose details to be updated.
      */
     private void updateDateOfJoining(EmployeeDTO employee) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             employee.setDateOfJoining(getDateOfJoiningInput());
             
@@ -942,10 +925,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Date Of Joining Updated " 
                                    + "Successfully! >>>>>>\n");    
             } else {
-                System.out.println(errorMessage);        
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");        
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1097,8 +1080,6 @@ public class EmployeeView {
      * @param address the address to be updated.
      */
     private void updateDoorNumber(AddressDTO address) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             address.setDoorNumber(getDoorNumberInput());
             
@@ -1106,10 +1087,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Door Number Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);  
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1120,8 +1101,6 @@ public class EmployeeView {
      * @param address the address to be updated.
      */
     private void updateStreet(AddressDTO address) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             address.setStreet(getStreetInput());
             
@@ -1129,10 +1108,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Street Updated Successfully!"
                                    + " >>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1143,8 +1122,6 @@ public class EmployeeView {
      * @param address the address to be updated.
      */
     private void updateLocality(AddressDTO address) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             address.setLocality(getLocalityInput());
             
@@ -1152,10 +1129,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Locality Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);  
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1166,8 +1143,6 @@ public class EmployeeView {
      * @param address the address to be updated.
      */
     private void updateCity(AddressDTO address) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             address.setCity(getCityInput());
             
@@ -1175,10 +1150,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Locality Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);  
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");  
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1189,8 +1164,6 @@ public class EmployeeView {
      * @param address the address to be updated.
      */
     private void updateState(AddressDTO address) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             address.setState(getStateInput());
             
@@ -1198,10 +1171,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< State Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);  
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");  
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1212,8 +1185,6 @@ public class EmployeeView {
      * @param address the address to be updated.
      */
     private void updateCountry(AddressDTO address) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             address.setCountry(getCountryInput());
             
@@ -1221,10 +1192,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Country Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);  
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1235,8 +1206,6 @@ public class EmployeeView {
      * @param address the address to be updated.
      */
     private void updatePinCode(AddressDTO address) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         try {
             address.setPinCode(getPinCodeInput());
             
@@ -1244,10 +1213,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Pin Code Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);  
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1257,9 +1226,9 @@ public class EmployeeView {
      *
      * @return a set containing selected projects or if there is no projects
      *         in the database then an empty set.
-     * @throws HibernateException if database access error occurs.
+     * @throws EMSException if database access error occurs.
      */
-    private Set<ProjectDTO> getProjectsToAssign() throws HibernateException {
+    private Set<ProjectDTO> getProjectsToAssign() throws EMSException {
         String[] selectedIds;
         String userInput;
         int count = 1;
@@ -1298,7 +1267,6 @@ public class EmployeeView {
      */
     private void assignProjects(EmployeeDTO employee) {
         Set<ProjectDTO> projects;
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         try {
             projects = getProjectsToAssign();
@@ -1314,10 +1282,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Projects Assigned "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1369,12 +1337,11 @@ public class EmployeeView {
      * @param project the project to unassign employees.
      */
     private void unAssignProjects(EmployeeDTO employee) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         Set<ProjectDTO> projects = getProjectsToUnAssign(employee);
 
         if (projects.isEmpty()) {
             System.out.println("\n\t\t\t<<<<<< No Projects Found To Unassign!"
-                                   + " >>>>>>\n");
+                               + " >>>>>>\n");
             return;
         }
             
@@ -1385,10 +1352,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Projects UnAssigned "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1438,8 +1405,6 @@ public class EmployeeView {
      * @param employee employee to be updated.
      */
     private void updateAllDetails(EmployeeDTO employee) {
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
-        
         employee.setAll(getNameInput(), getDateOfBirthInput(), getGenderInput(), 
                 getMobileNumberInput(), getEmailInput(), getSalaryInput(),
                 getDateOfJoiningInput());
@@ -1449,10 +1414,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Employee Details Updated "
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1463,13 +1428,11 @@ public class EmployeeView {
      * @param employee the employee whose address to be updated.
      */
     private void updateAddressDetails(EmployeeDTO employee) {
-        String errorMessage;
         AddressDTO address = showAndGetAddress(employee);
        
         if (null == address) {
             return;
         }
-        errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         address.setAll(getDoorNumberInput(), getStreetInput(),
                 getLocalityInput(), getCityInput(), getStateInput(),
                 getCountryInput(), getPinCodeInput());
@@ -1479,10 +1442,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Address Updated "         
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1494,7 +1457,6 @@ public class EmployeeView {
      */
     private void createAddress(EmployeeDTO employee) {
         List<AddressDTO> addresses = getAddressesInput();
-        String errorMessage = "\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n";
         
         employee.getAddresses().addAll(addresses);
         
@@ -1503,10 +1465,10 @@ public class EmployeeView {
                 System.out.println("\n\t\t\t<<<<<< Addresses Created "         
                                    + "Successfully! >>>>>>\n");
             } else {
-                System.out.println(errorMessage);
+                System.out.println("\n\t\t\t<<<<<< An Error Occurred >>>>>>\n");
             }
-        } catch (HibernateException exception) {
-            System.out.println(errorMessage);
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1577,8 +1539,9 @@ public class EmployeeView {
         
         if ("y".equals(userInput)) {
             result = true;
+        } else {
+            System.out.println(messageForAbort);
         }
-        System.out.println(messageForAbort);
         return result;
     }
     
@@ -1599,12 +1562,12 @@ public class EmployeeView {
                     System.out.println("\n\t\t\t<<<<<< Deleted Successfully! "
                                        + ">>>>>>\n");
                 } else {
-                    System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
+                    System.out.println("\n\t\t\t<<<<<< An Error Occurred "
                                        + ">>>>>>\n");
                 }
             }
-        } catch (HibernateException exception) {
-            System.out.println("\n\t\t\t<<<<<< An Error Occurred! >>>>>>\n");
+        } catch (EMSException exception) {
+            System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
         }
     }
     
@@ -1633,11 +1596,10 @@ public class EmployeeView {
                                        + "! >>>>>>\n");
                 } else {
                     System.out.println("\n\t\t\t<<<<<< Cannot Delete The "
-                                       + "Address! >>>>>>\n");
+                                       + "Address >>>>>>\n");
                 }
-            } catch (HibernateException exception) {
-                System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
-                                   + ">>>>>>\n");
+            } catch (EMSException exception) {
+                System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
             }
         }
     }
@@ -1653,13 +1615,12 @@ public class EmployeeView {
                     System.out.println("\n\t\t\t<<<<<< Deleted Successfully! "
                                        + ">>>>>>\n");
                 } else {
-                    System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
+                    System.out.println("\n\t\t\t<<<<<< An Error Occurred "
                                        + ">>>>>>\n");
                 }
-            } catch (HibernateException exception) {
-                System.out.println("\n\t\t\t<<<<<< An Error Occurred! "
-                                   + ">>>>>>\n");
-            }          
+            } catch (EMSException exception) {
+                System.out.println("\n\t\t\t<<<<<< " + exception + " >>>>>>\n");
+            }
         }
     }
 }

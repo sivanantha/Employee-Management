@@ -6,8 +6,7 @@ package com.ideas2it.employeemanagement.service;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.hibernate.HibernateException;
-
+import com.ideas2it.employeemanagement.exceptions.EMSException;
 import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
@@ -27,9 +26,9 @@ public interface EmployeeService {
      * 
      * @param id  the id of the employee to be searched as a integer.
      * @return true if employee found, otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    boolean isEmployeeExist(int id) throws HibernateException;
+    boolean isEmployeeExist(int id) throws EMSException;
     
     /**
      * Validates and parses given employee id.Checks if the specified employee 
@@ -110,9 +109,9 @@ public interface EmployeeService {
      *
      * @param the mobile number to be searched as a long.
      * @return true if mobile number already exist, otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    boolean isMobileNumberExist(long mobileNumber) throws HibernateException;
+    boolean isMobileNumberExist(long mobileNumber) throws EMSException;
     
     /**
      * Checks if the given email is valid. Capital letters are not allowed.
@@ -141,9 +140,9 @@ public interface EmployeeService {
      *
      * @param email employee's email to be searched as string value.
      * @return true if specified email is found, otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */ 
-    boolean isEmailExist(String email) throws HibernateException;
+    boolean isEmailExist(String email) throws EMSException;
     
     /**
      * Checks if the specified salary is non negative and atleast 8,000.
@@ -187,9 +186,9 @@ public interface EmployeeService {
      * Helper function for view, update and delete operations.
      *
      * @return true if employee database is empty else false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    boolean isEmployeesDatabaseEmpty() throws HibernateException;
+    boolean isEmployeesDatabaseEmpty() throws EMSException;
     
     /**
      * Validates the specified door number.
@@ -244,9 +243,9 @@ public interface EmployeeService {
      *
      * @param employee the EmployeeDTO instance with employee details.
      * @return the employee's id as a int.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    int createEmployee (EmployeeDTO employee) throws HibernateException;
+    int createEmployee (EmployeeDTO employee) throws EMSException;
     
     /**
      * Creates new addresses with specified details and stores in the 
@@ -254,74 +253,74 @@ public interface EmployeeService {
      *
      * @param employeeDTO the EmployeeDTO instance with address details.
      * @return true if addresses created successfully, otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    boolean createAddresses(EmployeeDTO employeeDTO) throws HibernateException;
+    boolean createAddresses(EmployeeDTO employeeDTO) throws EMSException;
     
     /**
      * Retrieves the specified employee from the database.
      * 
      * @param id the employee id to be retrieved as a int.
      * @return the specified employee if found otherwise null.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-     EmployeeDTO getEmployee(int id) throws HibernateException;
+     EmployeeDTO getEmployee(int id) throws EMSException;
     
     /** 
      * Retrieves all employees from the database.
      *
      * @return a List containing all employees.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    List<EmployeeDTO> getAllEmployees() throws HibernateException;
+    List<EmployeeDTO> getAllEmployees() throws EMSException;
    
     /** 
      * Updates all details of the specified employee and stores in the database.
      *
      * @param employeeDTO the EmployeeDTO instance with employee details.
      * @return true if employee updated successfully otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    boolean updateEmployee(EmployeeDTO employeeDTO) throws HibernateException;
+    boolean updateEmployee(EmployeeDTO employeeDTO) throws EMSException;
     
     /** 
      * Updates employee's address details and stores in the database.
      *
      * @param addressDTO the addressDTO instance with address details.
      * @return true if address updated successfully otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-     boolean updateAddress(AddressDTO addressDTO) throws HibernateException;
+     boolean updateAddress(AddressDTO addressDTO) throws EMSException;
      
      /**
       * @see ProjectService#getAllProjects()
       *
       */
-     List<ProjectDTO> getAllProjects() throws HibernateException;
+     List<ProjectDTO> getAllProjects() throws EMSException;
             
     /**
      * Deletes the specified employee.
      *
      * @param id employee id to be deleted.
      * @return true if employee deleted successfully else false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    boolean deleteEmployee(int id) throws HibernateException;
+    boolean deleteEmployee(int id) throws EMSException;
     
     /**
      * Deletes the specified address of an employee.
      *
      * @param addressId id of the address to be deleted.
      * @return true if address deleted successfully else false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    boolean deleteAddress(int addressId) throws HibernateException;
+    boolean deleteAddress(int addressId) throws EMSException;
     
     /** 
      * Deletes all employees from the database. 
      *
      * @return true if deleted successfully, otherwise false.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    boolean deleteAllEmployees() throws HibernateException;
+    boolean deleteAllEmployees() throws EMSException;
 }
