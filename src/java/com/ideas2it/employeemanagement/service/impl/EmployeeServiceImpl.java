@@ -389,7 +389,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheriDoc}
+     * {@inheritDoc}
      *
      */
     @Override
