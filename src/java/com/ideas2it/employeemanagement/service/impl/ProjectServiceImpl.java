@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 import com.ideas2it.employeemanagement.dao.ProjectDAO;
 import com.ideas2it.employeemanagement.dao.impl.ProjectDAOImpl;
 import com.ideas2it.employeemanagement.exceptions.EMSException;
+import com.ideas2it.employeemanagement.logger.LoggerFactory;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.Project;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
@@ -115,6 +116,7 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public boolean isProjectExist(int id) throws EMSException {
+        LoggerFactory.getLogger().info("Checking if the project exist");
         return (null == projectDAO.getById(id)) ? false : true;
     }
     
@@ -124,6 +126,7 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public boolean isProjectDatabaseEmpty() throws EMSException {
+        LoggerFactory.getLogger().info("Checking if project database is empty");
         return (0 == projectDAO.getProjectCount());
     }
     

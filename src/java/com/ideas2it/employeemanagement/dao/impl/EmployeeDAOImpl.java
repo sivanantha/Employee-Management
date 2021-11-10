@@ -22,6 +22,7 @@ import org.hibernate.Transaction;
 import com.ideas2it.employeemanagement.connection_utils.HibernateUtil;
 import com.ideas2it.employeemanagement.dao.EmployeeDAO;
 import com.ideas2it.employeemanagement.exceptions.EMSException;
+import com.ideas2it.employeemanagement.logger.LoggerFactory;
 import com.ideas2it.employeemanagement.model.Address;
 import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.employeemanagement.utils.Constants;
@@ -53,8 +54,12 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             query.select(criteria.count(query.from(Employee.class)));
             count = session.createQuery(query).getSingleResult();
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger().error("Employee count failed!\n"
+                                            + exception);
             throw new EMSException(Constants.ERROR_006);
         }
+        LoggerFactory.getLogger()
+                     .info("Employees count executed successfully!");
         return count;
     }
             
@@ -73,8 +78,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             employeeId = (int) session.save(employee);
             transaction.commit();
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger().error("Employee insertion failed!\n"
+                                            + exception);
             throw new EMSException(Constants.ERROR_003);
         }
+        LoggerFactory.getLogger().info("Employee inserted successfully!");
         return employeeId;
     }
     
@@ -94,8 +102,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             transaction.commit();
             isInserted = true;
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger().error("Address insertion failed!\n"
+                                            + exception);
             throw new EMSException(Constants.ERROR_004);
         }
+        LoggerFactory.getLogger().info("Address inserted successfully!");
         return isInserted;
     }
     
@@ -134,8 +145,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             employee = session.createQuery(firstQuery).uniqueResult();
             session.createQuery(secondQuery).uniqueResult();
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger()
+                    .error("Retrieving employee by id failed!\n" + exception);
             throw new EMSException(Constants.ERROR_005);
         }
+        LoggerFactory.getLogger().info("Employee retrieved successfully!");
         return employee;
     }
     
@@ -160,8 +174,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
                                                     mobileNumber)); 
             employee = session.createQuery(query).uniqueResult();
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger().error("Retrieving employee by mobile "
+                    + "number failed!\n" + exception);
             throw new EMSException(Constants.ERROR_001);
         }
+        LoggerFactory.getLogger().info("Employee retrieved successfully!");
         return employee;
     }
     
@@ -185,8 +202,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
                                                     email)); 
             employee = session.createQuery(query).uniqueResult();
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger()
+                    .error("Retrieve employee by email failed!\n" + exception);
             throw new EMSException(Constants.ERROR_002);
         }
+        LoggerFactory.getLogger().info("Employee retrieved successfully!");
         return employee;
     }
     
@@ -216,8 +236,12 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             employees = firstQuery.getResultList();
             employees = secondQuery.getResultList();
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger()
+                    .error("Retrieving all employees failed!\n" + exception);
             throw new EMSException(Constants.ERROR_006);
         }
+        LoggerFactory.getLogger()
+                       .info("All employees retrieved successfully!");
         return employees;
     }
     
@@ -238,8 +262,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             transaction.commit();
             isUpdated = true;
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger().error("Employee update failed!\n"
+                                            + exception);
             throw new EMSException(Constants.ERROR_007);
         }
+        LoggerFactory.getLogger().info("Employee updated successfully!");
         return isUpdated;
     }
     
@@ -259,8 +286,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             transaction.commit();
             isUpdated = true;
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger().error("Address update failed!\n"
+                                            + exception);
             throw new EMSException(Constants.ERROR_008);
         }
+        LoggerFactory.getLogger().info("Address updated successfully!");
         return isUpdated;
     }
     
@@ -288,8 +318,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             transaction.commit();
             isDeleted = true;
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger().error("Employee deletion failed!\n"
+                                            + exception);
             throw new EMSException(Constants.ERROR_009);
         }
+        LoggerFactory.getLogger().info("Employee deleted successfully!");
         return isDeleted;
     }
     
@@ -317,8 +350,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             transaction.commit();
             isDeleted = true;
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger().error("Address deletion failed!\n"
+                                            + exception);
             throw new EMSException(Constants.ERROR_010);
         }
+        LoggerFactory.getLogger().info("Address deleted successfully!");
         return isDeleted;
      }
     
@@ -340,8 +376,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             transaction.commit();
             isDeleted = true;    
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger()
+                    .error("Deletion of all employees failed!\n" + exception);
             throw new EMSException(Constants.ERROR_011);
         }
+        LoggerFactory.getLogger().info("All employees deleted successfully!");
         return isDeleted;
     }
 }

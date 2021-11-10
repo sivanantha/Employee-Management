@@ -23,6 +23,7 @@ import org.hibernate.Transaction;
 import com.ideas2it.employeemanagement.connection_utils.HibernateUtil;
 import com.ideas2it.employeemanagement.dao.ProjectDAO;
 import com.ideas2it.employeemanagement.exceptions.EMSException;
+import com.ideas2it.employeemanagement.logger.LoggerFactory;
 import com.ideas2it.employeemanagement.model.Project;
 import com.ideas2it.employeemanagement.utils.Constants;
 
@@ -48,8 +49,12 @@ public class ProjectDAOImpl implements ProjectDAO {
             count = session.createQuery("SELECT COUNT(p) FROM Project p", 
                                         Long.class).getSingleResult();
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger().error("Projects count failed!\n"
+                                            + exception);
             throw new EMSException(Constants.ERROR_012);
         }
+        LoggerFactory.getLogger()
+                       .info("Project count executed successfully!");
         return count;
     }
     
@@ -68,8 +73,11 @@ public class ProjectDAOImpl implements ProjectDAO {
             id = (int) session.save(project);
             transaction.commit();
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger().error("Project insertion failed!\n"
+                                            + exception);
             throw new EMSException(Constants.ERROR_013);
         }
+        LoggerFactory.getLogger().info("Project inserted successfully!");
         return id;
     }
     
@@ -94,8 +102,11 @@ public class ProjectDAOImpl implements ProjectDAO {
             query.select(root).where(criteria.equal(root.get("id"), id)); 
             project = session.createQuery(query).uniqueResult();
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger()
+                    .error("Retrieving project by id failed!\n" + exception);
             throw new EMSException(Constants.ERROR_014);
         }
+        LoggerFactory.getLogger().info("Project retrieved successfully!");
         return project;
     }
     
@@ -115,8 +126,12 @@ public class ProjectDAOImpl implements ProjectDAO {
             query.setHint(QueryHints.HINT_PASS_DISTINCT_THROUGH, false );
             projects = query.getResultList();
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger()
+                    .error("Retrieving all projects failed!\n" + exception);
             throw new EMSException(Constants.ERROR_012);
         }
+        LoggerFactory.getLogger()
+                       .info("All projects retrieved successfully!");
         return projects;
     }
     
@@ -136,8 +151,11 @@ public class ProjectDAOImpl implements ProjectDAO {
             transaction.commit();
             isUpdated = true;
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger().error("Project update failed!\n"
+                                            + exception);
             throw new EMSException(Constants.ERROR_015);
         }
+        LoggerFactory.getLogger().info("Project updated successfully!");
         return isUpdated; 
     }
     
@@ -165,8 +183,11 @@ public class ProjectDAOImpl implements ProjectDAO {
             transaction.commit();
             isDeleted = true;
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger().error("Project deletion failed!\n"
+                                            + exception);
             throw new EMSException(Constants.ERROR_016);
         }
+        LoggerFactory.getLogger().info("Project deleted successfully!");
         return isDeleted;
     }
     
@@ -188,8 +209,11 @@ public class ProjectDAOImpl implements ProjectDAO {
             transaction.commit();
             isDeleted = true;
         } catch (HibernateException exception) {
+            LoggerFactory.getLogger().error("Deletion all projects failed!\n"
+                                            + exception);
             throw new EMSException(Constants.ERROR_017);
         }
+        LoggerFactory.getLogger().info("All projects deleted successfully!");
         return isDeleted;
     }
 }

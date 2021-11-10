@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import com.ideas2it.employeemanagement.dao.EmployeeDAO;
 import com.ideas2it.employeemanagement.dao.impl.EmployeeDAOImpl;
 import com.ideas2it.employeemanagement.exceptions.EMSException;
+import com.ideas2it.employeemanagement.logger.LoggerFactory;
 import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
@@ -38,6 +39,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public boolean isEmployeeExist(int id) throws EMSException {
+        LoggerFactory.getLogger().info("Checking if the employee exist");
         return (null == employeeDAO.getById(id)) ? false : true;
     }
     
@@ -146,6 +148,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public boolean isMobileNumberExist(long mobileNumber) throws EMSException {
+        LoggerFactory.getLogger().info("Checking if mobile number is unique");
         return (null == employeeDAO.getByMobileNumber(mobileNumber)) ? false 
                                                                      : true;
     }
@@ -179,6 +182,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override 
     public boolean isEmailExist(String email) throws EMSException {
+        LoggerFactory.getLogger().info("Checking if the email is unique");
         return (null == employeeDAO.getByEmail(email)) ? false : true;
     }
     
@@ -310,6 +314,8 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public boolean isEmployeesDatabaseEmpty() throws EMSException {
+        LoggerFactory.getLogger()
+                    .info("Checking if employee database is empty");
         return (0 == employeeDAO.getEmployeeCount());
     }
     
@@ -389,7 +395,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     
     /**
-     * {@inheriDoc}
+     * {@inheritDoc}
      *
      */
     @Override
