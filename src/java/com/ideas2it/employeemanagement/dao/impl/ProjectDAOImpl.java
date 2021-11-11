@@ -3,10 +3,7 @@
  */
 package com.ideas2it.employeemanagement.dao.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
@@ -17,7 +14,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.jpa.QueryHints;
 import org.hibernate.query.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import com.ideas2it.employeemanagement.connection_utils.HibernateUtil;
@@ -198,13 +194,13 @@ public class ProjectDAOImpl implements ProjectDAO {
     @Override
     public boolean deleteAllProjects() throws EMSException {
         boolean isDeleted = false;
-        Query query;
+        Query<Integer> query;
         Transaction transaction;
         
         try (Session session = HibernateUtil.getSessionFactory().openSession())
                 {
             transaction = session.beginTransaction();
-            query = session.createQuery("DELETE FROM Project");
+            query = session.createQuery("DELETE FROM Project", Integer.class);
             query.executeUpdate();
             transaction.commit();
             isDeleted = true;

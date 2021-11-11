@@ -3,7 +3,6 @@
  */
 package com.ideas2it.employeemanagement.dao.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -16,7 +15,6 @@ import org.hibernate.HibernateException;
 import org.hibernate.jpa.QueryHints;
 import org.hibernate.query.Query;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import com.ideas2it.employeemanagement.connection_utils.HibernateUtil;
@@ -366,12 +364,12 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     public boolean deleteAllEmployees() throws EMSException {
         boolean isDeleted = false;
         Transaction transaction;
-        Query deleteAll;
+        Query<Integer> deleteAll;
         
         try (Session session = HibernateUtil.getSessionFactory().openSession())
                 {
             transaction = session.beginTransaction();
-            deleteAll = session.createQuery("DELETE FROM Employee");
+            deleteAll = session.createQuery("DELETE FROM Employee", Integer.class);
             deleteAll.executeUpdate();
             transaction.commit();
             isDeleted = true;    

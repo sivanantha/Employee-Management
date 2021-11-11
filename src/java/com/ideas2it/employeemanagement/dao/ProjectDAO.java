@@ -4,7 +4,6 @@
 package com.ideas2it.employeemanagement.dao;
 
 import java.util.List;
-import java.util.Set;
 
 import com.ideas2it.employeemanagement.exceptions.EMSException;
 import com.ideas2it.employeemanagement.model.Project;

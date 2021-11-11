@@ -75,7 +75,8 @@ public class EmployeeManagement {
                     System.out.println(errorMessage);
                     break;
             }
-        } while (!"3".equals(userChoice)); 
+        } while (!"3".equals(userChoice));
+        inputReader.close();
     }
     
     public static void main(String[] args) {

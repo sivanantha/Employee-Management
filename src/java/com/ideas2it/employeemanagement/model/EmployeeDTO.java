@@ -281,7 +281,6 @@ public class EmployeeDTO {
     public void setAll(String name, LocalDate dateOfBirth, String gender,
             long mobileNumber, String email, float salary,
             LocalDate dateOfJoining) {
-        this.id = id;
         this.name = name;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
