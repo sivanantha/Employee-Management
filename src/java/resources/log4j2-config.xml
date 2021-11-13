@@ -2,14 +2,17 @@
 <Configuration>
     <Appenders>
     
-        <RollingFile name="employee_management" FileName="logs/employee_management.log" filePattern="logs/$${date:yyyy-MM}/-%d{dd-MM}-%i.log">
+        <RollingFile name="employee_management" FileName="logs/employee_management.log"
+                     filePattern="logs/$${date:yyyy-MM}/%d{dd-MM-yyyy}-%i.log">
+                     
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{36} - %msg%n" 
                            header="\t\t\t\t\t\tEmployee Management System Logs\n\t\t\t\t\t\t===============================\n\n"/>
        
             <Policies>
-                <TimeBasedTriggeringPolicy interval="24"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
                 <SizeBasedTriggeringPolicy size="50MB"/>
             </Policies>
+            
         </RollingFile>
         
     </Appenders>
