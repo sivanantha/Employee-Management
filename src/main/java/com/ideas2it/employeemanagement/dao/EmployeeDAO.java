@@ -6,7 +6,6 @@ package com.ideas2it.employeemanagement.dao;
 import java.util.List;
 
 import com.ideas2it.employeemanagement.exceptions.EMSException;
-import com.ideas2it.employeemanagement.model.Address;
 import com.ideas2it.employeemanagement.model.Employee;
 
 /**
@@ -56,16 +55,6 @@ public interface EmployeeDAO {
      */
     int insertEmployee(Employee employee) throws EMSException;
     
-    /**
-     * Inserts the given list of addresses in the database.
-     *
-     * @param employee the employee whose address to be inserted as a         
-     *        Employee object. 
-     * @return true if created successfully, otherwise false.
-     * @throws EMSException if a database access error occurs.
-     */
-    boolean insertAddresses(Employee employee) throws EMSException;
-    
     /** 
      * Fetches the specified employee's record.
      *
@@ -92,15 +81,6 @@ public interface EmployeeDAO {
      */
     boolean updateEmployee(Employee employee) throws EMSException;
     
-    /**
-     * Updates specified employee's address.
-     * 
-     * @param address the address to be updated as a Address instance.
-     * @return true if updated successfully, otherwise false.
-     * @throws EMSException if a database access error occurs.
-     */
-    boolean updateAddress(Address address) throws EMSException;
-    
     /** 
      * Deletes specified employee.
      *
@@ -109,16 +89,7 @@ public interface EmployeeDAO {
      * @throws EMSException if a database access error occurs.
      */
     boolean deleteEmployee(int id) throws EMSException;
-    
-    /**
-     * Deletes specified address of an employee.
-     *
-     * @param addressId the id of the address to be deleted
-     * @return true if deleted successfully, otherwise false.
-     * @throws EMSException if a database access error occurs.
-     */
-     boolean deleteAddress(int addressId) throws EMSException;
-    
+       
     /**
      * Deletes all employees in the database.
      * 

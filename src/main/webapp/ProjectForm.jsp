@@ -5,6 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="css/style.css">
 <title>Employee Management</title>
 </head>
 <body>
@@ -19,32 +20,39 @@
 		</header>
 	</c:if>
 	<form action="${formAction}" method="post">
-		<fieldset>
+		<fieldset class="form-border">
+			<div class="form-container">
 			<input name="id" type="hidden" value="${project.id}" readonly>
-			<table cellpadding="5" cellspacing="5">
-				<tr>
-					<td><label for="name">Project Name</label></td>
-					<td><input name="name" id="name" type="text" required
+			
+				<div class="row">
+				<div class="col-25">
+					<label for="name">Project Name</label></div>
+				<div class="col-75">
+					<input name="name" id="name" type="text" required
 						value="${project.name}"
 						pattern="^[\s]*([a-zA-Z]{3,60})[\s]*$|^[\s]*([a-zA-Z]{3,30} [a-zA-Z]{2,30}){1,5}[\s]*$">
-					</td>
-				</tr>
-				<tr>
-					<td><label for="description"> Description</label></td>
-					<td><input name="description" id="description" type="text"
+				</div></div>
+				
+				<div class="row">
+				<div class="col-25">
+					<label for="description"> Description</label></div><div class="col-75">
+					<input name="description" id="description" type="text"
 						required pattern="^(.{0,145}([A-Za-z] ?){10}.{0,145})$"
-						value="${project.description}"></td>
-				</tr>
-				<tr>
-					<td><label for="manager">Manager Name</label></td>
-					<td><input name="manager" id="manager" type="text"
+						value="${project.description}">
+				</div></div>
+				<div class="row">
+				<div class="col-25">
+					<label for="manager">Manager Name</label></div><div class="col-75">
+					<input name="manager" id="manager" type="text"
 						pattern="^(\s*[a-zA-Z]{3,20}\s*)$|^((\s*[a-zA-Z]{3,20}) ([a-zA-Z]{2,20})\s*)$|^((\s*[a-zA-Z]{3,20}) ([a-zA-Z]{2,20}) ([a-zA-Z]){2,20}\s*)$"
-						required value="${project.manager}"></td>
-				</tr>
+						required value="${project.manager}">
+				</div></div>
 
-				<tr>
-					<td>Status</td>
-					<td><c:choose>
+				<div class="row">
+				<div class="col-25">
+					<label>Status</label></div>
+				<div class="col-75, radio-btn">
+					<c:choose>
 							<c:when test='${project.status == "DEVELOPMENT"}'>
 								<input name="status" id="development" type="radio" value="D"
 									required checked>
@@ -88,10 +96,10 @@
 								<input name="status" id="live" type="radio" value="L" required>
 								<label for="live">Live</label>
 							</c:otherwise>
-						</c:choose></td>
-				</tr>
-			</table>
-			<br> <input type="submit" id="submit" value="Submit">
+						</c:choose>
+				</div></div>
+			<input type="submit" id="submit" value="Submit">
+			</div>
 		</fieldset>
 	</form>
 	<br>

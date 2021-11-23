@@ -115,8 +115,7 @@ public class EmployeeController extends HttpServlet {
             request.setAttribute("exception", exception);
             request.getRequestDispatcher("Error.jsp").forward(request,
                     response);
-        } catch (NullPointerException | NumberFormatException
-                | DateTimeParseException exception) {
+        } catch (NullPointerException | DateTimeParseException exception) {
             request.setAttribute("errorMessage",
                     "Cannot Process The Request Due To Invalid Data!");
             request.getRequestDispatcher("Error.jsp").forward(request,
@@ -302,9 +301,6 @@ public class EmployeeController extends HttpServlet {
     private List<AddressDTO> createAddressList(HttpServletRequest request,
             HttpServletResponse response) throws EMSException {
         List<AddressDTO> addresses = new ArrayList<>();
-        String addressIdString = request.getParameter("addressId");
-        int addressId = (null == addressIdString) ? 0
-                : Integer.parseInt(addressIdString.strip());
         String doorNumber = request.getParameter("doorNumber").strip();
         String street = request.getParameter("street").strip();
         String locality = request.getParameter("locality").strip();
@@ -313,8 +309,8 @@ public class EmployeeController extends HttpServlet {
         String country = request.getParameter("country").strip();
         String pinCode = request.getParameter("pinCode").strip();
 
-        addresses.add(new AddressDTO(addressId, doorNumber, street, locality,
-                city, state, country, pinCode));
+        addresses.add(new AddressDTO(doorNumber, street, locality, city, state,
+                country, pinCode));
         return addresses;
     }
 
@@ -427,6 +423,39 @@ public class EmployeeController extends HttpServlet {
     }
 
     /**
+     * Updates the specified employees's Address with specified details received
+     * from the request.
+     *
+     * @param request  the HttpServletRequest object that contains the request
+     *                 the client made of the servlet.
+     * @param response the HttpServletResponse object that contains the response
+     *                 the servlet returns to the client.
+     * @param employee the employee whose address to be updated.
+     * @throws EMSException     if database access error occurs.
+     * @throws IOException      if an input or output error occurs while the
+     *                          servlet is handling the request.
+     * @throws ServletException if the request cannot be handled.
+     */
+    private void updateAddressList(HttpServletRequest request,
+            HttpServletResponse response, EmployeeDTO employee)
+            throws EMSException {
+        List<AddressDTO> addresses = employee.getAddresses();
+
+        if (addresses.isEmpty()) {
+            employee.setAddresses(createAddressList(request, response));
+            return;
+        }
+        AddressDTO address = addresses.get(0);
+        address.setAll(request.getParameter("doorNumber").strip(),
+                request.getParameter("street").strip(),
+                request.getParameter("locality").strip(),
+                request.getParameter("city").strip(),
+                request.getParameter("state").strip(),
+                request.getParameter("country").strip(),
+                request.getParameter("pinCode").strip());
+    }
+
+    /**
      * Updates the specified employee with the details received from the
      * request.
      *
@@ -452,17 +481,14 @@ public class EmployeeController extends HttpServlet {
                     response);
             return;
         }
-        employee.setName(validateName(request.getParameter("name")));
-        employee.setDateOfBirth(
-                validateDateOfBirth(request.getParameter("dateOfBirth")));
-        employee.setGender(validateGender(request.getParameter("gender")));
-        employee.setMobileNumber(
-                validateMobileNumber(request.getParameter("mobileNumber")));
-        employee.setEmail(validateEmail(request.getParameter("email")));
-        employee.setSalary(validateSalary(request.getParameter("salary")));
-        employee.setDateOfJoining(
+        employee.setAll(validateName(request.getParameter("name")),
+                validateDateOfBirth(request.getParameter("dateOfBirth")),
+                validateGender(request.getParameter("gender")),
+                validateMobileNumber(request.getParameter("mobileNumber")),
+                validateEmail(request.getParameter("email")),
+                validateSalary(request.getParameter("salary")),
                 validateDateOfJoining(request.getParameter("dateOfJoining")));
-        employee.setAddresses(createAddressList(request, response));
+        updateAddressList(request, response, employee);
 
         if (employeeService.updateEmployee(employee)) {
             request.setAttribute("redirectUrl", "viewAllEmployees");
@@ -541,10 +567,13 @@ public class EmployeeController extends HttpServlet {
         List<ProjectDTO> projects = new ArrayList<>(
                 (null == projectIds) ? 0 : projectIds.length);
 
-        for (String projectId : projectIds) {
-            project = new ProjectDTO();
-            project.setId(Integer.parseInt(projectId));
-            projects.add(project);
+        if (null != projectIds) {
+
+            for (String projectId : projectIds) {
+                project = new ProjectDTO();
+                project.setId(Integer.parseInt(projectId));
+                projects.add(project);
+            }
         }
         return projects;
     }

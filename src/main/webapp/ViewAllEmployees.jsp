@@ -6,10 +6,13 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="css/style.css">
 <title>Employee Management</title>
 </head>
 <body>
-	<h1>Manage Employees</h1>
+	<header>
+		<h1>Manage Employees</h1>
+	</header>
 	<a href="index.jsp"><button>
 			<b>Home Page</b>
 		</button></a>
@@ -21,68 +24,68 @@
 			<a href="deleteAllEmployees"><button>
 					<b>Delete All</b>
 				</button></a>
-			<br>
-			<br>
-			<table border="2" align="center" cellpadding="5" cellspacing="5"
-				bordercolor="green">
-				<tr>
-					<th>Employee ID</th>
-					<th>Name</th>
-					<th>Date Of Birth</th>
-					<th>Gender</th>
-					<th>Mobile Number</th>
-					<th>Email</th>
-					<th>Salary</th>
-					<th>Date Of Joining</th>
-					<th>Addresses</th>
-					<th>Projects</th>
-				</tr>
-				<c:forEach items="${employees}" var="employee">
-					<c:set var="dateOfBirth" scope="request"
-						value='${employee.dateOfBirth.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}'>
-					</c:set>
-					<c:set var="dateOfJoining" scope="request"
-						value='${employee.dateOfJoining.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}'>
-					</c:set>
+			<div class="table-container">
+				<table>
 					<tr>
-						<td>${employee.id}</td>
-						<td>${employee.name}</td>
-						<td>${dateOfBirth}</td>
-						<td>${employee.gender}
-						<td>${employee.mobileNumber}</td>
-						<td>${employee.email}</td>
-						<td>${employee.salary}</td>
-						<td>${dateOfJoining}</td>
-						<address>
-							<td><c:forEach items="${employee.addresses}" var="address">
+						<th>Employee ID</th>
+						<th>Name</th>
+						<th>Date Of Birth</th>
+						<th>Gender</th>
+						<th>Mobile Number</th>
+						<th>Email</th>
+						<th>Salary</th>
+						<th>Date Of Joining</th>
+						<th>Addresses</th>
+						<th>Projects</th>
+					</tr>
+					<c:forEach items="${employees}" var="employee">
+						<c:set var="dateOfBirth" scope="request"
+							value='${employee.dateOfBirth.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}'>
+						</c:set>
+						<c:set var="dateOfJoining" scope="request"
+							value='${employee.dateOfJoining.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))}'>
+						</c:set>
+						<tr>
+							<td>${employee.id}</td>
+							<td>${employee.name}</td>
+							<td>${dateOfBirth}</td>
+							<td>${employee.gender}
+							<td>${employee.mobileNumber}</td>
+							<td>${employee.email}</td>
+							<td>${employee.salary}</td>
+							<td>${dateOfJoining}</td>
+							<address>
+								<td><c:forEach items="${employee.addresses}" var="address">
 						${address.doorNumber},${address.street},<br>
 						${address.locality},${address.city},<br>
 						${address.state},${address.state},<br>
 						${address.pinCode}.
 					</c:forEach>
-						</address>
-						</td>
-						<td>
-							<ol>
-								<c:forEach items="${employee.projects}" var="project">
-									<li>${project.name}</li>
-								</c:forEach>
-							</ol>
-						</td>
-						<td><a href="updateEmployeeForm?id=${employee.id}"><button>
-									<b>Update</b>
-								</button></a><br> <br> <a href="deleteEmployee?id=${employee.id}"><button>
-									<b>Delete</b>
-								</button></a></td>
-						<td><a href="assignProjectsForm?id=${employee.id}"><button>
-									<b>Assign Projects</b>
-								</button></a> <br> <br> <a
-							href="unAssignProjectsForm?id=${employee.id}"><button>
-									<b>UnAssingn Projects</b>
-								</button></a></td>
-					</tr>
-				</c:forEach>
-			</table>
+							</address>
+							</td>
+							<td>
+								<ol>
+									<c:forEach items="${employee.projects}" var="project">
+										<li>${project.name}</li>
+									</c:forEach>
+								</ol>
+							</td>
+							<td><div class="dropdown">
+							<button class="dropdown-btn">Manage</button>
+								<div class="dropdown-content">
+						<a href="updateEmployeeForm?id=${employee.id}">
+										Update</a> <a href="deleteEmployee?id=${employee.id}">
+										Delete</a> <a href="assignProjectsForm?id=${employee.id}">
+										Assign Projects</a> 
+							<a href="unAssignProjectsForm?id=${employee.id}">
+										UnAssingn Projects</a>
+						</div></div>
+							</td>
+						</tr>
+						
+					</c:forEach>
+				</table>
+			</div>
 			<br>
 			<br>
 		</c:when>

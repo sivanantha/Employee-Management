@@ -14,8 +14,7 @@ import java.util.regex.Pattern;
 import com.ideas2it.employeemanagement.dao.EmployeeDAO;
 import com.ideas2it.employeemanagement.dao.impl.EmployeeDAOImpl;
 import com.ideas2it.employeemanagement.exceptions.EMSException;
-import com.ideas2it.employeemanagement.logger.LoggerFactory;
-import com.ideas2it.employeemanagement.model.AddressDTO;
+import com.ideas2it.employeemanagement.logger.LoggerUtil;
 import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
@@ -39,7 +38,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public boolean isEmployeeExist(int id) throws EMSException {
-        LoggerFactory.getLogger().info("Checking if the employee exist");
+        LoggerUtil.info("Checking if the employee exist");
         return (null == employeeDAO.getById(id)) ? false : true;
     }
     
@@ -148,7 +147,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public boolean isMobileNumberExist(long mobileNumber) throws EMSException {
-        LoggerFactory.getLogger().info("Checking if mobile number is unique");
+        LoggerUtil.info("Checking if mobile number is unique");
         return (null == employeeDAO.getByMobileNumber(mobileNumber)) ? false 
                                                                      : true;
     }
@@ -182,7 +181,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override 
     public boolean isEmailExist(String email) throws EMSException {
-        LoggerFactory.getLogger().info("Checking if the email is unique");
+        LoggerUtil.info("Checking if the email is unique");
         return (null == employeeDAO.getByEmail(email)) ? false : true;
     }
     
@@ -314,8 +313,7 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public boolean isEmployeesDatabaseEmpty() throws EMSException {
-        LoggerFactory.getLogger()
-                    .info("Checking if employee database is empty");
+        LoggerUtil.info("Checking if employee database is empty");
         return (0 == employeeDAO.getEmployeeCount());
     }
     
@@ -326,16 +324,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public int createEmployee (EmployeeDTO employeeDTO) throws EMSException {
         return employeeDAO.insertEmployee(Mapper.toEmployee(employeeDTO));
-    }
-    
-    /**
-     * {@inheritDoc}
-     * 
-     */
-    @Override
-    public boolean createAddresses(EmployeeDTO employeeDTO) throws 
-            EMSException {
-        return employeeDAO.insertAddresses(Mapper.toEmployee(employeeDTO));
     }
     
     /**
@@ -387,15 +375,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     
     /**
      * {@inheritDoc}
-     * 
-     */
-     @Override
-     public boolean updateAddress(AddressDTO addressDTO) throws EMSException {
-         return employeeDAO.updateAddress(Mapper.toAddress(addressDTO));
-    }
-    
-    /**
-     * {@inheritDoc}
      *
      */
     @Override
@@ -410,15 +389,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public boolean deleteEmployee(int id) throws EMSException {
          return employeeDAO.deleteEmployee(id);
-    }
-    
-    /**
-     * {@inheritDoc}
-     * 
-     */
-    @Override
-    public boolean deleteAddress(int addressId) throws EMSException {
-         return employeeDAO.deleteAddress(addressId);
     }
    
     /**

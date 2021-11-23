@@ -7,28 +7,38 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 
-/** 
- * This class contains utility method for create and get SessionFactory 
+import com.ideas2it.employeemanagement.exceptions.EMSException;
+import com.ideas2it.employeemanagement.logger.LoggerUtil;
+import com.ideas2it.employeemanagement.utils.Constants;
+
+/**
+ * This class contains utility method for create and get SessionFactory
  * instance.
  */
 public class HibernateUtil {
     private static SessionFactory sessionFactory = null;
-    
-    /** 
-     * Creates a SessionFactory instance. It creates only one instance
-     * per thread.
+
+    /**
+     * Creates a SessionFactory instance. It creates only one instance per
+     * thread.
      *
      * @return a SessionFactory instance.
-     * @throws HibernateException if a database access error occurs.
+     * @throws EMSException if a database access error occurs.
      */
-    public static SessionFactory getSessionFactory() throws HibernateException {
-         Configuration configuration;
-         
-         if (sessionFactory == null) {
-             configuration = new Configuration();
-             sessionFactory = configuration.configure(
-                    "/resources/hibernate.cfg.xml").buildSessionFactory(); 
-         }
-         return sessionFactory;
+    public static SessionFactory getSessionFactory() throws EMSException {
+        Configuration configuration;
+
+        try {
+            if (null == sessionFactory) {
+                configuration = new Configuration();
+                sessionFactory = configuration
+                        .configure("/resources/hibernate.cfg.xml")
+                        .buildSessionFactory();
+            }
+        } catch (HibernateException exception) {
+            LoggerUtil.fatal(Constants.ERROR_018, exception);
+            throw new EMSException(Constants.ERROR_018);
+        }
+        return sessionFactory;
     }
 }

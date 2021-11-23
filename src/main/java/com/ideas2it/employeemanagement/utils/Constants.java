@@ -31,6 +31,7 @@ public final class Constants {
     public static final String ERROR_015 = "015";
     public static final String ERROR_016 = "016";
     public static final String ERROR_017 = "017";
+    public static final String ERROR_018 = "018";
     public static final Map<String, String> errorCodes = getErrors();
     
     /**
@@ -58,6 +59,7 @@ public final class Constants {
         errors.put(ERROR_015, "Unable To Update Project");
         errors.put(ERROR_016, "Unable To Delete Project");
         errors.put(ERROR_017, "Unable To Delete All Projects");
+        errors.put(ERROR_018, "Unable To Get Session Factory");
         return errors;
     }
 }

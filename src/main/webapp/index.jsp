@@ -4,30 +4,29 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="css/style.css">
 <title>Employee Management</title>
 </head>
 <body>
-	<center>
-		<h1>Employee Management System</h1>
-	</center>
-	<table align="center">
-		<th><h3>Employees Menu</h3></th>
-		<th><pre>                   </pre></th>
-		<th><h3>Projects Menu</h3></th>
-		<tr>
-			<pre>                       </pre>
-		</tr>
-		<tr>
-			<td><a href="createEmployeeForm"><p>Create Employee</p></a></td>
-			<td><pre> </pre></td>
-			<td><a href="createProjectForm"><p>Create Project</p></a></td>
-		</tr>
-		<tr></tr>
-		<tr>
-			<td><a href="viewAllEmployees"><p>Manage Employees</p></a></td>
-			<td><br></td>
-			<td><a href="viewAllProjects"><p>Manage Projects</p></a></td>
-		</tr>
-	</table>
+	<div class="container">
+		<div class="title-container">
+			<header>
+				<h1>Employee Management System</h1>
+			</header>
+		</div>
+
+		<div class="menu">
+			<div class="employees-container">
+				<span>Employees</span> <a id="create-employee"
+					href="createEmployeeForm">Create Employee</a> <br> <a
+					id="view-employee" href="viewAllEmployees">Manage Employees</a>
+			</div>
+			<div class="projects-container">
+				<span>Projects</span> 
+				<a href="createProjectForm">CreateProject</a> 
+				<a href="viewAllProjects">Manage Projects</a>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

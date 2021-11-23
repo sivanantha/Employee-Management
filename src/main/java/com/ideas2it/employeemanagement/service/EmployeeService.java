@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.ideas2it.employeemanagement.exceptions.EMSException;
-import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
 
@@ -247,17 +246,7 @@ public interface EmployeeService {
      * @throws EMSException if a database access error occurs.
      */
     int createEmployee (EmployeeDTO employee) throws EMSException;
-    
-    /**
-     * Creates new addresses with specified details and stores in the 
-     * database.
-     *
-     * @param employeeDTO the EmployeeDTO instance with address details.
-     * @return true if addresses created successfully, otherwise false.
-     * @throws EMSException if a database access error occurs.
-     */
-    boolean createAddresses(EmployeeDTO employeeDTO) throws EMSException;
-    
+        
     /**
      * Retrieves the specified employee from the database.
      * 
@@ -283,16 +272,7 @@ public interface EmployeeService {
      * @throws EMSException if a database access error occurs.
      */
     boolean updateEmployee(EmployeeDTO employeeDTO) throws EMSException;
-    
-    /** 
-     * Updates employee's address details and stores in the database.
-     *
-     * @param addressDTO the addressDTO instance with address details.
-     * @return true if address updated successfully otherwise false.
-     * @throws EMSException if a database access error occurs.
-     */
-     boolean updateAddress(AddressDTO addressDTO) throws EMSException;
-     
+        
      /**
       * @see ProjectService#getAllProjects()
       *
@@ -307,15 +287,6 @@ public interface EmployeeService {
      * @throws EMSException if a database access error occurs.
      */
     boolean deleteEmployee(int id) throws EMSException;
-    
-    /**
-     * Deletes the specified address of an employee.
-     *
-     * @param addressId id of the address to be deleted.
-     * @return true if address deleted successfully else false.
-     * @throws EMSException if a database access error occurs.
-     */
-    boolean deleteAddress(int addressId) throws EMSException;
     
     /** 
      * Deletes all employees from the database. 

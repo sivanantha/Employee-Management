@@ -399,11 +399,13 @@ public class ProjectController extends HttpServlet {
         String[] employeeIds = request.getParameterValues("selectedEmployees");
         List<EmployeeDTO> employees = new ArrayList<>(
                 (null == employeeIds) ? 0 : employeeIds.length);
-
-        for (String employeeId : employeeIds) {
-            employee = new EmployeeDTO();
-            employee.setId(Integer.parseInt(employeeId));
-            employees.add(employee);
+       
+        if (null != employeeIds) {
+            for (String employeeId : employeeIds) {
+                employee = new EmployeeDTO();
+                employee.setId(Integer.parseInt(employeeId));
+                employees.add(employee);
+            }
         }
         return employees;
     }
