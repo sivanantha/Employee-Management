@@ -31,11 +31,11 @@
         <property name="connection.password">Test@123</property>
         
         <!-- mapping files  -->
-        <mapping resource="/resources/Employee.hbm.xml"/>
+        <mapping resource="Employee.hbm.xml"/>
         
-        <mapping resource="/resources/Address.hbm.xml"/>
+        <mapping resource="Address.hbm.xml"/>
         
-        <mapping resource="/resources/Project.hbm.xml"/>
+        <mapping resource="Project.hbm.xml"/>
         
     </session-factory>
 

@@ -25,11 +25,7 @@ public class LoggerUtil {
      * @return the logger instance.
      */
     public static Logger getLogger() {
-        File configuration = new File("resources/log4j2-config.xml");
-        LoggerContext loggerContext = (LoggerContext) LogManager
-                .getContext(false);
-        loggerContext.setConfigLocation(configuration.toURI());
-        return LogManager.getLogger();
+        return LogManager.getLogger(LoggerUtil.class);
     }
 
     /**

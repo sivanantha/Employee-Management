@@ -32,7 +32,7 @@ public class HibernateUtil {
             if (null == sessionFactory) {
                 configuration = new Configuration();
                 sessionFactory = configuration
-                        .configure("/resources/hibernate.cfg.xml")
+                        .configure("hibernate.cfg.xml")
                         .buildSessionFactory();
             }
         } catch (HibernateException exception) {
