@@ -3,9 +3,6 @@
  */
 package com.ideas2it.employeemanagement.logger;
 
-import java.io.File;
-
-import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
