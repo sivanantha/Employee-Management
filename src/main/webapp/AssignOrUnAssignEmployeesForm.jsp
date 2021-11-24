@@ -5,20 +5,20 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="css/style.css">
 <title>Employee Management</title>
 </head>
 <body>
 	<c:if test='${formAction.equals("assignEmployees")}'>
-		<center>
 			<h1>Assign Employees</h1>
-		</center>
 	</c:if>
 	<c:if test='${formAction.equals("unAssignEmployees")}'>
 		<h1>
-			<center>UnAssign Employees</center>
+			UnAssign Employees
 		</h1>
 	</c:if>
-	<table align="center" cellpadding="5" cellspacing="5">
+	<div class="table-container">
+	<table id="assign-unassign">
 		<c:choose>
 			<c:when test="${not empty employees}">
 				<form action="${formAction}" method="post">
@@ -69,6 +69,6 @@
 		</c:choose>
 		<td><a href="index.jsp"><button>Home Page</button></a></td>
 		</tr>
-	</table>
+	</table></div>
 </body>
 </html>

@@ -10,7 +10,7 @@
 </head>
 <body>
 	<div id="message">
-		<span>message${successMessage}</span>
+		<span>${successMessage}</span>
 	</div>
 </body>
 </html>

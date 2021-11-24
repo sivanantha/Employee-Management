@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import com.ideas2it.employeemanagement.dao.EmployeeDAO;
 import com.ideas2it.employeemanagement.dao.impl.EmployeeDAOImpl;
 import com.ideas2it.employeemanagement.exceptions.EMSException;
-import com.ideas2it.employeemanagement.logger.LoggerUtil;
+import com.ideas2it.employeemanagement.logger.EMSLogger;
 import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
@@ -23,25 +23,26 @@ import com.ideas2it.employeemanagement.utils.Mapper;
 import com.ideas2it.employeemanagement.utils.ValidationUtil;
 
 /**
- * The EmployeeServiceImpl class contains validations and implementations for 
+ * The EmployeeServiceImpl class contains validations and implementations for
  * create, update, retrieve, delete operations for employee management system.
  *
- * @author  Sivanantham
+ * @author Sivanantham
  * @version 1.7
  */
 public class EmployeeServiceImpl implements EmployeeService {
-   private EmployeeDAO employeeDAO = new EmployeeDAOImpl();
-    
+    private EmployeeDAO employeeDAO = new EmployeeDAOImpl();
+    private EMSLogger logger = new EMSLogger(EmployeeServiceImpl.class);
+
     /**
      * {@inheritDoc}
      * 
      */
     @Override
     public boolean isEmployeeExist(int id) throws EMSException {
-        LoggerUtil.info("Checking if the employee exist");
+        logger.info("Checking if the employee exist");
         return (null == employeeDAO.getById(id)) ? false : true;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -49,27 +50,28 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Integer validateId(String id) {
         Integer parsedId = null;
-        
+
         if (ValidationUtil.isValidId(id)) {
+
             try {
-                parsedId = Integer.parseInt(id.strip());          
+                parsedId = Integer.parseInt(id.strip());
             } catch (NumberFormatException exception) {
-                parsedId = null;     
+                parsedId = null;
             }
         }
         return parsedId;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      */
     @Override
     public String validateName(String name) {
-        return ValidationUtil.isValidName(name) ? name.strip().toLowerCase() 
-                                                : null;
+        return ValidationUtil.isValidName(name) ? name.strip().toLowerCase()
+                : null;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -77,33 +79,33 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public boolean isValidDateOfBirth(LocalDate dateOfBirth) {
         int age = dateOfBirth.until(LocalDate.now()).getYears();
-        
+
         return ((18 <= age) && (60 >= age));
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      */
     @Override
     public LocalDate validateDateOfBirth(String dateOfBirth) {
-         LocalDate parsedDateOfBirth = parseDate(dateOfBirth.strip());
+        LocalDate parsedDateOfBirth = parseDate(dateOfBirth.strip());
 
-         return ((null != parsedDateOfBirth) 
-                 && (isValidDateOfBirth(parsedDateOfBirth))) ? parsedDateOfBirth 
-                                                             : null;
+        return ((null != parsedDateOfBirth)
+                && (isValidDateOfBirth(parsedDateOfBirth))) ? parsedDateOfBirth
+                        : null;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      */
-    @Override 
+    @Override
     public boolean isValidGender(String gender) {
-        return ("male".equals(gender) || "female".equals(gender) 
+        return ("male".equals(gender) || "female".equals(gender)
                 || "others".equals(gender));
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -113,7 +115,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         gender = gender.strip().toLowerCase();
         return isValidGender(gender) ? gender : null;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -122,37 +124,37 @@ public class EmployeeServiceImpl implements EmployeeService {
     public boolean isValidMobileNumber(String mobileNumber) {
         return Pattern.matches("^(\\s*[6-9][0-9]{9}\\s*)$", mobileNumber);
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      */
     @Override
     public Long validateMobileNumber(String mobileNumber) {
-         Long parsedMobileNumber = null;
-         
-         if (isValidMobileNumber(mobileNumber)) {
-             try {
-                 parsedMobileNumber = Long.parseLong(mobileNumber.strip());
-             } catch (NumberFormatException exception) {
-                 parsedMobileNumber = null;
-             }
-         }
-         return parsedMobileNumber;
+        Long parsedMobileNumber = null;
+
+        if (isValidMobileNumber(mobileNumber)) {
+
+            try {
+                parsedMobileNumber = Long.parseLong(mobileNumber.strip());
+            } catch (NumberFormatException exception) {
+                parsedMobileNumber = null;
+            }
+        }
+        return parsedMobileNumber;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      */
     @Override
     public boolean isMobileNumberExist(long mobileNumber) throws EMSException {
-        LoggerUtil.info("Checking if mobile number is unique");
-        return (null == employeeDAO.getByMobileNumber(mobileNumber)) ? false 
-                                                                     : true;
+        logger.info("Checking if mobile number is unique");
+        return (null == employeeDAO.getByMobileNumber(mobileNumber)) ? false
+                : true;
     }
-    
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -162,29 +164,28 @@ public class EmployeeServiceImpl implements EmployeeService {
         return Pattern.matches(new StringBuilder().append("^\\s*(([a-z0-9]")
                 .append("[\\.]?[\\-]?[_]?([a-z0-9][\\.]?[\\-]?[_]?){0,50}")
                 .append("[a-z0-9]@[a-z0-9][a-z0-9_\\-]{0,30}[a-z0-9]([\\.]")
-                .append("[a-z]{2,30}){1,3})\\s*$)") 
-                .toString(), email);
+                .append("[a-z]{2,30}){1,3})\\s*$)").toString(), email);
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      */
     @Override
     public String validateEmail(String email) {
-         return isValidEmail(email) ? email.strip() : null;
+        return isValidEmail(email) ? email.strip() : null;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      */
-    @Override 
+    @Override
     public boolean isEmailExist(String email) throws EMSException {
-        LoggerUtil.info("Checking if the email is unique");
+        logger.info("Checking if the email is unique");
         return (null == employeeDAO.getByEmail(email)) ? false : true;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -192,27 +193,28 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public boolean isValidSalary(String salary) {
         return Pattern.matches("^\\s*([0-9]{1,20}(\\.[0-9]{1,2})?)\\s*$",
-                               salary);
+                salary);
     }
-    
-    /** 
+
+    /**
      * {@inheritDoc}
      * 
      */
     @Override
     public Float validateSalary(String salary) {
-         Float parsedSalary = null;
-         
-         if (isValidSalary(salary)) {
-             try {
-                 parsedSalary = Float.parseFloat(salary.strip());
-             } catch (NumberFormatException exception) {
-                 parsedSalary = null;
-             }
-         }
-         return parsedSalary;
+        Float parsedSalary = null;
+
+        if (isValidSalary(salary)) {
+
+            try {
+                parsedSalary = Float.parseFloat(salary.strip());
+            } catch (NumberFormatException exception) {
+                parsedSalary = null;
+            }
+        }
+        return parsedSalary;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -224,11 +226,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         try {
             parsedDate = LocalDate.parse(date, formatter);
         } catch (DateTimeParseException exception) {
-            parsedDate = null;        
+            parsedDate = null;
         }
         return parsedDate;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -236,11 +238,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public boolean isValidDateOfJoining(LocalDate dateOfJoining) {
         Period experience = calculateExperience(dateOfJoining);
-        
-        return ((43 > experience.getYears()) 
+
+        return ((43 > experience.getYears())
                 && (!dateOfJoining.isAfter(LocalDate.now())));
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -248,12 +250,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public LocalDate validateDateOfJoining(String dateOfJoining) {
         LocalDate parsedDateOfJoining = parseDate(dateOfJoining.strip());
-        
-        return ((null != parsedDateOfJoining) 
-                && (isValidDateOfJoining(parsedDateOfJoining))) 
-               ? parsedDateOfJoining : null;
+
+        return ((null != parsedDateOfJoining)
+                && (isValidDateOfJoining(parsedDateOfJoining)))
+                        ? parsedDateOfJoining
+                        : null;
     }
-    
+
     /**
      * Calculates experience of the employee from date of joining.
      *
@@ -263,7 +266,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private Period calculateExperience(LocalDate dateOfJoining) {
         return dateOfJoining.until(LocalDate.now());
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -271,33 +274,36 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public boolean isValidDoorNumber(String doorNumber) {
         return Pattern.matches("^[\\s]*([1-9][0-9]{0,4}([-][A-Z]|[A-Z])?[/]"
-                       + "[1-9][0-9]{0,4}[A-Z]?|[1-9][0-9]{0,4}([-][A-Z]|[A-Z])"
-                       + "?|([A-Z]|[A-Z][-])?[1-9][0-9]{0,4}|([A-Z]|[A-Z][-])"
-                       + "[1-9][0-9]{0,4}[/][A-Z]?[1-9][0-9]{0,4}|[1-9][0-9]"
-                       + "{0,4}([-][A-Z]|[A-Z])?[/][A-Z]?[1-9][0-9]{0,4})[\\s]*"
-                       + "$", doorNumber);
+                + "[1-9][0-9]{0,4}[A-Z]?|[1-9][0-9]{0,4}([-][A-Z]|[A-Z])"
+                + "?|([A-Z]|[A-Z][-])?[1-9][0-9]{0,4}|([A-Z]|[A-Z][-])"
+                + "[1-9][0-9]{0,4}[/][A-Z]?[1-9][0-9]{0,4}|[1-9][0-9]"
+                + "{0,4}([-][A-Z]|[A-Z])?[/][A-Z]?[1-9][0-9]{0,4})[\\s]*" + "$",
+                doorNumber);
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      */
     @Override
     public boolean isValidStreet(String street) {
-        return Pattern.matches("^[\\s]*(([1-9][0-9]{0,4})?([ ]?[A-Za-z][\\.]?|"
-                + "[A-Za-z][ ]?){4,50}([1-9][0-9]{0,4})?)[\\s]*$", street);
+        return Pattern.matches(
+                "^[\\s]*(([1-9][0-9]{0,4})?([ ]?[A-Za-z][\\.]?|"
+                        + "[A-Za-z][ ]?){4,50}([1-9][0-9]{0,4})?)[\\s]*$",
+                street);
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      */
     @Override
     public boolean isValidPlaceName(String name) {
-        return Pattern.matches("^[\\s]*(([a-zA-Z]{3,50}[ ]?|[ ][a-zA-Z]{2})"
-                               + "{1,2})[\\s]*$", name);
+        return Pattern.matches(
+                "^[\\s]*(([a-zA-Z]{3,50}[ ]?|[ ][a-zA-Z]{2})" + "{1,2})[\\s]*$",
+                name);
     }
-   
+
     /**
      * {@inheritDoc}
      * 
@@ -313,19 +319,19 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public boolean isEmployeesDatabaseEmpty() throws EMSException {
-        LoggerUtil.info("Checking if employee database is empty");
+        logger.info("Checking if employee database is empty");
         return (0 == employeeDAO.getEmployeeCount());
     }
-    
+
     /**
      * {@inheritDoc}
      * 
      */
     @Override
-    public int createEmployee (EmployeeDTO employeeDTO) throws EMSException {
+    public int createEmployee(EmployeeDTO employeeDTO) throws EMSException {
         return employeeDAO.insertEmployee(Mapper.toEmployee(employeeDTO));
     }
-    
+
     /**
      * Maps list of Employee instances to EmployeeDTO instances.
      *
@@ -334,13 +340,13 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     private List<EmployeeDTO> toEmployeeDTO(List<Employee> employees) {
         List<EmployeeDTO> employeesDTO = new ArrayList<>(employees.size());
-        
+
         for (Employee employee : employees) {
             employeesDTO.add(Mapper.toEmployeeDTO(employee));
         }
         return employeesDTO;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -348,10 +354,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDTO getEmployee(int id) throws EMSException {
         Employee employee = employeeDAO.getById(id);
-        
+
         return (null == employee) ? null : Mapper.toEmployeeDTO(employee);
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -359,20 +365,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<EmployeeDTO> getAllEmployees() throws EMSException {
         List<Employee> employees = employeeDAO.getAllEmployees();
-        
+
         return toEmployeeDTO(employees);
     }
-   
+
     /**
      * {@inheritDoc}
      * 
      */
-     @Override
-     public boolean updateEmployee(EmployeeDTO employeeDTO) throws 
-            EMSException {
-         return employeeDAO.updateEmployee(Mapper.toEmployee(employeeDTO));
+    @Override
+    public boolean updateEmployee(EmployeeDTO employeeDTO) throws EMSException {
+        return employeeDAO.updateEmployee(Mapper.toEmployee(employeeDTO));
     }
-    
+
     /**
      * {@inheritDoc}
      *
@@ -381,22 +386,22 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<ProjectDTO> getAllProjects() throws EMSException {
         return new ProjectServiceImpl().getAllProjects();
     }
-            
+
     /**
      * {@inheritDoc}
      * 
      */
     @Override
     public boolean deleteEmployee(int id) throws EMSException {
-         return employeeDAO.deleteEmployee(id);
+        return employeeDAO.deleteEmployee(id);
     }
-   
+
     /**
      * {@inheritDoc}
      * 
      */
     @Override
     public boolean deleteAllEmployees() throws EMSException {
-         return employeeDAO.deleteAllEmployees();  
+        return employeeDAO.deleteAllEmployees();
     }
 }

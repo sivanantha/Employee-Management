@@ -5,25 +5,24 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="css/style.css">
 <title>Employee Management</title>
 </head>
 <body>
 	<h1>Manage Projects</h1>
 	<a href="index.jsp"><button>
-			<b>Home Page</b>
+			Home Page
 		</button></a>
 	<a href="viewAllEmployees"><button>
-			<b>View All Employees</b>
+			Manage Employees
 		</button></a>
 	<c:choose>
 		<c:when test="${!projects.isEmpty()}">
 			<a href="deleteAllProjects"><button>
-					<b>Delete All</b>
+					Delete All
 				</button></a>
-			<br>
-			<br>
-			<table align="center" border="2" cellpadding="5" cellspacing="5"
-				bordercolor="green">
+			<div class="table-container">
+			<table>
 				<tr>
 					<th>Project ID</th>
 					<th>Project Name</th>
@@ -52,22 +51,23 @@
 							</table>
 						</td>
 
-						<td><a href="updateProjectForm?id=${project.id}"><button>
-									<b>Update</b>
-								</button></a><br> <br> <a href="deleteProject?id=${project.id}"><button>
-									<b>Delete</b>
-								</button></a></td>
-						<td><a href="assignEmployeesForm?id=${project.id}"><button>
-									<b>Assign Employees</b>
-								</button></a> <br> <br> <a
-							href="unAssignEmployeesForm?id=${project.id}"><button>
-									<b>UnAssingn Employees</b>
-								</button></a></td>
+						<td><div class="dropdown">
+						<button class="dropdown-btn">Manage</button>
+								<div class="dropdown-content">
+						<a href="updateProjectForm?id=${project.id}">
+									Update
+								</a><a href="deleteProject?id=${project.id}">
+									Delete
+								</a>
+						 <a href="assignEmployeesForm?id=${project.id}">
+									Assign Employees
+								</a>  
+								<a href="unAssignEmployeesForm?id=${project.id}">
+									UnAssingn Employees
+								</a></div></div>
 					</tr>
 				</c:forEach>
-			</table>
-			<br>
-			<br>
+			</table></div>
 		</c:when>
 		<c:otherwise>
 			<h3>No Projects Found!</h3>

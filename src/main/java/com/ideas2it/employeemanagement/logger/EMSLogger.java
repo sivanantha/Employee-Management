@@ -7,13 +7,32 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * This class contains logger utility methods.
+ * This class contains methods for logging.
  *
  * @author Sivanantham
  * @version 1.0
  */
-public class LoggerUtil {
-    private static Logger logger = getLogger();
+public class EMSLogger {
+    public Logger logger;
+
+    /**
+     * Creates a logger using the fully qualified name of this Class..
+     */
+    public EMSLogger() {
+        logger = LogManager.getLogger();
+        logger.info("Logger Started!");
+    }
+
+    /**
+     * Creates a Logger using the fully qualified name of the specified Class as
+     * the Logger name.
+     * 
+     * @param className The Class whose name should be used as the Logger name.
+     */
+    public EMSLogger(Class<?> className) {
+        logger = LogManager.getLogger(className);
+        logger.info("Logger Started!");
+    }
 
     /**
      * Gets the logger instance if already instantiated, otherwise configures
@@ -21,8 +40,8 @@ public class LoggerUtil {
      *
      * @return the logger instance.
      */
-    public static Logger getLogger() {
-        return LogManager.getLogger(LoggerUtil.class);
+    public Logger getLogger() {
+        return logger;
     }
 
     /**
@@ -30,7 +49,7 @@ public class LoggerUtil {
      * 
      * @param message the message to be logged.
      */
-    public static void debug(String message) {
+    public void debug(String message) {
         logger.info(message);
     }
 
@@ -39,7 +58,7 @@ public class LoggerUtil {
      * 
      * @param message the message to be logged.
      */
-    public static void info(String message) {
+    public void info(String message) {
         logger.info(message);
     }
 
@@ -48,7 +67,7 @@ public class LoggerUtil {
      * 
      * @param message the message to be logged.
      */
-    public static void warn(String message) {
+    public void warn(String message) {
         logger.warn(message);
     }
 
@@ -57,7 +76,7 @@ public class LoggerUtil {
      * 
      * @param message the message to be logged.
      */
-    public static void error(String message) {
+    public void error(String message) {
         logger.error(message);
     }
 
@@ -67,7 +86,7 @@ public class LoggerUtil {
      * @param message   the message to be logged.
      * @param throwable the Throwable object to be logged.
      */
-    public static void error(String message, Throwable throwable) {
+    public void error(String message, Throwable throwable) {
         logger.error(throwable);
     }
 
@@ -76,7 +95,7 @@ public class LoggerUtil {
      * 
      * @param message the message to be logged.
      */
-    public static void fatal(String message) {
+    public void fatal(String message) {
         logger.fatal(message);
     }
 
@@ -86,7 +105,7 @@ public class LoggerUtil {
      * @param message   the message to be logged.
      * @param throwable the the Throwable object to be logged.
      */
-    public static void fatal(String message, Throwable throwable) {
+    public void fatal(String message, Throwable throwable) {
         logger.fatal(message, throwable);
     }
 }

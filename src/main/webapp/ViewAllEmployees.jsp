@@ -14,15 +14,15 @@
 		<h1>Manage Employees</h1>
 	</header>
 	<a href="index.jsp"><button>
-			<b>Home Page</b>
+			Home Page
 		</button></a>
 	<a href="viewAllProjects"><button>
-			<b>View All Projects</b>
+			Manage Projects
 		</button></a>
 	<c:choose>
 		<c:when test="${!employees.isEmpty()}">
 			<a href="deleteAllEmployees"><button>
-					<b>Delete All</b>
+					Delete All
 				</button></a>
 			<div class="table-container">
 				<table>
@@ -54,15 +54,17 @@
 							<td>${employee.email}</td>
 							<td>${employee.salary}</td>
 							<td>${dateOfJoining}</td>
-							<address>
+							
 								<td><c:forEach items="${employee.addresses}" var="address">
+								<address>
 						${address.doorNumber},${address.street},<br>
 						${address.locality},${address.city},<br>
 						${address.state},${address.state},<br>
 						${address.pinCode}.
-					</c:forEach>
-							</address>
-							</td>
+						</address><br><br>
+					</c:forEach></td>
+							
+							
 							<td>
 								<ol>
 									<c:forEach items="${employee.projects}" var="project">

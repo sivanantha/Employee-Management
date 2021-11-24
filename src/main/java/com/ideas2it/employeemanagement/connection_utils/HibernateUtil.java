@@ -8,7 +8,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 
 import com.ideas2it.employeemanagement.exceptions.EMSException;
-import com.ideas2it.employeemanagement.logger.LoggerUtil;
+import com.ideas2it.employeemanagement.logger.EMSLogger;
 import com.ideas2it.employeemanagement.utils.Constants;
 
 /**
@@ -17,6 +17,7 @@ import com.ideas2it.employeemanagement.utils.Constants;
  */
 public class HibernateUtil {
     private static SessionFactory sessionFactory = null;
+    private static EMSLogger logger = new EMSLogger(HibernateUtil.class);
 
     /**
      * Creates a SessionFactory instance. It creates only one instance per
@@ -34,9 +35,10 @@ public class HibernateUtil {
                 sessionFactory = configuration
                         .configure("hibernate.cfg.xml")
                         .buildSessionFactory();
+                logger.info("Hibernate Connection Established!");
             }
         } catch (HibernateException exception) {
-            LoggerUtil.fatal(Constants.ERROR_018, exception);
+            logger.fatal(Constants.ERROR_018, exception);
             throw new EMSException(Constants.ERROR_018);
         }
         return sessionFactory;

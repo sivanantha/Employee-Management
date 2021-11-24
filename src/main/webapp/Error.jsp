@@ -5,32 +5,27 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="css/style.css">
 <title>Employee Management</title>
 </head>
 <body>
 	<c:choose>
 		<c:when test="${null != exception}">
-			<center>
 				<img src="images/oops.gif" align="middle">
-			</center>
-			<center>
-				<h4>ERROR : ${exception.getMessage()}</h4>
-			</center>
+			<div id="message">
+				<span>ERROR : ${exception.getMessage()}</span>
+			</div>
 		</c:when>
 
 		<c:when test="${null != errorMessage }">
-			<center>
 				<img src="images/oops.gif" align="middle">
-			</center>
-			<center>
-				<h4>ERROR : ${errorMessage}</h4>
-			</center>
+			<div id="message">
+				<span>ERROR : ${errorMessage}</span>
+			</div>
 		</c:when>
 
 		<c:otherwise>
-			<center>
 				<img src="images/404.gif">
-			</center>
 		</c:otherwise>
 	</c:choose>
 	<a href="index.jsp"><button>

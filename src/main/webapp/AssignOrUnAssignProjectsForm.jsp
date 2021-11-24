@@ -5,26 +5,25 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="css/style.css">
 <title>Employee Management</title>
 </head>
 <body>
 	<c:if test='${formAction.equals("assignProjects")}'>
-		<center>
 			<h1>Assign Projects</h1>
-		</center>
 	</c:if>
 	<c:if test='${formAction.equals("unAssignProjects")}'>
 		<h1>
-			<center>UnAssign Projects</center>
+			UnAssign Projects
 		</h1>
 	</c:if>
-	<table align="center" cellpadding="5" cellspacing="5">
+	<div class="table-container">
+	<table id="assign-unassign">
 		<c:choose>
 			<c:when test="${!projects.isEmpty()}">
 				<form action="${formAction}" method="post">
 					<fieldset>
-						<th></th>
-						<th>Projects</th>
+						<th colspan="2">Projects</th>
 						<c:forEach items="${projects}" var="project">
 							<tr>
 								<td><input name="selectedProjects" id="${project.id}"
@@ -67,6 +66,6 @@
 		</c:choose>
 		<td><a href="index.jsp"><button>Home Page</button></a></td>
 		</tr>
-	</table>
+	</table></div>
 </body>
 </html>

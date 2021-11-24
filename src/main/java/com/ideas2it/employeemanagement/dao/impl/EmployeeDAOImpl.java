@@ -20,7 +20,7 @@ import org.hibernate.Transaction;
 import com.ideas2it.employeemanagement.connection_utils.HibernateUtil;
 import com.ideas2it.employeemanagement.dao.EmployeeDAO;
 import com.ideas2it.employeemanagement.exceptions.EMSException;
-import com.ideas2it.employeemanagement.logger.LoggerUtil;
+import com.ideas2it.employeemanagement.logger.EMSLogger;
 import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.employeemanagement.utils.Constants;
 
@@ -33,6 +33,7 @@ import com.ideas2it.employeemanagement.utils.Constants;
  * @version 1.4
  */
 public class EmployeeDAOImpl implements EmployeeDAO {
+    private EMSLogger logger = new EMSLogger(EmployeeDAOImpl.class);
 
     /**
      * {@inheritDoc}
@@ -51,10 +52,10 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             query.select(criteria.count(query.from(Employee.class)));
             count = session.createQuery(query).getSingleResult();
         } catch (HibernateException exception) {
-            LoggerUtil.error("Employee count failed!", exception);
+            logger.error("Employee count failed!", exception);
             throw new EMSException(Constants.ERROR_006);
         }
-        LoggerUtil.info("Employees count executed successfully!");
+        logger.info("Employees count executed successfully!");
         return count;
     }
 
@@ -73,10 +74,10 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             employeeId = (int) session.save(employee);
             transaction.commit();
         } catch (HibernateException exception) {
-            LoggerUtil.error("Employee insertion failed!", exception);
+            logger.error("Employee insertion failed!", exception);
             throw new EMSException(Constants.ERROR_003);
         }
-        LoggerUtil.info("Employee inserted successfully!");
+        logger.info("Employee inserted successfully!");
         return employeeId;
     }
 
@@ -116,10 +117,10 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             employee = session.createQuery(firstQuery).uniqueResult();
             session.createQuery(secondQuery).uniqueResult();
         } catch (HibernateException exception) {
-            LoggerUtil.error("Retrieving employee by id failed!", exception);
+            logger.error("Retrieving employee by id failed!", exception);
             throw new EMSException(Constants.ERROR_005);
         }
-        LoggerUtil.info("Employee retrieved successfully!");
+        logger.info("Employee retrieved successfully!");
         return employee;
     }
 
@@ -143,11 +144,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
                     criteria.equal(root.get("mobileNumber"), mobileNumber));
             employee = session.createQuery(query).uniqueResult();
         } catch (HibernateException exception) {
-            LoggerUtil.error("Retrieving employee by mobile "
-                    + "number failed!", exception);
+            logger.error("Retrieving employee by mobile " + "number failed!",
+                    exception);
             throw new EMSException(Constants.ERROR_001);
         }
-        LoggerUtil.info("Employee retrieved successfully!");
+        logger.info("Employee retrieved successfully!");
         return employee;
     }
 
@@ -170,10 +171,10 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             query.select(root).where(criteria.equal(root.get("email"), email));
             employee = session.createQuery(query).uniqueResult();
         } catch (HibernateException exception) {
-            LoggerUtil.error("Retrieve employee by email failed!", exception);
+            logger.error("Retrieve employee by email failed!", exception);
             throw new EMSException(Constants.ERROR_002);
         }
-        LoggerUtil.info("Employee retrieved successfully!");
+        logger.info("Employee retrieved successfully!");
         return employee;
     }
 
@@ -208,10 +209,10 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             employees = firstQuery.getResultList();
             employees = secondQuery.getResultList();
         } catch (HibernateException exception) {
-            LoggerUtil.error("Retrieving all employees failed!", exception);
+            logger.error("Retrieving all employees failed!", exception);
             throw new EMSException(Constants.ERROR_006);
         }
-        LoggerUtil.info("All employees retrieved successfully!");
+        logger.info("All employees retrieved successfully!");
         return employees;
     }
 
@@ -231,10 +232,10 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             transaction.commit();
             isUpdated = true;
         } catch (HibernateException exception) {
-            LoggerUtil.error("Employee update failed!", exception);
+            logger.error("Employee update failed!", exception);
             throw new EMSException(Constants.ERROR_007);
         }
-        LoggerUtil.info("Employee updated successfully!");
+        logger.info("Employee updated successfully!");
         return isUpdated;
     }
 
@@ -262,13 +263,13 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             transaction.commit();
             isDeleted = true;
         } catch (HibernateException exception) {
-            LoggerUtil.error("Employee deletion failed!",  exception);
+            logger.error("Employee deletion failed!", exception);
             throw new EMSException(Constants.ERROR_009);
         }
-        LoggerUtil.info("Employee deleted successfully!");
+        logger.info("Employee deleted successfully!");
         return isDeleted;
     }
-    
+
     /**
      * {@inheritDoc}
      * 
@@ -287,10 +288,10 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             transaction.commit();
             isDeleted = true;
         } catch (HibernateException exception) {
-            LoggerUtil.error("Deletion of all employees failed!",  exception);
+            logger.error("Deletion of all employees failed!", exception);
             throw new EMSException(Constants.ERROR_011);
         }
-        LoggerUtil.info("All employees deleted successfully!");
+        logger.info("All employees deleted successfully!");
         return isDeleted;
     }
 }

@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import com.ideas2it.employeemanagement.exceptions.EMSException;
-import com.ideas2it.employeemanagement.logger.LoggerUtil;
+import com.ideas2it.employeemanagement.logger.EMSLogger;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
 import com.ideas2it.employeemanagement.model.Status;
@@ -31,6 +31,7 @@ import com.ideas2it.employeemanagement.service.impl.ProjectServiceImpl;
  */
 public class ProjectController extends HttpServlet {
     private static final long serialVersionUID = 4671134463547248220L;
+    private EMSLogger logger = new EMSLogger(ProjectController.class);
     private ProjectService projectService = new ProjectServiceImpl();
 
     /**
@@ -45,46 +46,48 @@ public class ProjectController extends HttpServlet {
 
             switch (path) {
                 case "/createProjectForm":
-                    LoggerUtil.info("Request For Create Project Form Is Recieved!");
+                    logger.info("Request For Create Project Form Is Recieved!");
                     sendProjectCreateForm(request, response);
                     break;
                 case "/updateProjectForm":
-                    LoggerUtil.info("Request For Update Project Form Is Recieved!");
+                    logger.info("Request For Update Project Form Is Recieved!");
                     sendProjectUpdateForm(request, response);
                     break;
                 case "/viewAllProjects":
-                    LoggerUtil.info("Request For ViewProjects Is Recieved!");
+                    logger.info("Request For ViewProjects Is Recieved!");
                     getAllProjects(request, response);
                     break;
                 case "/assignEmployeesForm":
-                    LoggerUtil.info("Request For Assign Employees Form Is Recieved!");
+                    logger.info(
+                            "Request For Assign Employees Form Is Recieved!");
                     sendAssignEmployeesForm(request, response);
                     break;
                 case "/unAssignEmployeesForm":
-                    LoggerUtil.info("Request For UnAssign Employees Form Is Recieved!");
+                    logger.info(
+                            "Request For UnAssign Employees Form Is Recieved!");
                     sendUnAssignEmployeesForm(request, response);
                     break;
                 case "/deleteProject":
-                    LoggerUtil.info("Request For Delete Project Is Recieved!");
+                    logger.info("Request For Delete Project Is Recieved!");
                     deleteProject(request, response);
                     break;
                 case "/deleteAllProjects":
-                    LoggerUtil.info("Request For Delete All Projects Is Recieved!");
+                    logger.info("Request For Delete All Projects Is Recieved!");
                     deleteAllProjects(request, response);
                     break;
                 default:
-                    LoggerUtil.info("Invalid Request! Redirecting To Error Page");
+                    logger.info("Invalid Request! Redirecting To Error Page");
                     request.getRequestDispatcher("Error.jsp").forward(request,
                             response);
                     break;
             }
         } catch (EMSException exception) {
-            LoggerUtil.error("Error Occured!", exception);
+            logger.error("Error Occured!", exception);
             request.setAttribute("errorMessage", "Oops! An Error Occured!");
             request.getRequestDispatcher("Error.jsp").forward(request,
                     response);
         } catch (NullPointerException | NumberFormatException exception) {
-            LoggerUtil.error("Error Occured!", exception);
+            logger.error("Error Occured!", exception);
             request.setAttribute("errorMessage",
                     "Cannot Process The Request Due To Invalid Data!");
             request.getRequestDispatcher("Error.jsp").forward(request,
@@ -104,34 +107,34 @@ public class ProjectController extends HttpServlet {
 
             switch (path) {
                 case "/createProject":
-                    LoggerUtil.info("Request For Create Project Is Recieved!");
+                    logger.info("Request For Create Project Is Recieved!");
                     createProject(request, response);
                     break;
                 case "/updateProject":
-                    LoggerUtil.info("Request For Update Project Is Recieved!");
+                    logger.info("Request For Update Project Is Recieved!");
                     updateProject(request, response);
                     break;
                 case "/assignEmployees":
-                    LoggerUtil.info("Request For Assing Employess Is Recieved!");
+                    logger.info("Request For Assing Employess Is Recieved!");
                     assignEmployees(request, response);
                     break;
                 case "/unAssignEmployees":
-                    LoggerUtil.info("Request For UnAssign Employees Is Recieved!");
+                    logger.info("Request For UnAssign Employees Is Recieved!");
                     unAssignEmployees(request, response);
                     break;
                 default:
-                    LoggerUtil.info("Invalid Request! Redirecting To Error Page");
+                    logger.info("Invalid Request! Redirecting To Error Page");
                     request.getRequestDispatcher("Error.jsp").forward(request,
                             response);
                     break;
             }
         } catch (EMSException exception) {
-            LoggerUtil.error("Error Occured!", exception);
+            logger.error("Error Occured!", exception);
             request.setAttribute("errorMessage", "Oops! An Error Occured!");
             request.getRequestDispatcher("Error.jsp").forward(request,
                     response);
         } catch (NullPointerException | NumberFormatException exception) {
-            LoggerUtil.error("Error Occured!", exception);
+            logger.error("Error Occured!", exception);
             request.setAttribute("errorMessage",
                     "Cannot Process The Request Due To Invalid Data!");
             request.getRequestDispatcher("Error.jsp").forward(request,
@@ -146,7 +149,7 @@ public class ProjectController extends HttpServlet {
      * @return the id if it is valid, otherwise null.
      */
     public Integer validateId(String id) {
-        LoggerUtil.debug("Validating Project Id . . .");
+        logger.debug("Validating Project Id . . .");
         return projectService.validateId(id);
     }
 
@@ -157,7 +160,7 @@ public class ProjectController extends HttpServlet {
      * @return the name if it is valid, otherwise null.
      */
     public String validateName(String name) {
-        LoggerUtil.debug("Validating Project Name . . .");
+        logger.debug("Validating Project Name . . .");
         return projectService.validateName(name);
     }
 
@@ -168,7 +171,7 @@ public class ProjectController extends HttpServlet {
      * @return the description if it is valid, otherwise null.
      */
     public String validateDescription(String description) {
-        LoggerUtil.debug("Validating Project Description . . .");
+        logger.debug("Validating Project Description . . .");
         return projectService.validateDescription(description);
     }
 
@@ -179,7 +182,7 @@ public class ProjectController extends HttpServlet {
      * @return the project manager name if it is valid, otherwise null.
      */
     public String validateManager(String manager) {
-        LoggerUtil.debug("Validating Project Manager Name . . .");
+        logger.debug("Validating Project Manager Name . . .");
         return projectService.validateManager(manager);
     }
 
@@ -190,7 +193,7 @@ public class ProjectController extends HttpServlet {
      * @return the project status if it is valid, otherwise null.
      */
     public Status validateStatus(String status) {
-        LoggerUtil.debug("Validating Project Status . . .");
+        logger.debug("Validating Project Status . . .");
         return projectService.validateStatus(status);
     }
 
@@ -258,7 +261,7 @@ public class ProjectController extends HttpServlet {
      * @throws EMSException if a database access error occurs.
      */
     public ProjectDTO getProject(int id) throws EMSException {
-        LoggerUtil.debug("Retrieving Specified Project . . .");
+        logger.debug("Retrieving Specified Project . . .");
         return projectService.getProject(id);
     }
 
@@ -367,7 +370,7 @@ public class ProjectController extends HttpServlet {
      * @throws EMSException if a database access error occurs.
      */
     public List<EmployeeDTO> getAllEmployees() throws EMSException {
-        LoggerUtil.debug("Retrieving All Employees . . .");
+        logger.debug("Retrieving All Employees . . .");
         return projectService.getAllEmployees();
     }
 
@@ -424,8 +427,9 @@ public class ProjectController extends HttpServlet {
         String[] employeeIds = request.getParameterValues("selectedEmployees");
         List<EmployeeDTO> employees = new ArrayList<>(
                 (null == employeeIds) ? 0 : employeeIds.length);
-       
+
         if (null != employeeIds) {
+
             for (String employeeId : employeeIds) {
                 employee = new EmployeeDTO();
                 employee.setId(Integer.parseInt(employeeId));

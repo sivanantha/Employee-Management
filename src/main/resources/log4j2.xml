@@ -3,9 +3,9 @@
     <Appenders>
     
         <RollingFile name="employee_management" FileName="logs/employee_management.log"
-                     filePattern="logs/$${date:yyyy-MM}/%d{dd-MM-yyyy}-%i.log">
+                     filePattern="logs/$${date:yyyy-MM}/%d{dd-MM-yyyy}-%i.zip">
                      
-            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %logger{} - %msg%n" 
+            <PatternLayout pattern="%date{dd-MM-yyyy HH:mm:ss} [%t] %-5level %logger - %msg%n" 
                            header="\t\t\t\t\t\tEmployee Management System Logs\n\t\t\t\t\t\t===============================\n\n"/>
        
             <Policies>
