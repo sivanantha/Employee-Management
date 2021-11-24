@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import com.ideas2it.employeemanagement.exceptions.EMSException;
+import com.ideas2it.employeemanagement.logger.LoggerUtil;
 import com.ideas2it.employeemanagement.model.AddressDTO;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
@@ -46,36 +47,46 @@ public class EmployeeController extends HttpServlet {
 
             switch (path) {
                 case "/createEmployeeForm":
+                    LoggerUtil.info("Request For Create Employee Form Is Recieved!");
                     sendEmployeeCreateForm(request, response);
                     break;
                 case "/updateEmployeeForm":
+                    LoggerUtil.info("Request For Update Employee Form Is Recieved!");
                     sendEmployeeUpdateForm(request, response);
                     break;
                 case "/viewAllEmployees":
+                    LoggerUtil.info("Request For View Employees Is Recieved!");
                     getAllEmployees(request, response);
                     break;
                 case "/assignProjectsForm":
+                    LoggerUtil.info("Request For Assign Projects Form Is Recieved!");
                     sendAssignProjectsForm(request, response);
                     break;
                 case "/unAssignProjectsForm":
+                    LoggerUtil.info("Request For UnAssign Employee Form Is Recieved!");
                     sendUnAssignProjectsForm(request, response);
                     break;
                 case "/deleteEmployee":
+                    LoggerUtil.info("Request For Delete Employee Is Recieved!");
                     deleteEmployee(request, response);
                     break;
                 case "/deleteAllEmployees":
+                    LoggerUtil.info("Request For Delete All Employees Is Recieved!");
                     deleteAllEmployees(request, response);
                     break;
                 default:
+                    LoggerUtil.info("Invalid Request! Redirecting To Error Page");
                     request.getRequestDispatcher("Error.jsp").forward(request,
                             response);
                     break;
             }
         } catch (EMSException exception) {
-            request.setAttribute("exception", exception);
+            LoggerUtil.error("Error Occured!", exception);
+            request.setAttribute("errorMessage", "Oops! An Error Occured!");
             request.getRequestDispatcher("Error.jsp").forward(request,
                     response);
         } catch (NullPointerException | NumberFormatException exception) {
+            LoggerUtil.error("Error Occured!", exception);
             request.setAttribute("errorMessage",
                     "Cannot Process The Request Due To Invalid Data!");
             request.getRequestDispatcher("Error.jsp").forward(request,
@@ -95,27 +106,34 @@ public class EmployeeController extends HttpServlet {
 
             switch (path) {
                 case "/createEmployee":
+                    LoggerUtil.info("Request For Create Employee Is Recieved!");
                     createEmployee(request, response);
                     break;
                 case "/updateEmployee":
+                    LoggerUtil.info("Request For Update Employee Is Recieved!");
                     updateEmployee(request, response);
                     break;
                 case "/assignProjects":
+                    LoggerUtil.info("Request For Assign Employee Is Recieved!");
                     assignProjects(request, response);
                     break;
                 case "/unAssignProjects":
+                    LoggerUtil.info("Request For UnAssign Employee Is Recieved!");
                     unAssignProjects(request, response);
                     break;
                 default:
+                    LoggerUtil.info("Invalid Request! Redirecting To Error Page");
                     request.getRequestDispatcher("Error.jsp").forward(request,
                             response);
                     break;
             }
         } catch (EMSException exception) {
-            request.setAttribute("exception", exception);
+            LoggerUtil.error("Error Occured!", exception);
+            request.setAttribute("errorMessage", "Oops! An Error Occured!");
             request.getRequestDispatcher("Error.jsp").forward(request,
                     response);
         } catch (NullPointerException | DateTimeParseException exception) {
+            LoggerUtil.error("Error Occured!", exception);
             request.setAttribute("errorMessage",
                     "Cannot Process The Request Due To Invalid Data!");
             request.getRequestDispatcher("Error.jsp").forward(request,
@@ -130,6 +148,7 @@ public class EmployeeController extends HttpServlet {
      * @return employee id as a Integer if it is valid else null.
      */
     public Integer validateId(String id) {
+        LoggerUtil.debug("Validating Employee Id. . .");
         return employeeService.validateId(id);
     }
 
@@ -140,6 +159,7 @@ public class EmployeeController extends HttpServlet {
      * @return employee name as a string if it is valid else null.
      */
     public String validateName(String name) {
+        LoggerUtil.debug("Validating Employee Name. . .");
         return employeeService.validateName(name);
     }
 
@@ -150,6 +170,7 @@ public class EmployeeController extends HttpServlet {
      * @return employee date of birth as a LocalDate if it is valid else null.
      */
     public LocalDate validateDateOfBirth(String dateOfBirth) {
+        LoggerUtil.debug("Validating Employee Date Of Birth. . .");
         return employeeService.validateDateOfBirth(dateOfBirth);
     }
 
@@ -160,6 +181,7 @@ public class EmployeeController extends HttpServlet {
      * @return employee gender as a string if it is valid else null.
      */
     public String validateGender(String gender) {
+        LoggerUtil.debug("Validating Employee Gender. . .");
         return employeeService.validateGender(gender);
     }
 
@@ -170,6 +192,7 @@ public class EmployeeController extends HttpServlet {
      * @return employee mobile number as a Long if it is valid else null.
      */
     public Long validateMobileNumber(String mobileNumber) {
+        LoggerUtil.debug("Validating Employee Mobile Number. . .");
         return employeeService.validateMobileNumber(mobileNumber);
     }
 
@@ -181,6 +204,7 @@ public class EmployeeController extends HttpServlet {
      * @throws EMSException if a database access error occurs.
      */
     public boolean isMobileNumberExist(long mobileNumber) throws EMSException {
+        LoggerUtil.debug("Checking If Employee Mobile Number Is Unique . . .");
         return employeeService.isMobileNumberExist(mobileNumber);
     }
 
@@ -191,6 +215,7 @@ public class EmployeeController extends HttpServlet {
      * @return employee email as a string if it is valid else null.
      */
     public String validateEmail(String email) {
+        LoggerUtil.debug("Validating Employee Email. . .");
         return employeeService.validateEmail(email);
     }
 
@@ -202,6 +227,7 @@ public class EmployeeController extends HttpServlet {
      * @throws EMSException if a database access error occurs.
      */
     public boolean isEmailExist(String email) throws EMSException {
+        LoggerUtil.debug("Checking If Employee Email Is Unique. . .");
         return employeeService.isEmailExist(email);
     }
 
@@ -212,6 +238,7 @@ public class EmployeeController extends HttpServlet {
      * @return employee salary as a Float if it is valid else null.
      */
     public Float validateSalary(String salary) {
+        LoggerUtil.debug("Validating Employee Salary. . .");
         return employeeService.validateSalary(salary);
     }
 
@@ -222,6 +249,7 @@ public class EmployeeController extends HttpServlet {
      * @return employee date of joining as a LocalDate if it is valid else null.
      */
     public LocalDate validateDateOfJoining(String dateOfJoining) {
+        LoggerUtil.debug("Validating Employee Date Of Joining. . .");
         return employeeService.validateDateOfJoining(dateOfJoining);
     }
 
@@ -232,6 +260,7 @@ public class EmployeeController extends HttpServlet {
      * @return true if it is valid, otherwise false.
      */
     public boolean isValidDoorNumber(String doorNumber) {
+        LoggerUtil.debug("Validating Door Number. . .");
         return employeeService.isValidDoorNumber(doorNumber);
     }
 
@@ -242,6 +271,7 @@ public class EmployeeController extends HttpServlet {
      * @return true if it is valid, otherwise false.
      */
     public boolean isValidStreet(String street) {
+        LoggerUtil.debug("Validating Street Name. . .");
         return employeeService.isValidStreet(street);
     }
 
@@ -253,6 +283,7 @@ public class EmployeeController extends HttpServlet {
      * @return true if valid, otherwise false.
      */
     public boolean isValidPlaceName(String name) {
+        LoggerUtil.debug("Validating Place Names. . .");
         return employeeService.isValidPlaceName(name);
     }
 
@@ -263,6 +294,7 @@ public class EmployeeController extends HttpServlet {
      * @return true if it is valid, otherwise false.
      */
     public boolean isValidPinCode(String pinCode) {
+        LoggerUtil.debug("Validating Pin Code. . .");
         return employeeService.isValidPinCode(pinCode);
     }
 
@@ -300,6 +332,7 @@ public class EmployeeController extends HttpServlet {
      */
     private List<AddressDTO> createAddressList(HttpServletRequest request,
             HttpServletResponse response) throws EMSException {
+        LoggerUtil.info("Creating Employee Address!");
         List<AddressDTO> addresses = new ArrayList<>();
         String doorNumber = request.getParameter("doorNumber").strip();
         String street = request.getParameter("street").strip();
@@ -339,6 +372,7 @@ public class EmployeeController extends HttpServlet {
                 validateSalary(request.getParameter("salary")),
                 validateDateOfJoining(request.getParameter("dateOfJoining")),
                 createAddressList(request, response));
+        
         id = employeeService.createEmployee(employeeDTO);
 
         if (0 != id) {
@@ -362,11 +396,13 @@ public class EmployeeController extends HttpServlet {
      * @param id the employee id to be retrieved as a int.
      * @return the specified employee if found, otherwise null.
      * @throws EMSException     if a database access error occurs.
-     * @throws IOException
-     * @throws ServletException
+     * @throws IOException if an input or output error occurs while the
+     *                          servlet is handling the request.
+     * @throws ServletException if the request cannot be handled.
      */
     private EmployeeDTO getEmployee(int id)
             throws EMSException, ServletException, IOException {
+        LoggerUtil.debug("Retrieving Specificied Employee . . .");
         return employeeService.getEmployee(id);
     }
 
@@ -439,6 +475,7 @@ public class EmployeeController extends HttpServlet {
     private void updateAddressList(HttpServletRequest request,
             HttpServletResponse response, EmployeeDTO employee)
             throws EMSException {
+        LoggerUtil.info("Updating Employee Address . . .");
         List<AddressDTO> addresses = employee.getAddresses();
 
         if (addresses.isEmpty()) {
@@ -511,6 +548,7 @@ public class EmployeeController extends HttpServlet {
      * @throws EMSException if a database access error occurs.
      */
     public List<ProjectDTO> getAllProjects() throws EMSException {
+        LoggerUtil.debug("Retrieving All Projects . . .");
         return employeeService.getAllProjects();
     }
 
