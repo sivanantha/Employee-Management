@@ -9,27 +9,22 @@
 <title>Employee Management</title>
 </head>
 <body>
+	<a href="index.jsp"><button>
+			<b>Home Page</b>
+		</button></a>
 	<c:choose>
-		<c:when test="${null != exception}">
-			<img src="images/oops.gif" align="middle">
-			<div id="message">
-				<span>ERROR : ${exception.getMessage()}</span>
-			</div>
-		</c:when>
-
 		<c:when test="${null != errorMessage }">
-			<img src="images/oops.gif" align="middle">
 			<div id="message">
 				<span>ERROR : ${errorMessage}</span>
 			</div>
+			<img src="images/oops.gif" align="middle">
+			
 		</c:when>
 
 		<c:otherwise>
 			<img src="images/404.gif">
 		</c:otherwise>
 	</c:choose>
-	<a href="index.jsp"><button>
-			<b>Home Page</b>
-		</button></a>
+	
 </body>
 </html>

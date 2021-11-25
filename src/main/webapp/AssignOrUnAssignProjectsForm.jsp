@@ -23,7 +23,8 @@
 			<c:when test="${!projects.isEmpty()}">
 				<form action="${formAction}" method="post">
 					<fieldset>
-						<th colspan="2">Projects</th>
+					<th></th>
+						<th>Projects</th>
 						<c:forEach items="${projects}" var="project">
 							<tr>
 								<td><input name="selectedProjects" id="${project.id}"
