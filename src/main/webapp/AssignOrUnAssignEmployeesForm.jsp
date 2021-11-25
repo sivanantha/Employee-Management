@@ -24,7 +24,7 @@
 				<form action="${formAction}" method="post">
 					<fieldset>
 						<th></th>
-						<th>Employee ID</th>
+						<th>ID</th>
 						<th>Employee</th>
 						<c:forEach items="${employees}" var="employee">
 							<tr>

@@ -66,11 +66,11 @@
 							
 							
 							<td>
-								<ol>
+								<table id="project-inner-table">
 									<c:forEach items="${employee.projects}" var="project">
-										<li>${project.name}</li>
+										<tr><td>${project.name}</td></tr>
 									</c:forEach>
-								</ol>
+								</table>
 							</td>
 							<td><div class="dropdown">
 							<button class="dropdown-btn">Manage</button>

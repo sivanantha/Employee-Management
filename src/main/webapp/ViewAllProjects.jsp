@@ -40,7 +40,7 @@
 						<td>${project.status}</td>
 						<td>
 							<table>
-								<th>Employee ID</th>
+								<th>ID</th>
 								<th>Name</th>
 								<c:forEach items="${project.employees}" var="employee">
 									<tr>

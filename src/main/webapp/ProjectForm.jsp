@@ -98,12 +98,13 @@
 							</c:otherwise>
 						</c:choose>
 				</div></div>
+			<div class="center">
 			<input type="submit" id="submit" value="Submit">
-			</div>
+			</div></div>
 		</fieldset>
 	</form>
 	<br>
-	<a href="index.jsp"><button>Cancel</button></a>
+	<a href="index.jsp"><button class="cancel-btn">Cancel</button></a>
 
 </body>
 </html>

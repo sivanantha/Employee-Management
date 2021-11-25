@@ -212,7 +212,9 @@
 							value="${address.pinCode}" pattern="^[\s]*([0-9]{3,9})[\s]*$">
 					</div>
 				</div>
+				<div class="center">
 				<input type="submit" id="submit" value="Submit">
+				</div>
 			</fieldset>
 		</form>
 	</div>
