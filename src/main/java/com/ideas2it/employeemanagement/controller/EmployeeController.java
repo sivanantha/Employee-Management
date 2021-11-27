@@ -40,7 +40,7 @@ public class EmployeeController extends HttpServlet {
      * {@inheritDoc}
      */
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String path = request.getServletPath();
 
@@ -104,7 +104,7 @@ public class EmployeeController extends HttpServlet {
      * {@inheritDoc}
      */
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String path = request.getServletPath();
 

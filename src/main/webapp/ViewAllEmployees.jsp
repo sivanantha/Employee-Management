@@ -13,17 +13,11 @@
 	<header>
 		<h1>Manage Employees</h1>
 	</header>
-	<a href="index.jsp"><button>
-			Home Page
-		</button></a>
-	<a href="viewAllProjects"><button>
-			Manage Projects
-		</button></a>
+	<a href="index.jsp"><button>Home Page</button></a>
+	<a href="viewAllProjects"><button>Manage Projects</button></a>
 	<c:choose>
 		<c:when test="${!employees.isEmpty()}">
-			<a href="deleteAllEmployees"><button>
-					Delete All
-				</button></a>
+			<a href="deleteAllEmployees"><button>Delete All</button></a>
 			<div class="table-container">
 				<table>
 					<tr>
@@ -54,37 +48,40 @@
 							<td>${employee.email}</td>
 							<td>${employee.salary}</td>
 							<td>${dateOfJoining}</td>
-							
-								<td><c:forEach items="${employee.addresses}" var="address">
-								<address>
-						${address.doorNumber},${address.street},<br>
-						${address.locality},${address.city},<br>
-						${address.state},${address.state},<br>
-						${address.pinCode}.
-						</address><br><br>
-					</c:forEach></td>
-							
-							
+
+							<td><c:forEach items="${employee.addresses}" var="address">
+									<address>
+										${address.doorNumber},${address.street},<br>
+										${address.locality},${address.city},<br>
+										${address.state},${address.state},<br>
+										${address.pinCode}.
+									</address>
+									<br>
+									<br>
+								</c:forEach></td>
+
+
 							<td>
 								<table id="project-inner-table">
 									<c:forEach items="${employee.projects}" var="project">
-										<tr><td>${project.name}</td></tr>
+										<tr>
+											<td>${project.name}</td>
+										</tr>
 									</c:forEach>
 								</table>
 							</td>
 							<td><div class="dropdown">
-							<button class="dropdown-btn">Manage</button>
-								<div class="dropdown-content">
-						<a href="updateEmployeeForm?id=${employee.id}">
-										Update</a> <a href="deleteEmployee?id=${employee.id}">
-										Delete</a> <a href="assignProjectsForm?id=${employee.id}">
-										Assign Projects</a> 
-							<a href="unAssignProjectsForm?id=${employee.id}">
-										UnAssingn Projects</a>
-						</div></div>
-							</td>
+									<button class="dropdown-btn">Manage</button>
+									<div class="dropdown-content">
+										<a href="updateEmployeeForm?id=${employee.id}"> Update</a> <a
+											href="deleteEmployee?id=${employee.id}"> Delete</a> <a
+											href="assignProjectsForm?id=${employee.id}"> Assign
+											Projects</a> <a href="unAssignProjectsForm?id=${employee.id}">
+											UnAssingn Projects</a>
+									</div>
+								</div></td>
 						</tr>
-						
+
 					</c:forEach>
 				</table>
 			</div>
@@ -92,7 +89,9 @@
 			<br>
 		</c:when>
 		<c:otherwise>
-			<h3>No Employees Found!</h3>
+			<div id="message">
+				<span>No Employees Found!</span>
+			</div>
 		</c:otherwise>
 	</c:choose>
 </body>

@@ -40,30 +40,6 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * 
      */
     @Override
-    public long getEmployeeCount() throws EMSException {
-        long count;
-        CriteriaBuilder criteria;
-        CriteriaQuery<Long> query;
-
-        try (Session session = HibernateUtil.getSessionFactory()
-                .openSession()) {
-            criteria = session.getCriteriaBuilder();
-            query = criteria.createQuery(Long.class);
-            query.select(criteria.count(query.from(Employee.class)));
-            count = session.createQuery(query).getSingleResult();
-        } catch (HibernateException exception) {
-            logger.error("Employee count failed!", exception);
-            throw new EMSException(Constants.ERROR_006);
-        }
-        logger.info("Employees count executed successfully!");
-        return count;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     */
-    @Override
     public int insertEmployee(Employee employee) throws EMSException {
         int employeeId;
         Transaction transaction;

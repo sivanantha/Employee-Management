@@ -379,22 +379,28 @@ td button {
 
 #message {
 	margin: auto;
-	margin-top: 20%;
+	margin-top: 15%;
 	border-radius: 10px;
 	padding: 20px;
 	width: 80%;
 	height: auto;
 	background-color: rgba(0, 0, 0, 0.3);
-  	box-shadow: rgb(0, 255, 255) 0px 10px 30px -12px;
+	border: 1px solid rgb(0, 255, 255);
+  	box-shadow: rgb(0, 255, 255) 0px 10px 20px -12px;
 }
 
 #message span {
 	margin: auto;
+	margin-left: 10px;
+	margin-right: 10px;
 	color: white;
-	font-size: 40px;
+	font-size: 30px;
 	font-weight: 400;
 	text-align: center;
-	text-transform: capitalize;
+	background: -webkit-linear-gradient(180deg, #2af598 0%, #009efd 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: block;
 }
 
 #assign-unassign th {

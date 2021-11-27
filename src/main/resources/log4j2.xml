@@ -19,7 +19,7 @@
     
     <Loggers>
     
-        <Logger name="org.hibernate" level="info" additivity="false">
+        <Logger name="org.hibernate" level="info">
             <AppenderRef ref="employee_management"/>
         </Logger>
         

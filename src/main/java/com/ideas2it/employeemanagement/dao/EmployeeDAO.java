@@ -13,17 +13,9 @@ import com.ideas2it.employeemanagement.model.Employee;
  * details in the database.
  *
  * @author  Sivanantham
- * @version 1.4
+ * @version 1.5
  */
 public interface EmployeeDAO {
-    
-    /**
-     * Calculates the employee count.
-     *
-     * @return the employee count.
-     * @throws EMSException if a database access error occurs.
-     */
-    long getEmployeeCount() throws EMSException;
     
     /**
      * Gets the employee having specified mobile number.

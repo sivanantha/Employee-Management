@@ -38,27 +38,6 @@ public class ProjectDAOImpl implements ProjectDAO {
      * 
      */
     @Override
-    public long getProjectCount() throws EMSException {
-        long count;
-
-        try (Session session = HibernateUtil.getSessionFactory()
-                .openSession()) {
-            count = session
-                    .createQuery("SELECT COUNT(p) FROM Project p", Long.class)
-                    .getSingleResult();
-        } catch (HibernateException exception) {
-            logger.error("Projects count failed!", exception);
-            throw new EMSException(Constants.ERROR_012);
-        }
-        logger.info("Project count executed successfully!");
-        return count;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     */
-    @Override
     public int insertProject(Project project) throws EMSException {
         int id;
         Transaction transaction;

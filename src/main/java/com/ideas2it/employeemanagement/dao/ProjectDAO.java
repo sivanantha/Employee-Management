@@ -13,17 +13,9 @@ import com.ideas2it.employeemanagement.model.Project;
  * employees for project in database.
  * 
  * @author  Sivanantham
- * @version 1.1
+ * @version 1.2
  */
 public interface ProjectDAO {
-    
-    /**
-     * Calculates the project count.
-     *
-     * @return the project count.
-     * @throws EMSException if a database access error occurs.
-     */
-    long getProjectCount() throws EMSException;
     
     /**
      * Creates a new project record in the database.

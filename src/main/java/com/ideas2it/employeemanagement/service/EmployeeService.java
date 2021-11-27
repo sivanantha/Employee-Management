@@ -20,16 +20,6 @@ import com.ideas2it.employeemanagement.model.ProjectDTO;
 public interface EmployeeService {
     
     /**
-     * Searches for the specified employee id.
-     * 
-     * 
-     * @param id  the id of the employee to be searched as a integer.
-     * @return true if employee found, otherwise false.
-     * @throws EMSException if a database access error occurs.
-     */
-    boolean isEmployeeExist(int id) throws EMSException;
-    
-    /**
      * Validates and parses given employee id.Checks if the specified employee 
      * id is a non negative integer (0 excluded).
      * Allows leading and trailing spaces. Leading zeros are not  
@@ -180,15 +170,6 @@ public interface EmployeeService {
      * @return employee date of joining as a LocalDate if it is valid else null.
      */
     LocalDate validateDateOfJoining(String dateOfJoining);
-    
-    /**
-     * Checks if the employee database is empty.
-     * Helper function for view, update and delete operations.
-     *
-     * @return true if employee database is empty else false.
-     * @throws EMSException if a database access error occurs.
-     */
-    boolean isEmployeesDatabaseEmpty() throws EMSException;
     
     /**
      * Validates the specified door number.

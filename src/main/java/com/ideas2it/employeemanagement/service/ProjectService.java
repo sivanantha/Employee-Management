@@ -77,14 +77,6 @@ public interface ProjectService {
     Status validateStatus(String status);
     
     /**
-     * Checks if the project database is empty.
-     *
-     * @return true if project database is empty else false.
-     * @throws EMSException if a database access error occurs.
-     */
-    boolean isProjectDatabaseEmpty() throws EMSException;
-    
-    /**
      * Searches for the specified project id.
      * 
      * @param id the id of the project to be searched as a integer.

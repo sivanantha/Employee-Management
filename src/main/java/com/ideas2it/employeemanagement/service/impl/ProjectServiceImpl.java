@@ -127,16 +127,6 @@ public class ProjectServiceImpl implements ProjectService {
      * {@inheritDoc}
      * 
      */
-    @Override
-    public boolean isProjectDatabaseEmpty() throws EMSException {
-        logger.info("Checking if project database is empty");
-        return (0 == projectDAO.getProjectCount());
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     */
     public List<EmployeeDTO> getAllEmployees() throws EMSException {
         return new EmployeeServiceImpl().getAllEmployees();
     }

@@ -38,16 +38,6 @@ public class EmployeeServiceImpl implements EmployeeService {
      * 
      */
     @Override
-    public boolean isEmployeeExist(int id) throws EMSException {
-        logger.info("Checking if the employee exist");
-        return (null == employeeDAO.getById(id)) ? false : true;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     */
-    @Override
     public Integer validateId(String id) {
         Integer parsedId = null;
 
@@ -311,16 +301,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public boolean isValidPinCode(String pinCode) {
         return Pattern.matches("^[\\s]*([0-9]{3,9})[\\s]*$", pinCode);
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     */
-    @Override
-    public boolean isEmployeesDatabaseEmpty() throws EMSException {
-        logger.info("Checking if employee database is empty");
-        return (0 == employeeDAO.getEmployeeCount());
     }
 
     /**
