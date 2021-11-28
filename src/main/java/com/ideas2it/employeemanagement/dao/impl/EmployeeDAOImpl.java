@@ -40,7 +40,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * 
      */
     @Override
-    public int insertEmployee(Employee employee) throws EMSException {
+    public Employee insertEmployee(Employee employee) throws EMSException {
         int employeeId;
         Transaction transaction;
 
@@ -54,7 +54,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
             throw new EMSException(Constants.ERROR_003);
         }
         logger.info("Employee inserted successfully!");
-        return employeeId;
+        return employee;
     }
 
     /**
@@ -197,22 +197,20 @@ public class EmployeeDAOImpl implements EmployeeDAO {
      * 
      */
     @Override
-    public boolean updateEmployee(Employee employee) throws EMSException {
-        boolean isUpdated = false;
+    public Employee updateEmployee(Employee employee) throws EMSException {
         Transaction transaction;
 
         try (Session session = HibernateUtil.getSessionFactory()
                 .openSession()) {
             transaction = session.beginTransaction();
-            session.merge(employee);
+            employee = (Employee) session.merge(employee);
             transaction.commit();
-            isUpdated = true;
         } catch (HibernateException exception) {
             logger.error("Employee update failed!", exception);
             throw new EMSException(Constants.ERROR_007);
         }
         logger.info("Employee updated successfully!");
-        return isUpdated;
+        return employee;
     }
 
     /**

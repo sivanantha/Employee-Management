@@ -13,26 +13,26 @@
             </generator>
         </id>
         
-        <property name="name" column="name" type="string" lazy="true" 
+        <property name="name" column="name" type="string"
                   length="60" not-null="true"/>
         
-        <property name="gender" column="gender" type="string" lazy="true" 
+        <property name="gender" column="gender" type="string"
                   not-null="true"/>
         
         <property name="dateOfBirth" column="date_of_birth" type="LocalDate"
-                  lazy="true" not-null="true"/>
+                  not-null="true"/>
         
         <property name="mobileNumber" column="mobile_number" type="long" 
-                  lazy="true" not-null="true" unique="true"/>
+                  not-null="true" unique="true"/>
         
         <property name="email" column="email" type="string" 
-                  length="300" lazy="true" not-null="true" unique="true"/>
+                  length="300" not-null="true" unique="true"/>
         
         <property name="salary" column="salary" type="float" 
-                  precision="25" scale="2" lazy="true" not-null="true"/>
+                  precision="25" scale="2" not-null="true"/>
                   
         <property name="dateOfJoining" column="date_of_joining" type="LocalDate" 
-                  lazy="true" not-null="true"/>
+                  not-null="true"/>
         
         <bag name="addresses" table="address" lazy="true" cascade="all">
             

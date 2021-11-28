@@ -38,8 +38,8 @@ public class ProjectController extends HttpServlet {
      * {@inheritDoc}
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
 
         try {
@@ -86,7 +86,7 @@ public class ProjectController extends HttpServlet {
             request.setAttribute("errorMessage", "Oops! An Error Occured!");
             request.getRequestDispatcher("Error.jsp").forward(request,
                     response);
-        } catch (NullPointerException | NumberFormatException exception) {
+        } catch (NumberFormatException exception) {
             logger.error("Error Occured!", exception);
             request.setAttribute("errorMessage",
                     "Cannot Process The Request Due To Invalid Data!");
@@ -99,8 +99,8 @@ public class ProjectController extends HttpServlet {
      * {@inheritDoc}
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request,
+            HttpServletResponse response) throws ServletException, IOException {
         String path = request.getServletPath();
 
         try {
@@ -133,7 +133,7 @@ public class ProjectController extends HttpServlet {
             request.setAttribute("errorMessage", "Oops! An Error Occured!");
             request.getRequestDispatcher("Error.jsp").forward(request,
                     response);
-        } catch (NullPointerException | NumberFormatException exception) {
+        } catch (NumberFormatException exception) {
             logger.error("Error Occured!", exception);
             request.setAttribute("errorMessage",
                     "Cannot Process The Request Due To Invalid Data!");

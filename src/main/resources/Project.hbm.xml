@@ -13,16 +13,16 @@
             </generator>
         </id>
         
-        <property name="name" column="name" type="string" lazy="true" 
+        <property name="name" column="name" type="string"
                   length="60" not-null="true"/>
         
         <property name="description" column="description" type="string" 
-                  lazy="true" length = "400" not-null="true"/>
+                  length = "400" not-null="true"/>
         
         <property name="manager" column="manager" type="string"
-                  lazy="true" not-null="true"/>
+                  not-null="true"/>
         
-        <property name="status" column="status" length = "1" lazy="true"
+        <property name="status" column="status" length = "1"
                   not-null="true">
             
             <type name="converted::com.ideas2it.employeemanagement.model.StatusConverter">

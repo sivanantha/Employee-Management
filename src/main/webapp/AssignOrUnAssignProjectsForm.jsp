@@ -56,7 +56,7 @@
 
 				<c:when
 					test='${empty projects && formAction.equals("unAssignProjects")}'>
-					<div class="message">
+					<div id="message">
 						<span>No Projects Available To UnAssign!</span>
 					</div>
 					<tr>

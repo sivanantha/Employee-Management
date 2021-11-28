@@ -42,10 +42,10 @@ public interface EmployeeDAO {
      * Creates a new employee record in the database.
      *
      * @param employee the employee to be inserted as a Employee object. 
-     * @return the employee id as a int.
+     * @return the created employee instance.
      * @throws EMSException if a database access error occurs.
      */
-    int insertEmployee(Employee employee) throws EMSException;
+    Employee insertEmployee(Employee employee) throws EMSException;
     
     /** 
      * Fetches the specified employee's record.
@@ -68,10 +68,10 @@ public interface EmployeeDAO {
      * Updates specified employee's all details.
      * 
      * @param employee the employee to be updated as a Employee object.
-     * @return true if updated successfully, otherwise false.
+     * @return the updated employee.
      * @throws EMSException if a database access error occurs.
      */
-    boolean updateEmployee(Employee employee) throws EMSException;
+    Employee updateEmployee(Employee employee) throws EMSException;
     
     /** 
      * Deletes specified employee.

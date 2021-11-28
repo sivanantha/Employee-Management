@@ -309,7 +309,14 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public int createEmployee(EmployeeDTO employeeDTO) throws EMSException {
-        return employeeDAO.insertEmployee(Mapper.toEmployee(employeeDTO));
+        int employeeId = 0;
+        Employee employee = employeeDAO
+                .insertEmployee(Mapper.toEmployee(employeeDTO));
+
+        if (null != employee) {
+            employeeId = employee.getId();
+        }
+        return employeeId;
     }
 
     /**
@@ -355,7 +362,14 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public boolean updateEmployee(EmployeeDTO employeeDTO) throws EMSException {
-        return employeeDAO.updateEmployee(Mapper.toEmployee(employeeDTO));
+        boolean isUpdated = false;
+        Employee employee = employeeDAO
+                .updateEmployee(Mapper.toEmployee(employeeDTO));
+
+        if (null != employee) {
+            isUpdated = true;
+        }
+        return isUpdated;
     }
 
     /**

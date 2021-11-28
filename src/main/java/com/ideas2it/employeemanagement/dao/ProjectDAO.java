@@ -21,10 +21,10 @@ public interface ProjectDAO {
      * Creates a new project record in the database.
      *
      * @param project the project to be inserted.
-     * @return the project id.
+     * @return the created project instance.
      * @throws EMSException if database access error occurs.
      */
-    int insertProject(Project project) throws EMSException;
+    Project insertProject(Project project) throws EMSException;
     
     /** 
      * Fetches the specified project's details.
@@ -47,10 +47,10 @@ public interface ProjectDAO {
      * Updates the specified project.
      *
      * @param project the project with updated details.
-     * @return true if updated successfully, otherwise false.
+     * @return the updated project instance.
      * @throws EMSException if a database access error occurs.
      */
-    boolean updateProject(Project project) throws EMSException;
+    Project updateProject(Project project) throws EMSException;
     
     /**
      * Deletes the specified project.

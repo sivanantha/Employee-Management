@@ -13,24 +13,24 @@
         </id>
         
         <property name="doorNumber" column="door_number" type="string" 
-                  lazy="true" length="8" not-null="true"/>
+                  length="8" not-null="true"/>
         
-        <property name="street" column="street" type="string" lazy="true" 
+        <property name="street" column="street" type="string" 
                   length="60" not-null="true"/>
         
-        <property name="locality" column="locality" type="string" lazy="true"
+        <property name="locality" column="locality" type="string"
                   length="130" not-null="true"/>
         
-        <property name="city" column="city" type="string" lazy="true"
+        <property name="city" column="city" type="string"
                   length="130" not-null="true"/>
         
-        <property name="state" column="state" type="string" lazy="true"
+        <property name="state" column="state" type="string"
                   length="130" not-null="true"/>
                   
-        <property name="country" column="country" type="string" lazy="true"
+        <property name="country" column="country" type="string"
                   length="130" not-null="true"/>
                   
-        <property name="pinCode" column="pin_code" type="string" lazy="true"
+        <property name="pinCode" column="pin_code" type="string"
                   length="10" not-null="true"/>
         
        <many-to-one name="employee" column="employee_id" class="Employee" 

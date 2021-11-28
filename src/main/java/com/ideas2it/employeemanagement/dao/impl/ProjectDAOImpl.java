@@ -38,7 +38,7 @@ public class ProjectDAOImpl implements ProjectDAO {
      * 
      */
     @Override
-    public int insertProject(Project project) throws EMSException {
+    public Project insertProject(Project project) throws EMSException {
         int id;
         Transaction transaction;
 
@@ -52,7 +52,7 @@ public class ProjectDAOImpl implements ProjectDAO {
             throw new EMSException(Constants.ERROR_013);
         }
         logger.info("Project inserted successfully!");
-        return id;
+        return project;
     }
 
     /**
@@ -111,22 +111,20 @@ public class ProjectDAOImpl implements ProjectDAO {
      *
      */
     @Override
-    public boolean updateProject(Project project) throws EMSException {
-        boolean isUpdated = false;
+    public Project updateProject(Project project) throws EMSException {
         Transaction transaction;
 
         try (Session session = HibernateUtil.getSessionFactory()
                 .openSession()) {
             transaction = session.beginTransaction();
-            session.merge(project);
+            project = (Project) session.merge(project);
             transaction.commit();
-            isUpdated = true;
         } catch (HibernateException exception) {
             logger.error("Project update failed!", exception);
             throw new EMSException(Constants.ERROR_015);
         }
         logger.info("Project updated successfully!");
-        return isUpdated;
+        return project;
     }
 
     /**

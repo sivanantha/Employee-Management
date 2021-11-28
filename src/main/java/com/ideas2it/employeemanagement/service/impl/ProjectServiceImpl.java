@@ -117,16 +117,6 @@ public class ProjectServiceImpl implements ProjectService {
      * {@inheritDoc}
      * 
      */
-    @Override
-    public boolean isProjectExist(int id) throws EMSException {
-        logger.info("Checking if the project exist");
-        return (null == projectDAO.getById(id)) ? false : true;
-    }
-
-    /**
-     * {@inheritDoc}
-     * 
-     */
     public List<EmployeeDTO> getAllEmployees() throws EMSException {
         return new EmployeeServiceImpl().getAllEmployees();
     }
@@ -137,7 +127,14 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public int createProject(ProjectDTO projectDTO) throws EMSException {
-        return projectDAO.insertProject(Mapper.toProject(projectDTO));
+        int projectId = 0;
+        Project project = projectDAO
+                .insertProject(Mapper.toProject(projectDTO));
+
+        if (null != project) {
+            projectId = project.getId();
+        }
+        return projectId;
     }
 
     /**
@@ -183,7 +180,14 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public boolean updateProject(ProjectDTO projectDTO) throws EMSException {
-        return projectDAO.updateProject(Mapper.toProject(projectDTO));
+        boolean isUpdated = false;
+        Project project = projectDAO
+                .updateProject(Mapper.toProject(projectDTO));
+
+        if (null != project) {
+            isUpdated = true;
+        }
+        return isUpdated;
     }
 
     /**

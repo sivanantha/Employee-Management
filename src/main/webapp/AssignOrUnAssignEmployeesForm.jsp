@@ -49,7 +49,7 @@
 				</c:when>
 				<c:when
 					test='${empty employees && formAction.equals("assignEmployees")}'>
-					<div class="message">
+					<div id="message">
 						<span>No Employees Available To Assign!</span>
 					</div>
 					<tr>
