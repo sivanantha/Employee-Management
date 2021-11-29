@@ -148,7 +148,7 @@ public class ProjectController extends HttpServlet {
      * @param id the project id to be validated.
      * @return the id if it is valid, otherwise null.
      */
-    public Integer validateId(String id) {
+    private Integer validateId(String id) {
         logger.debug("Validating Project Id . . .");
         return projectService.validateId(id);
     }
@@ -159,7 +159,7 @@ public class ProjectController extends HttpServlet {
      * @param name the project name to be validated.
      * @return the name if it is valid, otherwise null.
      */
-    public String validateName(String name) {
+    private String validateName(String name) {
         logger.debug("Validating Project Name . . .");
         return projectService.validateName(name);
     }
@@ -170,7 +170,7 @@ public class ProjectController extends HttpServlet {
      * @param description the project description to be validated.
      * @return the description if it is valid, otherwise null.
      */
-    public String validateDescription(String description) {
+    private String validateDescription(String description) {
         logger.debug("Validating Project Description . . .");
         return projectService.validateDescription(description);
     }
@@ -181,7 +181,7 @@ public class ProjectController extends HttpServlet {
      * @param manager the project manager name to be validated.
      * @return the project manager name if it is valid, otherwise null.
      */
-    public String validateManager(String manager) {
+    private String validateManager(String manager) {
         logger.debug("Validating Project Manager Name . . .");
         return projectService.validateManager(manager);
     }
@@ -192,7 +192,7 @@ public class ProjectController extends HttpServlet {
      * @param status the project status to be validated.
      * @return the project status if it is valid, otherwise null.
      */
-    public Status validateStatus(String status) {
+    private Status validateStatus(String status) {
         logger.debug("Validating Project Status . . .");
         return projectService.validateStatus(status);
     }

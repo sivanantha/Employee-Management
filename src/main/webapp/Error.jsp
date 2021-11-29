@@ -13,12 +13,11 @@
 			<b>Home Page</b>
 		</button></a>
 	<c:choose>
-		<c:when test="${null != errorMessage }">
+		<c:when test="${null != errorMessage}">
 			<div id="message">
 				<span>ERROR : ${errorMessage}</span>
 			</div>
-			<img src="images/oops.gif" align="middle">
-			
+			<img src="images/oops.gif" align="middle">			
 		</c:when>
 
 		<c:otherwise>

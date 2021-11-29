@@ -153,7 +153,7 @@ public class EmployeeController extends HttpServlet {
      * @param id the employee id to be validated.
      * @return employee id as a Integer if it is valid else null.
      */
-    public Integer validateId(String id) {
+    private Integer validateId(String id) {
         logger.debug("Validating Employee Id. . .");
         return employeeService.validateId(id);
     }
@@ -164,7 +164,7 @@ public class EmployeeController extends HttpServlet {
      * @param name the employee name to be validated.
      * @return employee name as a string if it is valid else null.
      */
-    public String validateName(String name) {
+    private String validateName(String name) {
         logger.debug("Validating Employee Name. . .");
         return employeeService.validateName(name);
     }
@@ -175,7 +175,7 @@ public class EmployeeController extends HttpServlet {
      * @param dateOfBirth the employee date of birth to be validated.
      * @return employee date of birth as a LocalDate if it is valid else null.
      */
-    public LocalDate validateDateOfBirth(String dateOfBirth) {
+    private LocalDate validateDateOfBirth(String dateOfBirth) {
         logger.debug("Validating Employee Date Of Birth. . .");
         return employeeService.validateDateOfBirth(dateOfBirth);
     }
@@ -186,7 +186,7 @@ public class EmployeeController extends HttpServlet {
      * @param gender the employee gender to be validated.
      * @return employee gender as a string if it is valid else null.
      */
-    public String validateGender(String gender) {
+    private String validateGender(String gender) {
         logger.debug("Validating Employee Gender. . .");
         return employeeService.validateGender(gender);
     }
@@ -197,7 +197,7 @@ public class EmployeeController extends HttpServlet {
      * @param mobileNumber the employee mobile number to be validated.
      * @return employee mobile number as a Long if it is valid else null.
      */
-    public Long validateMobileNumber(String mobileNumber) {
+    private Long validateMobileNumber(String mobileNumber) {
         logger.debug("Validating Employee Mobile Number. . .");
         return employeeService.validateMobileNumber(mobileNumber);
     }
@@ -209,7 +209,7 @@ public class EmployeeController extends HttpServlet {
      * @return true if the mobile number found, else false.
      * @throws EMSException if a database access error occurs.
      */
-    public boolean isMobileNumberExist(long mobileNumber) throws EMSException {
+    private boolean isMobileNumberExist(long mobileNumber) throws EMSException {
         logger.debug("Checking If Employee Mobile Number Is Unique . . .");
         return employeeService.isMobileNumberExist(mobileNumber);
     }
@@ -220,7 +220,7 @@ public class EmployeeController extends HttpServlet {
      * @param email the employee email to be validated.
      * @return employee email as a string if it is valid else null.
      */
-    public String validateEmail(String email) {
+    private String validateEmail(String email) {
         logger.debug("Validating Employee Email. . .");
         return employeeService.validateEmail(email);
     }
@@ -232,7 +232,7 @@ public class EmployeeController extends HttpServlet {
      * @return true if the email found, else false.
      * @throws EMSException if a database access error occurs.
      */
-    public boolean isEmailExist(String email) throws EMSException {
+    private boolean isEmailExist(String email) throws EMSException {
         logger.debug("Checking If Employee Email Is Unique. . .");
         return employeeService.isEmailExist(email);
     }
@@ -243,7 +243,7 @@ public class EmployeeController extends HttpServlet {
      * @param salary the employee salary to be validated.
      * @return employee salary as a Float if it is valid else null.
      */
-    public Float validateSalary(String salary) {
+    private Float validateSalary(String salary) {
         logger.debug("Validating Employee Salary. . .");
         return employeeService.validateSalary(salary);
     }
@@ -254,7 +254,7 @@ public class EmployeeController extends HttpServlet {
      * @param dateOfJoining the employee date of joining to be validated.
      * @return employee date of joining as a LocalDate if it is valid else null.
      */
-    public LocalDate validateDateOfJoining(String dateOfJoining) {
+    private LocalDate validateDateOfJoining(String dateOfJoining) {
         logger.debug("Validating Employee Date Of Joining. . .");
         return employeeService.validateDateOfJoining(dateOfJoining);
     }
@@ -265,7 +265,7 @@ public class EmployeeController extends HttpServlet {
      * @param doorNumber the door number to be validated.
      * @return true if it is valid, otherwise false.
      */
-    public boolean isValidDoorNumber(String doorNumber) {
+    private boolean isValidDoorNumber(String doorNumber) {
         logger.debug("Validating Door Number. . .");
         return employeeService.isValidDoorNumber(doorNumber);
     }
@@ -276,7 +276,7 @@ public class EmployeeController extends HttpServlet {
      * @param street the street name to be validated.
      * @return true if it is valid, otherwise false.
      */
-    public boolean isValidStreet(String street) {
+    private boolean isValidStreet(String street) {
         logger.debug("Validating Street Name. . .");
         return employeeService.isValidStreet(street);
     }
@@ -288,7 +288,7 @@ public class EmployeeController extends HttpServlet {
      *                 validated.
      * @return true if valid, otherwise false.
      */
-    public boolean isValidPlaceName(String name) {
+    private boolean isValidPlaceName(String name) {
         logger.debug("Validating Place Names. . .");
         return employeeService.isValidPlaceName(name);
     }
@@ -299,7 +299,7 @@ public class EmployeeController extends HttpServlet {
      * @param pinCode the pin code to be validated as a string.
      * @return true if it is valid, otherwise false.
      */
-    public boolean isValidPinCode(String pinCode) {
+    private boolean isValidPinCode(String pinCode) {
         logger.debug("Validating Pin Code. . .");
         return employeeService.isValidPinCode(pinCode);
     }
@@ -430,6 +430,7 @@ public class EmployeeController extends HttpServlet {
         request.setAttribute("employees", employeeService.getAllEmployees());
         request.getRequestDispatcher("ViewAllEmployees.jsp").forward(request,
                 response);
+        
     }
 
     /**
