@@ -13,9 +13,9 @@
 			<b>Home Page</b>
 		</button></a>
 	<c:choose>
-		<c:when test="${null != errorMessage}">
+		<c:when test="${null != param.errorMessage}">
 			<div id="message">
-				<span>ERROR : ${errorMessage}</span>
+				<span>ERROR : ${param.errorMessage}</span>
 			</div>
 			<img src="images/oops.gif" align="middle">			
 		</c:when>

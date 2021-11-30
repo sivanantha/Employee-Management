@@ -7,11 +7,21 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.ideas2it.employeemanagement.exceptions.EMSException;
 import com.ideas2it.employeemanagement.logger.EMSLogger;
@@ -19,7 +29,6 @@ import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
 import com.ideas2it.employeemanagement.model.Status;
 import com.ideas2it.employeemanagement.service.ProjectService;
-import com.ideas2it.employeemanagement.service.impl.ProjectServiceImpl;
 
 /**
  * The ProjectController servlet class contains CRUD implementations for project
@@ -29,117 +38,14 @@ import com.ideas2it.employeemanagement.service.impl.ProjectServiceImpl;
  * @author Sivanantham
  * @version 1.2
  */
-public class ProjectController extends HttpServlet {
-    private static final long serialVersionUID = 4671134463547248220L;
-    private EMSLogger logger = new EMSLogger(ProjectController.class);
-    private ProjectService projectService = new ProjectServiceImpl();
+@Controller
+@SessionAttributes("project")
+public class ProjectController {
+    private ProjectService projectService;
+    private static EMSLogger logger = new EMSLogger(ProjectController.class);
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doGet(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        String path = request.getServletPath();
-
-        try {
-
-            switch (path) {
-                case "/createProjectForm":
-                    logger.info("Request For Create Project Form Is Recieved!");
-                    sendProjectCreateForm(request, response);
-                    break;
-                case "/updateProjectForm":
-                    logger.info("Request For Update Project Form Is Recieved!");
-                    sendProjectUpdateForm(request, response);
-                    break;
-                case "/viewAllProjects":
-                    logger.info("Request For ViewProjects Is Recieved!");
-                    getAllProjects(request, response);
-                    break;
-                case "/assignEmployeesForm":
-                    logger.info(
-                            "Request For Assign Employees Form Is Recieved!");
-                    sendAssignEmployeesForm(request, response);
-                    break;
-                case "/unAssignEmployeesForm":
-                    logger.info(
-                            "Request For UnAssign Employees Form Is Recieved!");
-                    sendUnAssignEmployeesForm(request, response);
-                    break;
-                case "/deleteProject":
-                    logger.info("Request For Delete Project Is Recieved!");
-                    deleteProject(request, response);
-                    break;
-                case "/deleteAllProjects":
-                    logger.info("Request For Delete All Projects Is Recieved!");
-                    deleteAllProjects(request, response);
-                    break;
-                default:
-                    logger.info("Invalid Request! Redirecting To Error Page");
-                    request.getRequestDispatcher("Error.jsp").forward(request,
-                            response);
-                    break;
-            }
-        } catch (EMSException exception) {
-            logger.error("Error Occured!", exception);
-            request.setAttribute("errorMessage", "Oops! An Error Occured!");
-            request.getRequestDispatcher("Error.jsp").forward(request,
-                    response);
-        } catch (NumberFormatException exception) {
-            logger.error("Error Occured!", exception);
-            request.setAttribute("errorMessage",
-                    "Cannot Process The Request Due To Invalid Data!");
-            request.getRequestDispatcher("Error.jsp").forward(request,
-                    response);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doPost(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        String path = request.getServletPath();
-
-        try {
-
-            switch (path) {
-                case "/createProject":
-                    logger.info("Request For Create Project Is Recieved!");
-                    createProject(request, response);
-                    break;
-                case "/updateProject":
-                    logger.info("Request For Update Project Is Recieved!");
-                    updateProject(request, response);
-                    break;
-                case "/assignEmployees":
-                    logger.info("Request For Assing Employess Is Recieved!");
-                    assignEmployees(request, response);
-                    break;
-                case "/unAssignEmployees":
-                    logger.info("Request For UnAssign Employees Is Recieved!");
-                    unAssignEmployees(request, response);
-                    break;
-                default:
-                    logger.info("Invalid Request! Redirecting To Error Page");
-                    request.getRequestDispatcher("Error.jsp").forward(request,
-                            response);
-                    break;
-            }
-        } catch (EMSException exception) {
-            logger.error("Error Occured!", exception);
-            request.setAttribute("errorMessage", "Oops! An Error Occured!");
-            request.getRequestDispatcher("Error.jsp").forward(request,
-                    response);
-        } catch (NumberFormatException exception) {
-            logger.error("Error Occured!", exception);
-            request.setAttribute("errorMessage",
-                    "Cannot Process The Request Due To Invalid Data!");
-            request.getRequestDispatcher("Error.jsp").forward(request,
-                    response);
-        }
+    public ProjectController(ProjectService projectService) {
+        this.projectService = projectService;
     }
 
     /**
@@ -208,11 +114,12 @@ public class ProjectController extends HttpServlet {
      *                          servlet is handling the request.
      * @throws ServletException if the request cannot be handled.
      */
-    public void sendProjectCreateForm(HttpServletRequest request,
-            HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("formAction", "createProject");
-        request.getRequestDispatcher("ProjectForm.jsp").forward(request,
-                response);
+    @GetMapping("createProjectForm")
+    public String sendProjectCreateForm(Model model)
+            throws ServletException, IOException {
+        model.addAttribute("project", new ProjectDTO());
+        model.addAttribute("formAction", "createProject");
+        return "ProjectForm.jsp";
     }
 
     /**
@@ -227,29 +134,22 @@ public class ProjectController extends HttpServlet {
      *                          servlet is handling the request.
      * @throws ServletException if the request cannot be handled.
      */
-    public void createProject(HttpServletRequest request,
-            HttpServletResponse response)
-            throws EMSException, ServletException, IOException {
-        ProjectDTO project = new ProjectDTO(
-                validateName(request.getParameter("name")),
-                validateDescription(request.getParameter("description")),
-                validateManager(request.getParameter("manager")),
-                validateStatus(request.getParameter("status")));
+    @PostMapping("createProject")
+    public String createProject(@ModelAttribute("project") ProjectDTO project,
+            RedirectAttributes redirect) throws EMSException {
         int id = projectService.createProject(project);
 
         if (0 != id) {
-            request.setAttribute("redirectUrl", "index.jsp");
-            request.setAttribute("successMessage",
+            redirect.addAttribute("redirectUrl", "index.jsp");
+            redirect.addAttribute("successMessage",
                     "Project Created Successfully! The Project ID of "
                             + project.getName() + " is " + id
                             + " Redirecting To Home Page . . .");
-            request.getRequestDispatcher("Success.jsp").forward(request,
-                    response);
+            return "redirect:/Success.jsp";
         } else {
-            request.setAttribute("errorMessage",
+            redirect.addAttribute("errorMessage",
                     "Project Creation Failed! Please Try Again After Some Time!");
-            request.getRequestDispatcher("Error.jsp").forward(request,
-                    response);
+            return "redirect:/Error.jsp";
         }
     }
 
@@ -277,12 +177,12 @@ public class ProjectController extends HttpServlet {
      *                          servlet is handling the request.
      * @throws ServletException if the request cannot be handled.
      */
-    public void getAllProjects(HttpServletRequest request,
-            HttpServletResponse response)
-            throws EMSException, ServletException, IOException {
-        request.setAttribute("projects", projectService.getAllProjects());
-        request.getRequestDispatcher("ViewAllProjects.jsp").forward(request,
-                response);
+    @GetMapping("viewAllProjects")
+    public ModelAndView getAllProjects(WebRequest request) throws EMSException {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("projects", projectService.getAllProjects());
+        modelAndView.setViewName("ViewAllProjects.jsp");
+        return modelAndView;
 
     }
 
@@ -299,23 +199,18 @@ public class ProjectController extends HttpServlet {
      *                          servlet is handling the request.
      * @throws ServletException if the request cannot be handled.
      */
-    public void sendProjectUpdateForm(HttpServletRequest request,
-            HttpServletResponse response)
-            throws EMSException, ServletException, IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
+    @GetMapping("updateProjectForm")
+    public String sendProjectUpdateForm(@RequestParam int id, Model model,
+            RedirectAttributes redirect) throws EMSException {
         ProjectDTO project = getProject(id);
 
         if (null == project) {
-            request.setAttribute("errorMessage", "Project Not Found!");
-            request.getRequestDispatcher("Error.jsp").forward(request,
-                    response);
-            return;
+            redirect.addAttribute("errorMessage", "Project Not Found!");
+            return "redirect:/Error.jsp";
         }
-        request.getSession().setAttribute("projectToUpdate", project);
-        request.setAttribute("formAction", "updateProject");
-        request.setAttribute("project", project);
-        request.getRequestDispatcher("ProjectForm.jsp").forward(request,
-                response);
+        model.addAttribute("formAction", "updateProject");
+        model.addAttribute("project", project);
+        return "ProjectForm.jsp";
     }
 
     /**
@@ -330,35 +225,20 @@ public class ProjectController extends HttpServlet {
      *                          servlet is handling the request.
      * @throws ServletException if the request cannot be handled.
      */
-    public void updateProject(HttpServletRequest request,
-            HttpServletResponse response)
-            throws EMSException, ServletException, IOException {
-        ProjectDTO project = (ProjectDTO) request.getSession()
-                .getAttribute("projectToUpdate");
-
-        if (null == project) {
-            request.setAttribute("errorMessage",
-                    "Session Expired! Please Try Again.");
-            request.getRequestDispatcher("Error.jsp").forward(request,
-                    response);
-            return;
-        }
-        project.setName(validateName(request.getParameter("name")));
-        project.setDescription(
-                validateDescription(request.getParameter("description")));
-        project.setManager(validateManager(request.getParameter("manager")));
-        project.setStatus(validateStatus(request.getParameter("status")));
+    @PostMapping("updateProject")
+    public String updateProject(@ModelAttribute("project") ProjectDTO project,
+            RedirectAttributes redirect) throws EMSException {
 
         if (projectService.updateProject(project)) {
-            request.setAttribute("redirectUrl", "viewAllProjects");
-            request.setAttribute("successMessage", "Project "
+            redirect.addAttribute("redirectUrl", "viewAllProjects");
+            redirect.addAttribute("successMessage", "Project "
                     + project.getName()
                     + " Updated Successfully! Redirecting To Employees Page . . .");
-            request.getRequestDispatcher("Success.jsp").forward(request,
-                    response);
+            return "redirect:/Success.jsp";
         } else {
-            request.setAttribute("errorMessage",
+            redirect.addAttribute("errorMessage",
                     "Project " + project.getName() + " Update Failed!");
+            return "redirect:/Error.jsp";
         }
     }
 
@@ -387,27 +267,23 @@ public class ProjectController extends HttpServlet {
      *                          servlet is handling the request.
      * @throws ServletException if the request cannot be handled.
      */
-    public void sendAssignEmployeesForm(HttpServletRequest request,
-            HttpServletResponse response)
+    @GetMapping("assignEmployeesForm")
+    public String sendAssignEmployeesForm(@RequestParam int id, Model model,
+            RedirectAttributes redirect)
             throws ServletException, IOException, EMSException {
         List<EmployeeDTO> employees;
-        HttpSession session = request.getSession();
-        ProjectDTO project = getProject(
-                Integer.parseInt(request.getParameter("id")));
+        ProjectDTO project = getProject(id);
 
         if (null == project) {
-            request.setAttribute("errorMessage", "Project Not Found!");
-            request.getRequestDispatcher("Error.jsp").forward(request,
-                    response);
-            return;
+            redirect.addAttribute("errorMessage", "Project Not Found!");
+            return "redirect:/Error.jsp";
         }
-        session.setAttribute("projectToAssign", project);
         employees = getAllEmployees();
         employees.removeAll(project.getEmployees());
-        request.setAttribute("employees", employees);
-        request.setAttribute("formAction", "assignEmployees");
-        request.getRequestDispatcher("AssignOrUnAssignEmployeesForm.jsp")
-                .forward(request, response);
+        model.addAttribute(project);
+        model.addAttribute("employees", employees);
+        model.addAttribute("formAction", "assignEmployees");
+        return "AssignOrUnAssignEmployeesForm.jsp";
     }
 
     /**
@@ -495,6 +371,7 @@ public class ProjectController extends HttpServlet {
      *                          servlet is handling the request.
      * @throws ServletException if the request cannot be handled.
      */
+    @GetMapping()
     public void sendUnAssignEmployeesForm(HttpServletRequest request,
             HttpServletResponse response)
             throws ServletException, IOException, EMSException {
@@ -572,21 +449,18 @@ public class ProjectController extends HttpServlet {
      *                          servlet is handling the request.
      * @throws ServletException if the request cannot be handled.
      */
-    public void deleteProject(HttpServletRequest request,
-            HttpServletResponse response)
-            throws EMSException, IOException, ServletException {
-        Integer id = validateId(request.getParameter("id"));
+    @GetMapping("deleteProject")
+    public String deleteProject(@RequestParam int id,
+            RedirectAttributes redirect) throws EMSException {
 
-        if (null != id && projectService.deleteProject(id)) {
-            request.setAttribute("redirectUrl", "viewAllProjects");
-            request.setAttribute("successMessage",
+        if (projectService.deleteProject(id)) {
+            redirect.addAttribute("redirectUrl", "viewAllProjects");
+            redirect.addAttribute("successMessage",
                     "Project Deleted Successfully! Redirecting To Projects Page . . .");
-            request.getRequestDispatcher("Success.jsp").forward(request,
-                    response);
+            return "redirect:/Success.jsp";
         } else {
-            request.setAttribute("errorMessage", "Project Delete Failed!");
-            request.getRequestDispatcher("Error.jsp").forward(request,
-                    response);
+            redirect.addAttribute("errorMessage", "Project Delete Failed!");
+            return "redirect:/Error.jsp";
         }
     }
 
@@ -602,20 +476,18 @@ public class ProjectController extends HttpServlet {
      *                          servlet is handling the request.
      * @throws ServletException if the request cannot be handled.
      */
-    public void deleteAllProjects(HttpServletRequest request,
-            HttpServletResponse response)
+    @GetMapping("deleteAllProjects")
+    public String deleteAllProjects(RedirectAttributes redirect)
             throws EMSException, ServletException, IOException {
 
         if (projectService.deleteAllProjects()) {
-            request.setAttribute("redirectUrl", "index.jsp");
-            request.setAttribute("successMessage",
+            redirect.addAttribute("redirectUrl", "index.jsp");
+            redirect.addAttribute("successMessage",
                     "Projects Deleted Successfully! Redirecting To Home Page . . .");
-            request.getRequestDispatcher("Success.jsp").forward(request,
-                    response);
+            return "redirect:/Success.jsp";
         } else {
-            request.setAttribute("errorMessage", "Project Delete Failed!");
-            request.getRequestDispatcher("Error.jsp").forward(request,
-                    response);
+            redirect.addAttribute("errorMessage", "Project Delete Failed!");
+            return "redirec:/Error.jsp";
         }
     }
 }

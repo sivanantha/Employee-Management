@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        https://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx 
+  		http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<mvc:annotation-driven />
+	<context:component-scan
+		base-package="com.ideas2it.employeemanagement" />
+	<mvc:resources location="/css/" mapping="/css/*" />
+	<mvc:resources location="/images/" mapping="/images/*" />
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/" />
+	</bean>
+
+	<bean id="employeeController"
+		class="com.ideas2it.employeemanagement.controller.EmployeeController">
+		<constructor-arg ref="employeeService"></constructor-arg>
+	</bean>
+
+	<bean id="employeeService"
+		class="com.ideas2it.employeemanagement.service.impl.EmployeeServiceImpl">
+		<constructor-arg ref="employeeDAO"></constructor-arg>
+		<property name="projectService" ref="projectService" />
+	</bean>
+
+	<bean id="employeeDAO"
+		class="com.ideas2it.employeemanagement.dao.impl.EmployeeDAOImpl">
+	</bean>
+
+	<bean id="projectController"
+		class="com.ideas2it.employeemanagement.controller.ProjectController">
+		<constructor-arg ref="projectService"></constructor-arg>
+	</bean>
+
+	<bean id="projectService"
+		class="com.ideas2it.employeemanagement.service.impl.ProjectServiceImpl">
+		<constructor-arg ref="projectDAO"></constructor-arg>
+		<property name="employeeService" ref="employeeService" />
+	</bean>
+
+	<bean id="projectDAO"
+		class="com.ideas2it.employeemanagement.dao.impl.ProjectDAOImpl">
+	</bean>
+</beans>

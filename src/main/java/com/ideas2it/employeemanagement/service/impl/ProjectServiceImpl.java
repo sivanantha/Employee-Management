@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.springframework.web.context.support.XmlWebApplicationContext;
+
 import com.ideas2it.employeemanagement.dao.ProjectDAO;
+import com.ideas2it.employeemanagement.dao.impl.EmployeeDAOImpl;
 import com.ideas2it.employeemanagement.dao.impl.ProjectDAOImpl;
 import com.ideas2it.employeemanagement.exceptions.EMSException;
 import com.ideas2it.employeemanagement.logger.EMSLogger;
@@ -15,6 +18,7 @@ import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.Project;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
 import com.ideas2it.employeemanagement.model.Status;
+import com.ideas2it.employeemanagement.service.EmployeeService;
 import com.ideas2it.employeemanagement.service.ProjectService;
 import com.ideas2it.employeemanagement.utils.Mapper;
 import com.ideas2it.employeemanagement.utils.ValidationUtil;
@@ -27,8 +31,21 @@ import com.ideas2it.employeemanagement.utils.ValidationUtil;
  * @version 1.1
  */
 public class ProjectServiceImpl implements ProjectService {
-    private ProjectDAO projectDAO = new ProjectDAOImpl();
-    private EMSLogger logger = new EMSLogger(ProjectService.class);
+    private ProjectDAO projectDAO;
+    private EmployeeService employeeService;
+    private static EMSLogger logger = new EMSLogger(ProjectService.class);
+    
+    public ProjectServiceImpl(ProjectDAO projectDAO) {
+        this.projectDAO = projectDAO;
+    }
+
+    public EmployeeService getEmployeeService() {
+        return employeeService;
+    }
+
+    public void setEmployeeService(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
 
     /**
      * {@inheritDoc}
@@ -118,7 +135,7 @@ public class ProjectServiceImpl implements ProjectService {
      * 
      */
     public List<EmployeeDTO> getAllEmployees() throws EMSException {
-        return new EmployeeServiceImpl().getAllEmployees();
+        return getEmployeeService().getAllEmployees();
     }
 
     /**

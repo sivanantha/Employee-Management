@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.springframework.context.annotation.Lazy;
+import org.springframework.web.context.support.XmlWebApplicationContext;
+
 import com.ideas2it.employeemanagement.dao.EmployeeDAO;
 import com.ideas2it.employeemanagement.dao.impl.EmployeeDAOImpl;
 import com.ideas2it.employeemanagement.exceptions.EMSException;
@@ -19,6 +22,7 @@ import com.ideas2it.employeemanagement.model.Employee;
 import com.ideas2it.employeemanagement.model.EmployeeDTO;
 import com.ideas2it.employeemanagement.model.ProjectDTO;
 import com.ideas2it.employeemanagement.service.EmployeeService;
+import com.ideas2it.employeemanagement.service.ProjectService;
 import com.ideas2it.employeemanagement.utils.Mapper;
 import com.ideas2it.employeemanagement.utils.ValidationUtil;
 
@@ -30,8 +34,21 @@ import com.ideas2it.employeemanagement.utils.ValidationUtil;
  * @version 1.7
  */
 public class EmployeeServiceImpl implements EmployeeService {
-    private EmployeeDAO employeeDAO = new EmployeeDAOImpl();
-    private EMSLogger logger = new EMSLogger(EmployeeServiceImpl.class);
+    private EmployeeDAO employeeDAO;
+    private ProjectService projectService;
+    private static EMSLogger logger = new EMSLogger(EmployeeServiceImpl.class);
+
+    public EmployeeServiceImpl(EmployeeDAO employeeDAO) {
+        this.employeeDAO = employeeDAO;
+    }
+
+    public ProjectService getProjectService() {
+        return projectService;
+    }
+
+    public void setProjectService(ProjectService projectService) {
+        this.projectService = projectService;
+    }
 
     /**
      * {@inheritDoc}
@@ -378,7 +395,26 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public List<ProjectDTO> getAllProjects() throws EMSException {
-        return new ProjectServiceImpl().getAllProjects();
+        return projectService.getAllProjects();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<ProjectDTO> getSelectedProjects(int[] projectIds) {
+        ProjectDTO project;
+        List<ProjectDTO> projects = new ArrayList<>(
+                (null == projectIds) ? 0 : projectIds.length);
+
+        if (null != projectIds) {
+
+            for (int projectId : projectIds) {
+                project = new ProjectDTO();
+                project.setId(projectId);
+                projects.add(project);
+            }
+        }
+        return projects;
     }
 
     /**

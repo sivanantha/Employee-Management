@@ -1,6 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="spring"
+	uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,214 +12,178 @@
 </head>
 
 <body>
-	<c:if test="${employee == null }">
+	<c:if test='${formAction.equals("createEmployee")}'>
 		<header>
 			<h1>Create Employee</h1>
 		</header>
 	</c:if>
-	<c:if test="${employee != null}">
+	<c:if test='${formAction.equals("updateEmployee")}'>
 		<header>
 			<h1>Update Employee</h1>
 		</header>
 	</c:if>
 	<div class="form-border">
-		<form action="${formAction}" method="post" class="form-container">
-			<fieldset >
-				<input name="id" type="hidden" value="${employee.id}" readonly>
+		<spring:form action="${formAction}" modelAttribute="employee"
+			method="post" cssClass="form-container">
+			<fieldset>
+				<spring:hidden path="id" />
 				<div class="row">
 					<div class="col-25">
-						<label for="name">Employee Name</label>
+						<spring:label path="name" for="name">Employee Name</spring:label>
 					</div>
 					<div class="col-75">
-						<input name="name" id="name" type="text" required
-							value="${employee.name}"
-							pattern="^(\s*[a-zA-Z]{3,20}\s*)$|^((\s*[a-zA-Z]{3,20}) ([a-zA-Z]{2,20})\s*)$|^((\s*[a-zA-Z]{3,20}) ([a-zA-Z]{2,20}) ([a-zA-Z]){2,20}\s*)$">
+						<spring:input path="name" id="name" type="text"
+							required="requried" value="${employee.name}"
+							pattern="^(\s*[a-zA-Z]{3,20}\s*)$|^((\s*[a-zA-Z]{3,20}) ([a-zA-Z]{2,20})\s*)$|^((\s*[a-zA-Z]{3,20}) ([a-zA-Z]{2,20}) ([a-zA-Z]){2,20}\s*)$" />
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-25">
-						<label for="dateOfBirth"> Date Of Birth</label>
+						<spring:label path="dateOfBirth" for="dateOfBirth"> Date Of Birth</spring:label>
 					</div>
 					<div class="col-75">
-						<input name="dateOfBirth" id="dateOfBirth" type="date" required
-							value="${employee.dateOfBirth}">
+						<spring:input path="dateOfBirth" id="dateOfBirth" type="date"
+							required="required" value="${employee.dateOfBirth}" />
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-25">
-						<label id="gender">Gender</label>
+						<spring:label path="gender">Gender</spring:label>
 					</div>
 					<div class="col-75, radio-btn">
-						<c:choose>
-							<c:when test='${employee.gender.equals("male")}'>
-								<input name="gender" id="male" type="radio" value="male"
-									required checked>
-								<label for="male">Male</label>
-								<input name="gender" id="female" type="radio" value="female"
-									required>
-								<label for="female">Female</label>
-								<input name="gender" id="others" type="radio" value="others"
-									required>
-								<label for="others">Others</label>
-							</c:when>
-
-							<c:when test='${employee.gender.equals("female")}'>
-								<input name="gender" id="male" type="radio" value="male"
-									required>
-								<label for="male">Male</label>
-								<input name="gender" id="female" type="radio" value="female"
-									required checked>
-								<label for="female">Female</label>
-								<input name="gender" id="others" type="radio" value="others"
-									required>
-								<label for="others">Others</label>
-							</c:when>
-
-							<c:when test='${employee.gender.equals("others")}'>
-								<input name="gender" id="male" type="radio" value="male"
-									required>
-								<label for="male">Male</label>
-								<input name="gender" id="female" type="radio" value="female"
-									required>
-								<label for="female">Female</label>
-								<input name="gender" id="others" type="radio" value="others"
-									required checked>
-								<label for="others">Others</label>
-							</c:when>
-							<c:otherwise>
-								<input name="gender" id="male" type="radio" value="male"
-									required>
-								<label for="male">Male</label>
-								<input name="gender" id="female" type="radio" value="female"
-									required>
-								<label for="female">Female</label>
-								<input name="gender" id="others" type="radio" value="others"
-									required>
-								<label for="others">Others</label>
-							</c:otherwise>
-						</c:choose>
+						<spring:radiobutton path="gender" value="male" required="required"
+							checked="${employee.gender.equals('male') ? 'checked': ''}" />
+						<spring:label path="gender" for="gender1">Male</spring:label>
+						<spring:radiobutton path="gender" value="female"
+							required="required"
+							checked="${employee.gender.equals('female') ? 'checked': ''}" />
+						<spring:label path="gender" for="gender2">Female</spring:label>
+						<spring:radiobutton path="gender" value="others"
+							required="required"
+							checked="${employee.gender.equals('others') ? 'checked': ''}" />
+						<spring:label path="gender" for="gender3">Others</spring:label>
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-25">
-						<label for="mobileNumber">Mobile Number</label>
+						<spring:label path="mobileNumber">Mobile Number</spring:label>
 					</div>
 					<div class="col-75">
-						<input name="mobileNumber" id="mobileNumber" type="tel"
-							pattern="^(\s*[6-9][0-9]{9}\s*)$" required
-							value="${employee.mobileNumber}">
+						<spring:input path="mobileNumber" type="tel"
+							pattern="^(\s*[6-9][0-9]{9}\s*)$" required="required"
+							value="${employee.mobileNumber}" />
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-25">
-						<label for="email">Email</label>
+						<spring:label path="email">Email</spring:label>
 					</div>
 					<div class="col-75">
-						<input name="email" id="email" type="email" required
-							value="${employee.email}">
+						<spring:input path="email" type="email" required="required"
+							value="${employee.email}" />
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-25">
-						<label for="salary">Salary</label>
+						<spring:label path="salary">Salary</spring:label>
 					</div>
 					<div class="col-75">
-						<input name="salary" id="salary" type="text" min="0"
-							pattern="^\s*([0-9]{1,20}(\.[0-9]{1,2})?)\s*$" required
-							value="${employee.salary}">
+						<spring:input path="salary" type="text" min="0"
+							pattern="^\s*([0-9]{1,20}(\.[0-9]{1,2})?)\s*$"
+							required="required" value="${employee.salary}" />
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-25">
-						<label for="dateOfJoining">Date Of Joining</label>
+						<spring:label path="dateOfJoining">Date Of Joining</spring:label>
 					</div>
 					<div class="col-75">
-						<input name="dateOfJoining" id="dateOfJoining" type="date"
-							required value="${employee.dateOfJoining}">
+						<spring:input path="dateOfJoining" type="date" required="required"
+							value="${employee.dateOfJoining}" />
 					</div>
 				</div>
 				<c:if test="${ null != employee}">
 					<c:set value="${employee.addresses.get(0)}" var="address"
 						scope="request"></c:set>
 				</c:if>
-				<div class="sub-header">Address Details</div> 
-				<input name="addressId" type="hidden"
-					value="${address.id}" readonly>
+				<div class="sub-header">Address Details</div>
+				<spring:hidden path="id" value="${address.id}" />
 				<div class="row">
 					<div class="col-25">
-						<label for="doorNumber">Door Number</label>
+						<spring:label path="addresses[0].doorNumber">Door Number</spring:label>
 					</div>
 					<div class="col-75">
-						<input name="doorNumber" id="doorNumber" type="text"
-							value="${address.doorNumber}" required
-							pattern="^[\s]*([1-9][0-9]{0,4}([-][A-Z]|[A-Z])?[/][1-9][0-9]{0,4}[A-Z]?|[1-9][0-9]{0,4}([-][A-Z]|[A-Z])?|([A-Z]|[A-Z][-])?[1-9][0-9]{0,4}|([A-Z]|[A-Z][-])[1-9][0-9]{0,4}[/][A-Z]?[1-9][0-9]{0,4}|[1-9][0-9]{0,4}([-][A-Z]|[A-Z])?[/][A-Z]?[1-9][0-9]{0,4})[\s]*$">
+						<spring:input path="addresses[0].doorNumber" type="text"
+							value="${address.doorNumber}" required="required"
+							pattern="^[\s]*([1-9][0-9]{0,4}([-][A-Z]|[A-Z])?[/][1-9][0-9]{0,4}[A-Z]?|[1-9][0-9]{0,4}([-][A-Z]|[A-Z])?|([A-Z]|[A-Z][-])?[1-9][0-9]{0,4}|([A-Z]|[A-Z][-])[1-9][0-9]{0,4}[/][A-Z]?[1-9][0-9]{0,4}|[1-9][0-9]{0,4}([-][A-Z]|[A-Z])?[/][A-Z]?[1-9][0-9]{0,4})[\s]*$" />
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-25">
-						<label for="street">Street</label>
+						<spring:label path="addresses[0].street">Street</spring:label>
 					</div>
 					<div class="col-75">
-						<input name="street" id="street" type="text" required
-							value="${address.street}"
-							pattern="^[\s]*(([1-9][0-9]{0,4})?([ ]?[A-Za-z][\.]?|[A-Za-z][ ]?){4,50}([1-9][0-9]{0,4})?)[\s]*$">
+						<spring:input path="addresses[0].street" type="text"
+							required="required" value="${address.street}"
+							pattern="^[\s]*(([1-9][0-9]{0,4})?([ ]?[A-Za-z][\.]?|[A-Za-z][ ]?){4,50}([1-9][0-9]{0,4})?)[\s]*$" />
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-25">
-						<label for="locality">Locality</label>
+						<spring:label path="addresses[0].locality">Locality</spring:label>
 					</div>
 					<div class="col-75">
-						<input name="locality" id="locality" type="text" required
-							value="${address.locality}"
-							pattern="^[\s]*(([a-zA-Z]{3,50}[ ]?|[ ][a-zA-Z]{2}){1,2})[\s]*$">
+						<spring:input path="addresses[0].locality" type="text"
+							required="required" value="${address.locality}"
+							pattern="^[\s]*(([a-zA-Z]{3,50}[ ]?|[ ][a-zA-Z]{2}){1,2})[\s]*$" />
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-25">
-						<label for="city">City</label>
+						<spring:label path="addresses[0].city">City</spring:label>
 					</div>
 					<div class="col-75">
-						<input name="city" id="city" type="text" required
-							value="${address.city}"
-							pattern="^[\s]*(([a-zA-Z]{3,50}[ ]?|[ ][a-zA-Z]{2}){1,2})[\s]*$">
+						<spring:input path="addresses[0].city" type="text"
+							required="required" value="${address.city}"
+							pattern="^[\s]*(([a-zA-Z]{3,50}[ ]?|[ ][a-zA-Z]{2}){1,2})[\s]*$" />
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-25">
-						<label for="state">State</label>
+						<spring:label path="addresses[0].state">State</spring:label>
 					</div>
 					<div class="col-75">
-						<input name="state" id="state" type="text" required
-							value="${address.state}"
-							pattern="^[\s]*(([a-zA-Z]{3,50}[ ]?|[ ][a-zA-Z]{2}){1,2})[\s]*$">
+						<spring:input path="addresses[0].state" type="text"
+							required="required" value="${address.state}"
+							pattern="^[\s]*(([a-zA-Z]{3,50}[ ]?|[ ][a-zA-Z]{2}){1,2})[\s]*$" />
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-25">
-						<label for="country">Country</label>
+						<spring:label path="addresses[0].country">Country</spring:label>
 					</div>
 					<div class="col-75">
-						<input name="country" id="country" type="text" required
-							value="${address.country}"
-							pattern="^[\s]*(([a-zA-Z]{3,50}[ ]?|[ ][a-zA-Z]{2}){1,2})[\s]*$">
+						<spring:input path="addresses[0].country" type="text"
+							required="required" value="${address.country}"
+							pattern="^[\s]*(([a-zA-Z]{3,50}[ ]?|[ ][a-zA-Z]{2}){1,2})[\s]*$" />
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-25">
-						<label for="pinCode">Pin Code</label>
+						<spring:label path="addresses[0].pinCode">Pin Code</spring:label>
 					</div>
 					<div class="col-75">
-						<input name="pinCode" id="pinCode" type="text" required
-							value="${address.pinCode}" pattern="^[\s]*([0-9]{3,9})[\s]*$">
+						<spring:input path="addresses[0].pinCode" type="text"
+							required="required" value="${address.pinCode}"
+							pattern="^[\s]*([0-9]{3,9})[\s]*$" />
 					</div>
 				</div>
 				<div class="center">
-				<input type="submit" id="submit" value="Submit">
+					<input type="submit" id="submit" value="Submit" />
 				</div>
 			</fieldset>
-		</form>
+		</spring:form>
 	</div>
-	<a href="index.jsp"><button class="cancel-btn">Cancel</button></a>
+	<a href="/viewAllEmployees"><button class="cancel-btn">Cancel</button></a>
 </body>
 </html>

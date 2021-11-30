@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="spring" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,14 +20,13 @@
 		<table id="assign-unassign">
 			<c:choose>
 				<c:when test="${!projects.isEmpty()}">
-					<form action="${formAction}" method="post">
+					<spring:form action="${formAction}"  modelAttribute="employee" method="post">
 						<fieldset>
 							<th></th>
 							<th>Projects</th>
 							<c:forEach items="${projects}" var="project">
 								<tr>
-									<td><input name="selectedProjects" id="${project.id}"
-										type="checkbox" value="${project.id}"></td>
+									<td><input type="checkbox" name="selectedProjects" id="${project.id}" value="${project.id}"/></td>
 									<td><label for="${project.id}">${project.name}</label> <br></td>
 								</tr>
 							</c:forEach>
@@ -41,7 +41,7 @@
 							</c:if>
 
 						</fieldset>
-					</form>
+					</spring:form>
 					<br>
 					<td><a href="viewAllEmployees"><button>Cancel</button></a></td>
 				</c:when>

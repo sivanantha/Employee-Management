@@ -4,6 +4,7 @@
 package com.ideas2it.employeemanagement.service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ideas2it.employeemanagement.exceptions.EMSException;
@@ -255,6 +256,16 @@ public interface EmployeeService {
      *
      */
     List<ProjectDTO> getAllProjects() throws EMSException;
+    
+    /**
+     * Gets the selected projects from the request and returns the selected
+     * projects in a list.
+     * 
+     * @param projectIds a array of int containing selected project's id.
+     * @return a list containing selected projects, if no project is selected
+     *         then an empty list.
+     */
+    List<ProjectDTO> getSelectedProjects(int[] projectIds);
 
     /**
      * Deletes the specified employee.

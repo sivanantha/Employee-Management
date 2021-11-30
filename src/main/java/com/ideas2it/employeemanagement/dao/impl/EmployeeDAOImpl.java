@@ -33,7 +33,7 @@ import com.ideas2it.employeemanagement.utils.Constants;
  * @version 1.4
  */
 public class EmployeeDAOImpl implements EmployeeDAO {
-    private EMSLogger logger = new EMSLogger(EmployeeDAOImpl.class);
+    private static EMSLogger logger = new EMSLogger(EmployeeDAOImpl.class);
 
     /**
      * {@inheritDoc}

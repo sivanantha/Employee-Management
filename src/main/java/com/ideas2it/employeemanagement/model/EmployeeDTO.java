@@ -8,6 +8,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * This class is a data transfer object for employee details.
  *
@@ -18,7 +20,9 @@ public class EmployeeDTO {
     private int id;
     private float salary;
     private long mobileNumber;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfJoining;
     private String email;
     private String gender;
